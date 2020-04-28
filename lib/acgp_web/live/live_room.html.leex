@@ -16,3 +16,12 @@ Your Room: <%= @room %> Your Name: <%= @name %> Controller: <%= @controller %>
         </li>
     <% end %>
 </ol>
+
+<label for="local-stream">Local Video Stream</label>
+<video id="local-stream" autoplay muted></video>
+<label for="remote-stream">Remote Video Stream</label>
+<video id="remote-stream" autoplay></video>
+
+<button id="connect">Connect</button>
+<button id="call">Call</button>
+<button id="disconnect">Disconnect</button>

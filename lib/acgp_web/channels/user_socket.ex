@@ -2,7 +2,7 @@ defmodule AcgpWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", AcgpWeb.RoomChannel
+   channel "video:*", AcgpWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
