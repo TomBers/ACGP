@@ -49,84 +49,84 @@ const mediaConstraints = {
 };
 
 document.addEventListener("DOMContentLoaded", function(){
-    let channel = window.socket.channel("video:<%= @room %>", {})
+  let channel = window.socket.channel("video:<%= @room %>", {})
 
-    channel.join()
-    .receive("ok", resp => { console.log("Joined successfully", resp) })
-    .receive("error", resp => { console.log("Unable to join", resp) })
+  channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) })
 
 
-    connectButton.onclick = connect;
-    callButton.onclick = call;
-    disconnectButton.onclick = disconnect;
+  connectButton.onclick = connect;
+  callButton.onclick = call;
+  disconnectButton.onclick = disconnect;
 
-    async function connect() {
-  connectButton.disabled = true;
-  disconnectButton.disabled = false;
-  callButton.disabled = false;
-  const localStream = await devices.getUserMedia(mediaConstraints);
-  setVideoStream(localVideo, localStream);
-  peerConnection = createPeerConnection(localStream);
-}
-
-async function call() {
-  let offer = await peerConnection.createOffer();
-  peerConnection.setLocalDescription(offer);
-  pushPeerMessage('video-offer', offer);
-}
-
-function createPeerConnection(stream) {
-  let pc = new RTCPeerConnection({
-    iceServers: [
-      // Information about ICE servers - Use your own!
-      {
-        urls: 'stun:stun.stunprotocol.org',
-      },
-    ],
-  });
-  pc.ontrack = handleOnTrack;
-  pc.onicecandidate = handleIceCandidate;
-  stream.getTracks().forEach(track => pc.addTrack(track));
-  return pc;
-}
-
-function handleOnTrack(event) {
-  log(event);
-  remoteStream.addTrack(event.track);
-}
-
-function handleIceCandidate(event) {
-  if (!!event.candidate) {
-    pushPeerMessage('ice-candidate', event.candidate);
+  async function connect() {
+    connectButton.disabled = true;
+    disconnectButton.disabled = false;
+    callButton.disabled = false;
+    const localStream = await devices.getUserMedia(mediaConstraints);
+    setVideoStream(localVideo, localStream);
+    peerConnection = createPeerConnection(localStream);
   }
-}
 
-function disconnect() {
-  connectButton.disabled = false;
-  disconnectButton.disabled = true;
-  callButton.disabled = true;
-  unsetVideoStream(localVideo);
-  unsetVideoStream(remoteVideo);
-  peerConnection.close();
-  peerConnection = null;
-  remoteStream = new MediaStream();
-  setVideoStream(remoteVideo, remoteStream);
-  pushPeerMessage('disconnect', {});
-}
+  async function call() {
+    let offer = await peerConnection.createOffer();
+    peerConnection.setLocalDescription(offer);
+    pushPeerMessage('video-offer', offer);
+  }
 
-function receiveRemote(offer) {
-  let remoteDescription = new RTCSessionDescription(offer);
-  peerConnection.setRemoteDescription(remoteDescription);
-}
+  function createPeerConnection(stream) {
+    let pc = new RTCPeerConnection({
+      iceServers: [
+        // Information about ICE servers - Use your own!
+        {
+          urls: 'stun:stun.stunprotocol.org',
+        },
+      ],
+    });
+    pc.ontrack = handleOnTrack;
+    pc.onicecandidate = handleIceCandidate;
+    stream.getTracks().forEach(track => pc.addTrack(track));
+    return pc;
+  }
 
-async function answerCall(offer) {
-  receiveRemote(offer);
-  let answer = await peerConnection.createAnswer();
-  peerConnection
+  function handleOnTrack(event) {
+    log(event);
+    remoteStream.addTrack(event.track);
+  }
+
+  function handleIceCandidate(event) {
+    if (!!event.candidate) {
+      pushPeerMessage('ice-candidate', event.candidate);
+    }
+  }
+
+  function disconnect() {
+    connectButton.disabled = false;
+    disconnectButton.disabled = true;
+    callButton.disabled = true;
+    unsetVideoStream(localVideo);
+    unsetVideoStream(remoteVideo);
+    peerConnection.close();
+    peerConnection = null;
+    remoteStream = new MediaStream();
+    setVideoStream(remoteVideo, remoteStream);
+    pushPeerMessage('disconnect', {});
+  }
+
+  function receiveRemote(offer) {
+    let remoteDescription = new RTCSessionDescription(offer);
+    peerConnection.setRemoteDescription(remoteDescription);
+  }
+
+  async function answerCall(offer) {
+    receiveRemote(offer);
+    let answer = await peerConnection.createAnswer();
+    peerConnection
     .setLocalDescription(answer)
     .then(() =>
-      pushPeerMessage('video-answer', peerConnection.localDescription)
-    );
+    pushPeerMessage('video-answer', peerConnection.localDescription)
+  );
 }
 
 
@@ -150,7 +150,7 @@ function log() {
   console.log(...arguments);
 }
 
-    function pushPeerMessage(type, content) {
+function pushPeerMessage(type, content) {
   channel.push('peer-message', {
     body: JSON.stringify({
       type,
@@ -159,31 +159,32 @@ function log() {
   });
 }
 
-    channel.on('peer-message', payload => {
+channel.on('peer-message', payload => {
   const message = JSON.parse(payload.body);
   switch (message.type) {
     case 'video-offer':
       log('offered: ', message.content);
       answerCall(message.content);
-      break;
+    break;
     case 'video-answer':
       log('answered: ', message.content);
       receiveRemote(message.content);
-      break;
+    break;
     case 'ice-candidate':
       log('candidate: ', message.content);
       let candidate = new RTCIceCandidate(message.content);
       peerConnection
-        .addIceCandidate(candidate)
-        .catch(reportError('adding and ice candidate'));
-      break;
+      .addIceCandidate(candidate)
+      .catch(reportError('adding and ice candidate'));
+    break;
     case 'disconnect':
       disconnect();
-      break;
+    break;
     default:
       reportError('unhandled message type')(message.type);
   }
 });
 
 })
+
 </script>
