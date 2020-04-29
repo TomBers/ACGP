@@ -1,7 +1,7 @@
 defmodule AcgpWeb.RoomChannel do
   use Phoenix.Channel
 
-  def join("video:peer2peer", _message, socket) do
+  def join(_topic, _message, socket) do
     {:ok, socket}
   end
 
