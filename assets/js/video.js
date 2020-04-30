@@ -1,10 +1,11 @@
-export async function connect(disconnectButton, callButton, devices, mediaConstraints, localVideo, channel) {
-    disconnectButton.disabled = false;
-    callButton.disabled = false;
+export async function connect(devices, localVideo, remoteStream,  channel) {
+  const mediaConstraints = {
+      audio: true,
+      video: true,
+    };
     const localStream = await devices.getUserMedia(mediaConstraints);
     setVideoStream(localVideo, localStream);
-    peerConnection = createPeerConnection(localStream, channel);
-    return peerConnection
+    return createPeerConnection(localStream, remoteStream, channel);
   }
 
 export async function call(peerConnection, channel) {
@@ -24,7 +25,7 @@ export async function answerCall(offer, peerConnection, channel) {
  }
 
 
-  function createPeerConnection(stream, channel) {
+  function createPeerConnection(stream, remoteStream, channel) {
     let pc = new RTCPeerConnection({
       iceServers: [
         // Information about ICE servers - Use your own!
@@ -33,13 +34,13 @@ export async function answerCall(offer, peerConnection, channel) {
         },
       ],
     });
-    pc.ontrack = handleOnTrack;
+    pc.ontrack = (event) => handleOnTrack(event, remoteStream);
     pc.onicecandidate = (event) => handleIceCandidate(event, channel);
     stream.getTracks().forEach(track => pc.addTrack(track));
     return pc;
   }
 
-  function handleOnTrack(event) {
+  function handleOnTrack(event, remoteStream) {
     console.log(event);
     remoteStream.addTrack(event.track);
   }
@@ -50,9 +51,7 @@ export async function answerCall(offer, peerConnection, channel) {
     }
   }
 
-export function disconnect(disconnectButton, callButton, localVideo, remoteVideo, peerConnection, channel) {
-    disconnectButton.disabled = true;
-    callButton.disabled = true;
+export function disconnect(localVideo, remoteVideo, peerConnection, channel) {
     unsetVideoStream(localVideo);
     unsetVideoStream(remoteVideo);
     peerConnection.close();
@@ -80,8 +79,6 @@ function unsetVideoStream(videoElement) {
 }
 
 function pushPeerMessage(type, content, channel) {
-    console.log('CHANNEL')
-    console.log(channel)
   channel.push('peer-message', {
     body: JSON.stringify({
       type,

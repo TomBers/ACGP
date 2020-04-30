@@ -24,6 +24,7 @@
 <button id="disconnect">Disconnect</button>
 
 <script>
+document.addEventListener("DOMContentLoaded", function(){
 // Constants
 const devices = navigator.mediaDevices;
 const callButton = document.getElementById('call');
@@ -36,19 +37,37 @@ let peerConnection;
 let channel;
 let remoteStream = new MediaStream();
 
-disconnectButton.disabled = true;
-callButton.disabled = true;
+disconnectButton.disabled = false;
+callButton.disabled = false;
 
-const mediaConstraints = {
-  audio: true,
-  video: true,
-};
 
-document.addEventListener("DOMContentLoaded", function(){
+
+function addCandidate(params) {
+    console.log('Trying to add ICE candidate')
+     let candidate = new RTCIceCandidate(params);
+     peerConnection.addIceCandidate(candidate).catch(e => {
+            console.log("Failure during addIceCandidate(): " + e);
+    });
+}
+
+
+
     channel = window.socket.channel("video:<%= @room %>", {})
     channel.join()
-     .receive("ok", resp => { console.log("Joined successfully", resp) })
+     .receive("ok", resp => {
+        console.log("Joined successfully", resp);
+        window.videoConnect(devices, localVideo, remoteStream, channel).then((pc) => peerConnection = pc)
+      })
      .receive("error", resp => { console.log("Unable to join", resp) })
+
+
+     callButton.onclick = () => {
+        window.videoCall(peerConnection, channel)
+       }
+
+      disconnectButton.onclick = () => {
+        window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel)
+      }
 
      channel.on('peer-message', payload => {
           const message = JSON.parse(payload.body);
@@ -62,11 +81,7 @@ document.addEventListener("DOMContentLoaded", function(){
               window.receiveRemote(message.content, peerConnection);
             break;
             case 'ice-candidate':
-              console.log('candidate: ', message.content);
-              let candidate = new RTCIceCandidate(message.content);
-              peerConnection
-              .addIceCandidate(candidate)
-              .catch(console.error('Error adding ice candidate'));
+              addCandidate(message.content)
             break;
             case 'disconnect':
               window.videoDisconnect(disconnectButton, callButton, localVideo, remoteVideo, peerConnection, channel);
@@ -75,16 +90,5 @@ document.addEventListener("DOMContentLoaded", function(){
               console.error('unhandled message type', message.type);
           }
         });
-
-     // Connect
-     peerConnection = window.videoConnect(disconnectButton, callButton, devices, mediaConstraints, localVideo, channel);
-
-     callButton.onclick = () => {
-        console.log('CALL:')
-        window.videoCall(peerConnection, channel)
-       }
-
-
-
 })
 </script>
