@@ -20,11 +20,12 @@ defmodule AcgpWeb.LiveRoom do
 
     AcgpWeb.Endpoint.subscribe(topic(room))
 
+
     {:ok,
     assign(socket,
       room: room,
-      controller: "",
       name: name,
+      question: "",
       users: Presence.list_presences(topic(room)) )}
   end
 
@@ -32,15 +33,14 @@ defmodule AcgpWeb.LiveRoom do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
-
-
-  def handle_event("take_control", %{"name" => name}, socket) do
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{controller: name})
-    {:noreply, assign(socket, controller: name)}
+  def handle_event("new_card", _params, socket) do
+    question = AskHole.get_question()
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question: question})
+    {:noreply, assign(socket, question: question)}
   end
 
-  def handle_info(%{event: "synchronize", payload: %{controller: name}}, socket) do
-    {:noreply, assign(socket, controller: name)}
+  def handle_info(%{event: "synchronize", payload: %{question: question}}, socket) do
+    {:noreply, assign(socket, question: question)}
   end
 
   def get_name do

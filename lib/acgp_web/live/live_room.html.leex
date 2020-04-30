@@ -1,10 +1,7 @@
-Your Room: <%= @room %> Your Name: <%= @name %> Controller: <%= @controller %>
-<br><br>
-<%= if @controller == @name do %>
-<p>You are the Controller</p>
-<% else %>
-    <button phx-click="take_control" phx-value-name="<%= @name %>">hit me</button>
-<% end %>
+<h1><%= @question %></h1>
+
+<button phx-click="new_card"><%= if @question == "" do %>Start<% else %>Change<% end %></button>
+
 
 <ol>
     <%= for user <- @users do %>
