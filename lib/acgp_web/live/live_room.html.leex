@@ -20,11 +20,11 @@
 <video id="remote-stream" autoplay></video>
 
 
-<button id="call">Call</button>
-<button id="disconnect">Disconnect</button>
+<button id="call">Connect</button>
+<button id="disconnect" class="hidden">Disconnect</button>
 
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+
 // Constants
 const devices = navigator.mediaDevices;
 const callButton = document.getElementById('call');
@@ -37,9 +37,18 @@ let peerConnection;
 let channel;
 let remoteStream = new MediaStream();
 
-disconnectButton.disabled = false;
-callButton.disabled = false;
+disconnectButton.style.visibility = 'hidden';
 
+
+function showConnect() {
+    disconnectButton.className = "hidden"
+    callButton.className = ""
+}
+
+function showDisconnect() {
+        disconnectButton.className = ""
+        callButton.className = "hidden"
+}
 
 
 function addCandidate(params) {
@@ -51,22 +60,25 @@ function addCandidate(params) {
 }
 
 
-
+document.addEventListener("DOMContentLoaded", function(){
     channel = window.socket.channel("video:<%= @room %>", {})
     channel.join()
      .receive("ok", resp => {
         console.log("Joined successfully", resp);
+        remoteVideo.srcObject = remoteStream;
         window.videoConnect(devices, localVideo, remoteStream, channel).then((pc) => peerConnection = pc)
       })
      .receive("error", resp => { console.log("Unable to join", resp) })
 
 
      callButton.onclick = () => {
-        window.videoCall(peerConnection, channel)
+        window.videoCall(peerConnection, channel);
+        showDisconnect();
        }
 
       disconnectButton.onclick = () => {
-        window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel)
+        window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel);
+        showConnect();
       }
 
      channel.on('peer-message', payload => {
@@ -75,6 +87,7 @@ function addCandidate(params) {
             case 'video-offer':
               console.log('offered: ', message.content);
               window.answerCall(message.content, peerConnection, channel);
+              showDisconnect()
             break;
             case 'video-answer':
               console.log('answered: ', message.content);
@@ -84,7 +97,8 @@ function addCandidate(params) {
               addCandidate(message.content)
             break;
             case 'disconnect':
-              window.videoDisconnect(disconnectButton, callButton, localVideo, remoteVideo, peerConnection, channel);
+              window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel);
+              showConnect()
             break;
             default:
               console.error('unhandled message type', message.type);

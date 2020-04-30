@@ -54,8 +54,13 @@ export async function answerCall(offer, peerConnection, channel) {
 export function disconnect(localVideo, remoteVideo, peerConnection, channel) {
     unsetVideoStream(localVideo);
     unsetVideoStream(remoteVideo);
-    peerConnection.close();
-    peerConnection = null;
+    try {
+      peerConnection.close();
+      peerConnection = null;
+    } catch(e) {
+      console.error(e)
+    }
+    
     remoteStream = new MediaStream();
     setVideoStream(remoteVideo, remoteStream);
     pushPeerMessage('disconnect', {}, channel);
