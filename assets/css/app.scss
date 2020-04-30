@@ -1,6 +1,10 @@
 /* This file is for your main application css. */
 @import "./phoenix.css";
 
+.hidden {
+    display: none;
+}
+
 /* Alerts and form errors */
 .alert {
   padding: 15px;
