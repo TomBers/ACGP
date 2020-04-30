@@ -1,27 +1,45 @@
-<h1><%= @question %></h1>
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-12">
+        <div class="tile">
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                    <p class="title"><%= if @question == "" do %>Question<% else %><%= @question %><% end %></p>
+                </article>
+                <article class="tile is-child notification is-warning has-text-centered">
+                    <button class="button is-large" phx-click="new_card"><%= if @question == "" do %>Start Questions<% else %>Change question<% end %></button>
+                </article>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-info">
+                    <figure class="image">
+                        <label for="local-stream">Local Video Stream</label>
+                        <video id="local-stream" autoplay muted></video>
+                        <button id="call" class="button">Connect Video</button>
+                        <button id="disconnect" class="hidden">Disconnect</button>
+                    </figure>
+                    <figure class="image">
+                        <label for="remote-stream">Remote Video Stream</label>
+                        <video id="remote-stream" autoplay></video>
+                    </figure>
+                </article>
+            </div>
+        </div>
 
-<button phx-click="new_card"><%= if @question == "" do %>Start<% else %>Change<% end %></button>
+    </div>
+</div>
+
+<section>
+    <p class="title">Instructions:</p>
+    <div class="content">
+    <ol type="1">
+        <li>Click <strong>connect video</strong> to start a webchat</li>
+        <li>When the chat has started, click <strong>start questions</strong></li>
+        <li>Take turns answering the question on screen</li>
+    </ol>
+    </div>
+</section>
 
 
-<ol>
-    <%= for user <- @users do %>
-        <li><%= if user.name == @name do %>
-            <b><%= user.name %></b>
-            <% else %>
-                <%= user.name %>
-            <% end %>
-        </li>
-    <% end %>
-</ol>
-
-<label for="local-stream">Local Video Stream</label>
-<video id="local-stream" autoplay muted></video>
-<label for="remote-stream">Remote Video Stream</label>
-<video id="remote-stream" autoplay></video>
-
-
-<button id="call">Connect</button>
-<button id="disconnect" class="hidden">Disconnect</button>
 
 <script>
 
@@ -42,11 +60,11 @@ disconnectButton.style.visibility = 'hidden';
 
 function showConnect() {
     disconnectButton.className = "hidden"
-    callButton.className = ""
+    callButton.className = "button"
 }
 
 function showDisconnect() {
-        disconnectButton.className = ""
+        disconnectButton.className = "button"
         callButton.className = "hidden"
 }
 
