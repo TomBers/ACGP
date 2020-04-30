@@ -19,14 +19,13 @@
 <label for="remote-stream">Remote Video Stream</label>
 <video id="remote-stream" autoplay></video>
 
-<button id="connect">Connect</button>
+
 <button id="call">Call</button>
 <button id="disconnect">Disconnect</button>
 
 <script>
+// Constants
 const devices = navigator.mediaDevices;
-
-const connectButton = document.getElementById('connect');
 const callButton = document.getElementById('call');
 const disconnectButton = document.getElementById('disconnect');
 
@@ -34,8 +33,8 @@ const remoteVideo = document.getElementById('remote-stream');
 const localVideo = document.getElementById('local-stream');
 
 let peerConnection;
+let channel;
 let remoteStream = new MediaStream();
-
 
 disconnectButton.disabled = true;
 callButton.disabled = true;
@@ -46,142 +45,46 @@ const mediaConstraints = {
 };
 
 document.addEventListener("DOMContentLoaded", function(){
-  let channel = window.socket.channel("video:<%= @room %>", {})
+    channel = window.socket.channel("video:<%= @room %>", {})
+    channel.join()
+     .receive("ok", resp => { console.log("Joined successfully", resp) })
+     .receive("error", resp => { console.log("Unable to join", resp) })
 
-  channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+     channel.on('peer-message', payload => {
+          const message = JSON.parse(payload.body);
+          switch (message.type) {
+            case 'video-offer':
+              console.log('offered: ', message.content);
+              window.answerCall(message.content, peerConnection, channel);
+            break;
+            case 'video-answer':
+              console.log('answered: ', message.content);
+              window.receiveRemote(message.content, peerConnection);
+            break;
+            case 'ice-candidate':
+              console.log('candidate: ', message.content);
+              let candidate = new RTCIceCandidate(message.content);
+              peerConnection
+              .addIceCandidate(candidate)
+              .catch(console.error('Error adding ice candidate'));
+            break;
+            case 'disconnect':
+              window.videoDisconnect(disconnectButton, callButton, localVideo, remoteVideo, peerConnection, channel);
+            break;
+            default:
+              console.error('unhandled message type', message.type);
+          }
+        });
 
+     // Connect
+     peerConnection = window.videoConnect(disconnectButton, callButton, devices, mediaConstraints, localVideo, channel);
 
-  connectButton.onclick = connect;
-  callButton.onclick = call;
-  disconnectButton.onclick = disconnect;
-
-  async function connect() {
-    connectButton.disabled = true;
-    disconnectButton.disabled = false;
-    callButton.disabled = false;
-    const localStream = await devices.getUserMedia(mediaConstraints);
-    setVideoStream(localVideo, localStream);
-    peerConnection = createPeerConnection(localStream);
-  }
-
-  async function call() {
-    let offer = await peerConnection.createOffer();
-    peerConnection.setLocalDescription(offer);
-    pushPeerMessage('video-offer', offer);
-  }
-
-  function createPeerConnection(stream) {
-    let pc = new RTCPeerConnection({
-      iceServers: [
-        // Information about ICE servers - Use your own!
-        {
-          urls: 'stun:stun.stunprotocol.org',
-        },
-      ],
-    });
-    pc.ontrack = handleOnTrack;
-    pc.onicecandidate = handleIceCandidate;
-    stream.getTracks().forEach(track => pc.addTrack(track));
-    return pc;
-  }
-
-  function handleOnTrack(event) {
-    log(event);
-    remoteStream.addTrack(event.track);
-  }
-
-  function handleIceCandidate(event) {
-    if (!!event.candidate) {
-      pushPeerMessage('ice-candidate', event.candidate);
-    }
-  }
-
-  function disconnect() {
-    connectButton.disabled = false;
-    disconnectButton.disabled = true;
-    callButton.disabled = true;
-    unsetVideoStream(localVideo);
-    unsetVideoStream(remoteVideo);
-    peerConnection.close();
-    peerConnection = null;
-    remoteStream = new MediaStream();
-    setVideoStream(remoteVideo, remoteStream);
-    pushPeerMessage('disconnect', {});
-  }
-
-  function receiveRemote(offer) {
-    let remoteDescription = new RTCSessionDescription(offer);
-    peerConnection.setRemoteDescription(remoteDescription);
-  }
-
-  async function answerCall(offer) {
-    receiveRemote(offer);
-    let answer = await peerConnection.createAnswer();
-    peerConnection
-    .setLocalDescription(answer)
-    .then(() =>
-    pushPeerMessage('video-answer', peerConnection.localDescription)
-  );
-}
+     callButton.onclick = () => {
+        console.log('CALL:')
+        window.videoCall(peerConnection, channel)
+       }
 
 
-function setVideoStream(videoElement, stream) {
-  videoElement.srcObject = stream;
-}
-
-function unsetVideoStream(videoElement) {
-  if (videoElement.srcObject) {
-    videoElement.srcObject.getTracks().forEach(track => track.stop());
-  }
-  videoElement.removeAttribute('src');
-  videoElement.removeAttribute('srcObject');
-}
-
-const reportError = where => error => {
-  console.error(where, error);
-};
-
-function log() {
-  console.log(...arguments);
-}
-
-function pushPeerMessage(type, content) {
-  channel.push('peer-message', {
-    body: JSON.stringify({
-      type,
-      content,
-    }),
-  });
-}
-
-channel.on('peer-message', payload => {
-  const message = JSON.parse(payload.body);
-  switch (message.type) {
-    case 'video-offer':
-      log('offered: ', message.content);
-      answerCall(message.content);
-    break;
-    case 'video-answer':
-      log('answered: ', message.content);
-      receiveRemote(message.content);
-    break;
-    case 'ice-candidate':
-      log('candidate: ', message.content);
-      let candidate = new RTCIceCandidate(message.content);
-      peerConnection
-      .addIceCandidate(candidate)
-      .catch(reportError('adding and ice candidate'));
-    break;
-    case 'disconnect':
-      disconnect();
-    break;
-    default:
-      reportError('unhandled message type')(message.type);
-  }
-});
 
 })
-
 </script>
