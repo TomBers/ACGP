@@ -7,7 +7,7 @@ defmodule AcgpWeb.PageController do
     render(conn, "index.html")
   end
 
-  def liveroom(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveRoom, session: %{"id" => id})
+  def askhole(conn, %{"id" => id}) do
+    live_render(conn, AcgpWeb.LiveAskHole, session: %{"id" => id})
   end
 end
