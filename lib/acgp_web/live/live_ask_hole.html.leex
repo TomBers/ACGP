@@ -1,0 +1,108 @@
+<h1><%= @question %></h1>
+
+<button phx-click="new_card"><%= if @question == "" do %>Start<% else %>Change<% end %></button>
+
+
+<ol>
+    <%= for user <- @users do %>
+        <li><%= if user.name == @name do %>
+            <b><%= user.name %></b>
+            <% else %>
+                <%= user.name %>
+            <% end %>
+        </li>
+    <% end %>
+</ol>
+
+<label for="local-stream">Local Video Stream</label>
+<video id="local-stream" autoplay muted></video>
+<label for="remote-stream">Remote Video Stream</label>
+<video id="remote-stream" autoplay></video>
+
+
+<button id="call">Connect</button>
+<button id="disconnect" class="hidden">Disconnect</button>
+
+<script>
+
+// Constants
+const devices = navigator.mediaDevices;
+const callButton = document.getElementById('call');
+const disconnectButton = document.getElementById('disconnect');
+
+const remoteVideo = document.getElementById('remote-stream');
+const localVideo = document.getElementById('local-stream');
+
+let peerConnection;
+let channel;
+let remoteStream = new MediaStream();
+
+disconnectButton.style.visibility = 'hidden';
+
+
+function showConnect() {
+    disconnectButton.className = "hidden"
+    callButton.className = ""
+}
+
+function showDisconnect() {
+        disconnectButton.className = ""
+        callButton.className = "hidden"
+}
+
+
+function addCandidate(params) {
+    console.log('Trying to add ICE candidate')
+     let candidate = new RTCIceCandidate(params);
+     peerConnection.addIceCandidate(candidate).catch(e => {
+            console.log("Failure during addIceCandidate(): " + e);
+    });
+}
+
+
+document.addEventListener("DOMContentLoaded", function(){
+    channel = window.socket.channel("video:<%= @room %>", {})
+    channel.join()
+     .receive("ok", resp => {
+        console.log("Joined successfully", resp);
+        remoteVideo.srcObject = remoteStream;
+        window.videoConnect(devices, localVideo, remoteStream, channel).then((pc) => peerConnection = pc)
+      })
+     .receive("error", resp => { console.log("Unable to join", resp) })
+
+
+     callButton.onclick = () => {
+        window.videoCall(peerConnection, channel);
+        showDisconnect();
+       }
+
+      disconnectButton.onclick = () => {
+        window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel);
+        showConnect();
+      }
+
+     channel.on('peer-message', payload => {
+          const message = JSON.parse(payload.body);
+          switch (message.type) {
+            case 'video-offer':
+              console.log('offered: ', message.content);
+              window.answerCall(message.content, peerConnection, channel);
+              showDisconnect()
+            break;
+            case 'video-answer':
+              console.log('answered: ', message.content);
+              window.receiveRemote(message.content, peerConnection);
+            break;
+            case 'ice-candidate':
+              addCandidate(message.content)
+            break;
+            case 'disconnect':
+              window.videoDisconnect(localVideo, remoteVideo, peerConnection, channel);
+              showConnect()
+            break;
+            default:
+              console.error('unhandled message type', message.type);
+          }
+        });
+})
+</script>
