@@ -1,38 +1,26 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace-of-mind from prototype to production</p>
+<section class="hero is-medium is-dark is-bold">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">
+        Welcome to the Abstract Co-operative Games platform
+      </p>
+      <p class="subtitle">
+        A place for games
+      </p>
+    </div>
+  </div>
 </section>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
-</section>
+
+<div class="tile is-vertical is-12">
+  <div class="tile is-parent">
+    <article class="tile is-child notification is-danger">
+      <p class="title">Askhole</p>
+      <p class="subtitle"><a href="https://www.askhole.io/" target="_blank">Askhole.io</a></p>
+      <div class="content">
+        <p>The First game on the the platform. Filled with inappropriate, deeply controversial, philosophical, and vulnerable inquiries, this deck of unusual questions will keep your night full of nervous laughter and your relationships somewhat distressing.</p>
+        <p><a href="/room/<%= Enum.random(22..10240) %>">Play now</p>
+      </div>
+    </article>
+  </div>
+</div>
