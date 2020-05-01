@@ -40,25 +40,35 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   end
 
   def handle_event("winner", %{"user" => user}, socket) do
+#    The current card czar has choosen a winner
+#     Step 1 - declare themselves no longer the car czar
     user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == socket.assigns.my_name end) |> List.first
     Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score, is_card_czar: false})
+
+#    Step 2 - Send a message to everyone announcing the winner
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "winner", %{winner: user})
 
+#    Step 3 - pick a new board card and send it to everyone
     question = CardsAgainstHumanity.get_board_card()
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
     {:noreply, assign(socket, question_card: question)}
   end
 
   def handle_info(%{event: "winner", payload: %{winner: user}}, socket) do
+#    The winner has been announced - is it me?
     if user == socket.assigns.my_name do
+#     I was indeed the winner - so I will update my score. and set myself as the Card Czar
       user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == user end) |> List.first
       Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score + 1, is_card_czar: true})
     end
+#    Clear the current guesses
     {:noreply, socket |> assign(current_guesses: [])}
   end
 
   def handle_event("answer", %{"answer" => answer, "user" => user}, socket) do
+#    I am suggesting a humorous answer to the board card
     new_guesses = [%{answer: answer, user: user} | socket.assigns.current_guesses]
+#    I announce my answer to everyone
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{new_guesses: new_guesses})
     {:noreply, socket |> assign(current_guesses: new_guesses)}
   end
@@ -68,7 +78,10 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   end
 
   def handle_event("start_game", _params, socket) do
+#    Start of game
+#    First person to click start game button becomes the Card Czar
     Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: 0, is_card_czar: true})
+#    Pick a board card and share it around
     question = CardsAgainstHumanity.get_board_card()
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
     {:noreply, assign(socket, question_card: question, card_czar: true)}
