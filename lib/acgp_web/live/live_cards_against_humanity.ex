@@ -43,7 +43,10 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
     user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == socket.assigns.my_name end) |> List.first
     Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score, is_card_czar: false})
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "winner", %{winner: user})
-    {:noreply, socket}
+
+    question = CardsAgainstHumanity.get_board_card()
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
+    {:noreply, assign(socket, question_card: question)}
   end
 
   def handle_info(%{event: "winner", payload: %{winner: user}}, socket) do
@@ -51,10 +54,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
       user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == user end) |> List.first
       Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score + 1, is_card_czar: true})
     end
-    question = CardsAgainstHumanity.get_board_card()
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{new_guesses: []})
-    {:noreply, socket |> assign(question_card: question)}
+    {:noreply, socket |> assign(current_guesses: [])}
   end
 
   def handle_event("answer", %{"answer" => answer, "user" => user}, socket) do
@@ -75,7 +75,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   end
 
   def handle_info(%{event: "synchronize", payload: %{question_card: question}}, socket) do
-    {:noreply, assign(socket, question_card: question)}
+    {:noreply, assign(socket, question_card: question, current_guesses: [])}
   end
 
   def am_I_czar(my_name, users) do
