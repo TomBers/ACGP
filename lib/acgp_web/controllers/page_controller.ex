@@ -10,4 +10,8 @@ defmodule AcgpWeb.PageController do
   def liveroom(conn, %{"id" => id}) do
     live_render(conn, AcgpWeb.LiveRoom, session: %{"id" => id})
   end
+
+  def cah(conn, %{"id" => id}) do
+    live_render(conn, AcgpWeb.LiveCardsAgainstHumanity, session: %{"id" => id})
+  end
 end

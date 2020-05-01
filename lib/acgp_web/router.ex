@@ -19,6 +19,7 @@ defmodule AcgpWeb.Router do
 
     get "/", PageController, :index
     get "/room/:id", PageController, :liveroom
+    get "cah/:id", PageController, :cah
   end
 
   # Other scopes may use custom stacks.

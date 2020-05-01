@@ -1,0 +1,45 @@
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-12">
+        <div class="tile">
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                    <p class="title"><%= @question_card %></p>
+                    <%= if @question_card == "" do %>
+                        <button class="button is-large" phx-click="start_game">Start Questions</button>
+                    <% end %>
+
+                </article>
+                <article class="tile is-child notification is-warning has-text-centered">
+                    <%= if am_I_czar(@my_name, @users) do %>
+                        <p class="title">Current guesses (<%= length(@current_guesses) %> / <%= length(@users) - 1 %>) </p>
+                        <p class="subtitle">Pick a winner</p>
+                        <%= for guess <- @current_guesses do %>
+                            <button class="button" phx-click="winner" phx-value-user="<%= guess.user %>"><%= guess.answer %></button>
+                        <% end %>
+
+                    <% else %>
+                        <p class="title">My Answers</p>
+                        <%= if @question_card != "" do %>
+                            <%= for answer <- @answer_cards do %>
+                                <button class="button" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                </article>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child notification is-info">
+                    <p class="title">Current players:</p>
+                    <div class="content">
+                        <ol type="1">
+                            <%= for user <- @users do %>
+                                <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= user.is_card_czar %></li>
+                            <% end %>
+                        </ol>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+    </div>
+</div>

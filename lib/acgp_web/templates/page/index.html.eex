@@ -24,3 +24,16 @@
     </article>
   </div>
 </div>
+
+<div class="tile is-vertical is-12">
+  <div class="tile is-parent">
+    <article class="tile is-child notification is-danger">
+      <p class="title">Cards Against Humanity</p>
+      <p class="subtitle"><a href="https://cardsagainsthumanity.com/" target="_blank">cardsagainsthumanity.com</a></p>
+      <div class="content">
+        <p>TCards Against Humanity is a party game for horrible people. Unlike most of the party games you've played before, Cards Against Humanity is as despicable and awkward as you and your friends.</p>
+        <p><a href="/cah/<%= Enum.random(22..10240) %>">Play now</p>
+      </div>
+    </article>
+  </div>
+</div>
