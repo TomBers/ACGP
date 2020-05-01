@@ -1,4 +1,4 @@
-defmodule AcgpWeb.LiveRoom do
+defmodule AcgpWeb.LiveAskHole do
   use Phoenix.LiveView
 
   alias AcgpWeb.Presence

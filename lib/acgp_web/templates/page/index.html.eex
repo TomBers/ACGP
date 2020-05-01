@@ -19,7 +19,7 @@
       <p class="subtitle"><a href="https://www.askhole.io/" target="_blank">Askhole.io</a></p>
       <div class="content">
         <p>The First game on the the platform. Filled with inappropriate, deeply controversial, philosophical, and vulnerable inquiries, this deck of unusual questions will keep your night full of nervous laughter and your relationships somewhat distressing.</p>
-        <p><a href="/room/<%= Enum.random(22..10240) %>">Play now</p>
+        <p><a href="/askhole/<%= Enum.random(1..10240) %>">Play now</a></p>
       </div>
     </article>
   </div>
@@ -31,8 +31,8 @@
       <p class="title">Cards Against Humanity</p>
       <p class="subtitle"><a href="https://cardsagainsthumanity.com/" target="_blank">cardsagainsthumanity.com</a></p>
       <div class="content">
-        <p>TCards Against Humanity is a party game for horrible people. Unlike most of the party games you've played before, Cards Against Humanity is as despicable and awkward as you and your friends.</p>
-        <p><a href="/cah/<%= Enum.random(22..10240) %>">Play now</p>
+        <p>Cards Against Humanity is a party game for horrible people. Unlike most of the party games you've played before, Cards Against Humanity is as despicable and awkward as you and your friends.</p>
+        <p><a href="/cah/<%= Enum.random(1..10240) %>">Play now</p>
       </div>
     </article>
   </div>

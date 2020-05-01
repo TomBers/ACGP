@@ -18,8 +18,8 @@ defmodule AcgpWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/room/:id", PageController, :liveroom
-    get "cah/:id", PageController, :cah
+    get "/askhole/:id", PageController, :askhole
+    get "/cah/:id", PageController, :cah
   end
 
   # Other scopes may use custom stacks.
