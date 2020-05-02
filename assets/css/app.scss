@@ -1,6 +1,12 @@
 /* This file is for your main application css. */
 @import "./bulma.css";
 
+#drawItCanvas {
+    border: 1px solid red;
+    width: 400;
+    height: 400;
+}
+
 .hidden {
     display: none;
 }

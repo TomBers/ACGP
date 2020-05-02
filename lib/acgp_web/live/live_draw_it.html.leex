@@ -1,0 +1,6 @@
+<h1 class="title">Draw it</h1>
+<%= for user <- @users do %>
+<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_card_czar do %>I am the Card Czar<% end %></li>
+<% end %>
+
+<canvas id="drawItCanvas"></canvas>
