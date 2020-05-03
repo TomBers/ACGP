@@ -19,6 +19,7 @@ function onMouseDrag(event) {
 	var radius = event.delta.length / 2;
 	var circle = new Path.Circle(event.middlePoint, radius);
 	circle.fillColor = 'black';
+	window.userSVG = paper.project.exportSVG({asString:true})
 }
 
 function onMouseUp(event) {
