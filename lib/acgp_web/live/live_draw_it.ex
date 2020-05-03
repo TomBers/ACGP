@@ -36,4 +36,9 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
+  def handle_event("drawit", params, socket) do
+    IO.inspect(params)
+    {:noreply, socket}
+  end
+
 end

@@ -1,4 +1,6 @@
 <h1 class="title">Draw it</h1>
+<input type="text" name="user[phone_number]" id="user-phone-number" phx-hook="PhoneNumber" />
+
 <%= for user <- @users do %>
 <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_card_czar do %>I am the Card Czar<% end %></li>
 <% end %>
