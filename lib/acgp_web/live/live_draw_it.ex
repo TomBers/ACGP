@@ -37,9 +37,18 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
+  def handle_info(%{event: "update_image", payload: %{img: img}}, socket) do
+    {:noreply, socket |> assign(img: encode_img(img))}
+  end
+
+
   def handle_event("drawit", img, socket) do
-    svg = '<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /></svg>'
-    {:noreply, socket |> assign(img: svg)}
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "update_image", %{img: img})
+    {:noreply, socket}
+  end
+
+  def encode_img(img_string) do
+    'data:image/svg+xml;base64,#{:base64.encode(img_string)}'
   end
 
 end
