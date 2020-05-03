@@ -24,13 +24,14 @@ defmodule AcgpWeb.LiveDrawIt do
 
     AcgpWeb.Endpoint.subscribe(topic(room))
 
-
+    users = Presence.list_presences(topic(room))
     {:ok,
       assign(socket,
         room: room,
         img: "",
+        is_draw_king: length(users) == 1,
         my_name: name,
-        users: Presence.list_presences(topic(room)) )}
+        users: users  )}
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
