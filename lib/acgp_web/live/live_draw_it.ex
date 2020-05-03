@@ -28,6 +28,7 @@ defmodule AcgpWeb.LiveDrawIt do
     {:ok,
       assign(socket,
         room: room,
+        img: "",
         my_name: name,
         users: Presence.list_presences(topic(room)) )}
   end
@@ -36,9 +37,9 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
-  def handle_event("drawit", params, socket) do
-    IO.inspect(params)
-    {:noreply, socket}
+  def handle_event("drawit", img, socket) do
+    svg = '<svg height="100" width="100"><circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" /></svg>'
+    {:noreply, socket |> assign(img: svg)}
   end
 
 end

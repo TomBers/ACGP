@@ -3,8 +3,14 @@
 
 #drawItCanvas {
     border: 1px solid red;
-    width: 400;
-    height: 400;
+    width: 400px;
+    height: 400px;
+}
+
+#guessCanvas {
+    border: 1px solid blue;
+        width: 400px;
+        height: 400px;
 }
 
 .hidden {

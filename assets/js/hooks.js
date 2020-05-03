@@ -10,4 +10,16 @@ Hooks.PhoneNumber = {
   }
 }
 
+Hooks.GetSVG = {
+    mounted() {
+        this.el.addEventListener("mouseup", e => {
+            console.log('Mouse up')
+            if(window.userSVG) {
+                this.pushEvent("drawit", window.userSVG)
+            }
+
+        })
+    }
+}
+
 export default Hooks

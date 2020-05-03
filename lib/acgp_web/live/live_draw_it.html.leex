@@ -5,4 +5,29 @@
 <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_card_czar do %>I am the Card Czar<% end %></li>
 <% end %>
 
-<canvas id="drawItCanvas"></canvas>
+<script type="text/paperscript" canvas="drawItCanvas">
+	var path;
+function onMouseDown(event) {
+	// Create a path:
+	path = new Path();
+	path.strokeColor = 'black';
+	// Add the mouse down position:
+	path.add(event.point);
+}
+
+function onMouseDrag(event) {
+	var radius = event.delta.length / 2;
+	var circle = new Path.Circle(event.middlePoint, radius);
+	circle.fillColor = 'black';
+}
+
+function onMouseUp(event) {
+	// Add the mouse up position:
+	window.userSVG = paper.project.exportSVG({asString:true})
+	path.add(event.point);
+}
+</script>
+
+<canvas id="drawItCanvas" phx-hook="GetSVG"></canvas>
+
+<%= @img %>
