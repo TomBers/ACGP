@@ -39,18 +39,14 @@ defmodule AcgpWeb.LiveDrawIt do
   end
 
   def handle_info(%{event: "update_image", payload: %{img: img}}, socket) do
-    {:noreply, socket |> assign(img: encode_img(img))}
+    {:noreply, socket |> assign(img: img)}
   end
-
 
   def handle_event("drawit", img, socket) do
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "update_image", %{img: img})
     {:noreply, socket}
   end
 
-  def encode_img(img_string) do
-    'data:image/svg+xml;base64,#{:base64.encode(img_string)}'
-  end
 
   def am_I_draw_king(my_name, users) do
     ur = users |> Enum.filter(fn(usr) -> usr.name == my_name end) |> List.first
