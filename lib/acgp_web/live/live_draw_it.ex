@@ -44,7 +44,18 @@ defmodule AcgpWeb.LiveDrawIt do
 
   def handle_event("drawit", img, socket) do
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "update_image", %{img: img})
-    {:noreply, socket}
+    {:noreply, socket |> assign(img: img)}
+  end
+
+  def handle_event("letmedraw", %{"user" => user}, socket) do
+    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, is_draw_king: true})
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "change_draw_king", %{user: user})
+    {:noreply, socket |> assign(img: "")}
+  end
+
+  def handle_info(%{event: "change_draw_king", payload: %{user: user}}, socket) do
+    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, is_draw_king: false})
+    {:noreply, socket |> assign(img: "")}
   end
 
 

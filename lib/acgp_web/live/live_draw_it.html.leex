@@ -4,16 +4,12 @@
 <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_draw_king do %>I am the Drawing<% end %></li>
 <% end %>
 
-
-<%= if am_I_draw_king(@my_name, @users) do %>
 <script type="text/paperscript" canvas="drawItCanvas">
 var path;
 var penSize = 2;
 var penColour = 'RED'
 
 var callCount = 0;
-
-
 
 function onMouseDown(event) {
 	// If we produced a path before, deselect it:
@@ -36,7 +32,7 @@ function onMouseDown(event) {
 function onMouseDrag(event) {
 	path.add(event.point);
 
-    if ((++callCount % 50) == 0) {
+    if ((++callCount % 20) == 0) {
 	    window.userSVG = paper.project.exportSVG({asString:true})
 	}
 }
@@ -58,11 +54,11 @@ function onMouseUp(event) {
 }
 </script>
 
+    <canvas id="drawItCanvas" phx-hook="GetSVG" class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
 
-    <canvas id="drawItCanvas" phx-hook="GetSVG"></canvas>
-<% else %>
-    <object type="image/svg+xml" data="<%= @img %>" class="drawBox"></object>
-<% end %>
+    <button class="button <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>" phx-click="letmedraw" phx-value-user="<%= @my_name %>">Let me Draw</button>
+    <object type="image/svg+xml" data="<%= @img %>" class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+
 
 
 
