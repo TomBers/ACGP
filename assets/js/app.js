@@ -26,5 +26,7 @@ window.answerCall = answerCall
 window.receiveRemote = receiveRemote
 window.videoDisconnect = disconnect
 
+window.globals = { };
+
 
 

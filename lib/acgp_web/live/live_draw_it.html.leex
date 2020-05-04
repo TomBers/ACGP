@@ -6,10 +6,12 @@
 
 <script type="text/paperscript" canvas="drawItCanvas">
 var path;
-var penSize = 2;
-var penColour = 'RED'
-
+var penSize = 5;
 var callCount = 0;
+
+globals.clearCanvas = function() {
+    project.clear()
+}
 
 function onMouseDown(event) {
 	// If we produced a path before, deselect it:
@@ -21,10 +23,11 @@ function onMouseDown(event) {
 	path = new Path({
 		segments: [event.point],
 		strokeWidth: penSize,
-		strokeColor: penColour,
+		strokeColor: "#" + Math.floor(Math.random()*16777215).toString(16),
 		// Select the path, so we can see its segment points:
 		fullySelected: true
 	});
+	window.userSVG = paper.project.exportSVG({asString:true})
 }
 
 // While the user drags the mouse, points are added to the path
@@ -32,9 +35,9 @@ function onMouseDown(event) {
 function onMouseDrag(event) {
 	path.add(event.point);
 
-    if ((++callCount % 20) == 0) {
+    //if ((++callCount % 20) == 0) {
 	    window.userSVG = paper.project.exportSVG({asString:true})
-	}
+	//}
 }
 
 // When the mouse is released, we simplify the path:
@@ -50,14 +53,16 @@ function onMouseUp(event) {
 	var newSegmentCount = path.segments.length;
 	var difference = segmentCount - newSegmentCount;
 	var percentage = 100 - Math.round(newSegmentCount / segmentCount * 100);
-	//window.userSVG = paper.project.exportSVG({asString:true})
+	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
-
-    <canvas id="drawItCanvas" phx-hook="GetSVG" class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+    <%= if am_I_draw_king(@my_name, @users) do %>
+        <button class="button" onclick="window.globals.clearCanvas()">Clear</button>
+    <% end %>
+    <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
 
     <button class="button <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>" phx-click="letmedraw" phx-value-user="<%= @my_name %>">Let me Draw</button>
-    <object type="image/svg+xml" data="<%= @img %>" class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+    <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
 
 
 
