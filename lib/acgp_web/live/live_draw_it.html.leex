@@ -1,15 +1,18 @@
 <h1 class="title">Draw it</h1>
 
 <%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_card_czar do %>I am the Card Czar<% end %></li>
+<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_draw_king do %>I am the Drawing<% end %></li>
 <% end %>
 
 
-<%= if @is_draw_king do %>
+<%= if am_I_draw_king(@my_name, @users) do %>
 <script type="text/paperscript" canvas="drawItCanvas">
 var path;
+var penSize = 2;
+var penColour = 'RED'
 
 var callCount = 0;
+
 
 
 function onMouseDown(event) {
@@ -21,7 +24,8 @@ function onMouseDown(event) {
 	// Create a new path and set its stroke color to black:
 	path = new Path({
 		segments: [event.point],
-		strokeColor: 'black',
+		strokeWidth: penSize,
+		strokeColor: penColour,
 		// Select the path, so we can see its segment points:
 		fullySelected: true
 	});
@@ -32,7 +36,7 @@ function onMouseDown(event) {
 function onMouseDrag(event) {
 	path.add(event.point);
 
-    if ((++callCount % 50) == 0) {
+    if ((++callCount % 25) == 0) {
 	    window.userSVG = paper.project.exportSVG({asString:true})
 	}
 }

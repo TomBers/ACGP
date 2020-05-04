@@ -11,6 +11,8 @@ defmodule AcgpWeb.LiveDrawIt do
 
     name = "#{prefix}_#{uid}"
 
+    draw_king = Presence.list_presences(topic(room)) |> Enum.filter(fn(user) -> user.is_draw_king end) |> Enum.empty?
+
     Presence.track_presence(
       self(),
       topic(room),
@@ -18,20 +20,18 @@ defmodule AcgpWeb.LiveDrawIt do
       %{
         name: name,
         score: 0,
-        is_card_czar: false,
+        is_draw_king: draw_king,
       }
     )
 
     AcgpWeb.Endpoint.subscribe(topic(room))
 
-    users = Presence.list_presences(topic(room))
     {:ok,
       assign(socket,
         room: room,
         img: "",
-        is_draw_king: length(users) == 1,
         my_name: name,
-        users: users  )}
+        users: Presence.list_presences(topic(room))  )}
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
@@ -50,6 +50,11 @@ defmodule AcgpWeb.LiveDrawIt do
 
   def encode_img(img_string) do
     'data:image/svg+xml;base64,#{:base64.encode(img_string)}'
+  end
+
+  def am_I_draw_king(my_name, users) do
+    ur = users |> Enum.filter(fn(usr) -> usr.name == my_name end) |> List.first
+    ur.is_draw_king
   end
 
 end
