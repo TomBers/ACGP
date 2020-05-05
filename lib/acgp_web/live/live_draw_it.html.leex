@@ -57,6 +57,7 @@ function onMouseUp(event) {
 }
 </script>
     <%= if am_I_draw_king(@my_name, @users) do %>
+        <h1 class="title">Draw - <%= @to_draw %></h1>
         <button class="button" onclick="window.globals.clearCanvas()">Clear</button>
     <% end %>
     <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>

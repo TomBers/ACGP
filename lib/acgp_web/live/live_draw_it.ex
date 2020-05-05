@@ -23,13 +23,18 @@ defmodule AcgpWeb.LiveDrawIt do
         is_draw_king: draw_king,
       }
     )
-
+    to_draw = if draw_king do
+      DrawIt.draw_what()
+      else
+      ""
+    end
     AcgpWeb.Endpoint.subscribe(topic(room))
 
     {:ok,
       assign(socket,
         room: room,
         img: "",
+        to_draw: to_draw,
         my_name: name,
         users: Presence.list_presences(topic(room))  )}
   end
@@ -50,7 +55,7 @@ defmodule AcgpWeb.LiveDrawIt do
   def handle_event("letmedraw", %{"user" => user}, socket) do
     Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, is_draw_king: true})
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "change_draw_king", %{user: user})
-    {:noreply, socket |> assign(img: "")}
+    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
   end
 
   def handle_info(%{event: "change_draw_king", payload: %{user: user}}, socket) do
