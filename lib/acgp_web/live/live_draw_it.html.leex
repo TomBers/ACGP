@@ -1,0 +1,73 @@
+<h1 class="title">Draw it</h1>
+
+<%= for user <- @users do %>
+<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_draw_king do %>I am the Drawing<% end %></li>
+<% end %>
+
+<script type="text/paperscript" canvas="drawItCanvas">
+var path;
+var penSize = 5;
+var callCount = 0;
+
+globals.clearCanvas = function() {
+    project.clear()
+}
+
+function onMouseDown(event) {
+	// If we produced a path before, deselect it:
+	if (path) {
+		path.selected = false;
+	}
+
+	// Create a new path and set its stroke color to black:
+	path = new Path({
+		segments: [event.point],
+		strokeWidth: penSize,
+		strokeColor: "#" + Math.floor(Math.random()*16777215).toString(16),
+		// Select the path, so we can see its segment points:
+		fullySelected: true
+	});
+	window.userSVG = paper.project.exportSVG({asString:true})
+}
+
+// While the user drags the mouse, points are added to the path
+// at the position of the mouse:
+function onMouseDrag(event) {
+	path.add(event.point);
+
+    //if ((++callCount % 20) == 0) {
+	    window.userSVG = paper.project.exportSVG({asString:true})
+	//}
+}
+
+// When the mouse is released, we simplify the path:
+function onMouseUp(event) {
+	var segmentCount = path.segments.length;
+
+	// When the mouse is released, simplify it:
+	path.simplify(10);
+
+	// Select the path, so we can see its segments:
+	path.fullySelected = true;
+
+	var newSegmentCount = path.segments.length;
+	var difference = segmentCount - newSegmentCount;
+	var percentage = 100 - Math.round(newSegmentCount / segmentCount * 100);
+	window.userSVG = paper.project.exportSVG({asString:true})
+}
+</script>
+    <%= if am_I_draw_king(@my_name, @users) do %>
+        <h1 class="title">Draw - <%= @to_draw %></h1>
+        <button class="button" onclick="window.globals.clearCanvas()">Clear</button>
+    <% end %>
+    <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+
+    <button class="button <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>" phx-click="letmedraw" phx-value-user="<%= @my_name %>">Let me Draw</button>
+    <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+
+
+
+
+
+
+

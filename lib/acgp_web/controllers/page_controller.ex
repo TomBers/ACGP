@@ -14,4 +14,8 @@ defmodule AcgpWeb.PageController do
   def cah(conn, %{"id" => id}) do
     live_render(conn, AcgpWeb.LiveCardsAgainstHumanity, session: %{"id" => id})
   end
+
+  def drawit(conn, %{"id" => id}) do
+    live_render(conn, AcgpWeb.LiveDrawIt, session: %{"id" => id})
+  end
 end
