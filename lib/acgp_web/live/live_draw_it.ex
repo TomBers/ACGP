@@ -3,40 +3,28 @@ defmodule AcgpWeb.LiveDrawIt do
 
   alias AcgpWeb.Presence
 
-  defp topic(id), do: "room:#{id}"
+  defp topic(id), do: "drawit:#{id}"
 
   def mount(_something, %{"id" => room}, socket) do
-    prefix = GameUtils.get_name()
-    uid = GameUtils.get_id()
+    params = StateManagement.setup_initial_state(topic(room), room)
+    {:ok, socket |> assign(params)}
+  end
 
-    name = "#{prefix}_#{uid}"
+#  Events from Page
 
-    draw_king = Presence.list_presences(topic(room)) |> Enum.filter(fn(user) -> user.is_draw_king end) |> Enum.empty?
+  def handle_event("drawit", img, socket) do
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "update_image", %{img: img})
+    {:noreply, socket }
+  end
 
-    Presence.track_presence(
-      self(),
-      topic(room),
-      name,
-      %{
-        name: name,
-        score: 0,
-        is_draw_king: draw_king,
-      }
-    )
-    to_draw = if draw_king do
-      DrawIt.draw_what()
-      else
-      ""
-    end
-    AcgpWeb.Endpoint.subscribe(topic(room))
+  def handle_event("letmedraw", %{"user" => user}, socket) do
+    channel_id = topic(socket.assigns.room)
+    name = socket.assigns.my_name
+    pid = self()
 
-    {:ok,
-      assign(socket,
-        room: room,
-        img: "",
-        to_draw: to_draw,
-        my_name: name,
-        users: Presence.list_presences(topic(room))  )}
+    StateManagement.update_is_active(pid, channel_id, name, true)
+    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "change_is_active", %{user: user})
+    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
@@ -47,26 +35,14 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket |> assign(img: img)}
   end
 
-  def handle_event("drawit", img, socket) do
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "update_image", %{img: img})
-    {:noreply, socket |> assign(img: img)}
-  end
-
-  def handle_event("letmedraw", %{"user" => user}, socket) do
-    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, is_draw_king: true})
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "change_draw_king", %{user: user})
-    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
-  end
-
-  def handle_info(%{event: "change_draw_king", payload: %{user: user}}, socket) do
-    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, is_draw_king: false})
+  def handle_info(%{event: "change_is_active", payload: %{user: user}}, socket) do
+    StateManagement.update_is_active(self(), topic(socket.assigns.room), socket.assigns.my_name, false)
     {:noreply, socket |> assign(img: "")}
   end
 
-
   def am_I_draw_king(my_name, users) do
     ur = users |> Enum.filter(fn(usr) -> usr.name == my_name end) |> List.first
-    ur.is_draw_king
+    ur.is_active
   end
 
 end
