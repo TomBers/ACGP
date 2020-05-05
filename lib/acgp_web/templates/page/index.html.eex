@@ -37,3 +37,16 @@
     </article>
   </div>
 </div>
+
+<div class="tile is-vertical is-12">
+  <div class="tile is-parent">
+    <article class="tile is-child notification is-danger">
+      <p class="title">DrawIt</p>
+      <p class="subtitle"><a href="#" target="_blank">ACGP.com</a></p>
+      <div class="content">
+        <p>One person draws, the others guess.  The closest one wins.</p>
+        <p><a href="/drawit/<%= Enum.random(1..10240) %>">Play now</p>
+      </div>
+    </article>
+  </div>
+</div>
