@@ -8,10 +8,6 @@ defmodule StateManagement do
 
     name = "#{prefix}_#{uid}"
 
-    is_active = Presence.list_presences(channel_id)
-                |> Enum.filter(fn (user) -> user.is_active end)
-                |> Enum.empty?
-
     Presence.track_presence(
       self(),
       channel_id,
@@ -19,22 +15,22 @@ defmodule StateManagement do
       %{
         name: name,
         score: 0,
-        is_active: is_active,
+        is_active: is_user_active(channel_id, name),
       }
     )
-    to_draw = if is_active do
-      DrawIt.draw_what()
-    else
-      ""
-    end
+
     AcgpWeb.Endpoint.subscribe(channel_id)
     %{
       room: room,
-      img: "",
-      to_draw: to_draw,
       my_name: name,
       users: Presence.list_presences(channel_id)
     }
+  end
+
+  def is_user_active(channel_id, user) do
+    Presence.list_presences(channel_id)
+    |> Enum.filter(fn (user) -> user.is_active end)
+    |> Enum.empty?
   end
 
   def update_is_active(pid, channel_id, name, is_active) do
