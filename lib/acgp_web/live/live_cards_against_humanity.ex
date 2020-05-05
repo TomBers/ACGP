@@ -3,7 +3,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
 
   alias AcgpWeb.Presence
 
-  defp topic(id), do: "room:#{id}"
+  defp topic(id), do: "cah:#{id}"
 
   def mount(_something, %{"id" => room}, socket) do
     prefix = GameUtils.get_name()
