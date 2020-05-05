@@ -6,33 +6,16 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   defp topic(id), do: "cah:#{id}"
 
   def mount(_something, %{"id" => room}, socket) do
-    prefix = GameUtils.get_name()
-    uid = GameUtils.get_id()
+    channel_id = topic(room)
+    general_params = StateManagement.setup_initial_state(channel_id, room)
+    {:ok, socket |> assign(setup_specific_params(general_params))}
+  end
 
-    name = "#{prefix}_#{uid}"
-
-    Presence.track_presence(
-      self(),
-      topic(room),
-      name,
-      %{
-        name: name,
-        score: 0,
-        is_card_czar: false,
-      }
-    )
-
-    AcgpWeb.Endpoint.subscribe(topic(room))
-
-
-    {:ok,
-      assign(socket,
-        room: room,
-        my_name: name,
-        current_guesses: [],
-        answer_cards: CardsAgainstHumanity.get_answer_cards(10),
-        question_card: "",
-        users: Presence.list_presences(topic(room)) )}
+  def setup_specific_params(general_params) do
+    general_params
+      |> Map.put(:current_guesses, [])
+      |> Map.put(:answer_cards, CardsAgainstHumanity.get_answer_cards(10))
+      |> Map.put(:question_card, "")
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
@@ -59,7 +42,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
     if user == socket.assigns.my_name do
 #     I was indeed the winner - so I will update my score. and set myself as the Card Czar
       user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == user end) |> List.first
-      Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score + 1, is_card_czar: true})
+      Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score + 1, is_active: true})
     end
 #    Clear the current guesses
     {:noreply, socket |> assign(current_guesses: [])}
@@ -80,7 +63,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   def handle_event("start_game", _params, socket) do
 #    Start of game
 #    First person to click start game button becomes the Card Czar
-    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: 0, is_card_czar: true})
+    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: 0, active: true})
 #    Pick a board card and share it around
     question = CardsAgainstHumanity.get_board_card()
     AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
@@ -93,7 +76,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
 
   def am_I_czar(my_name, users) do
     ur = users |> Enum.filter(fn(usr) -> usr.name == my_name end) |> List.first
-    ur.is_card_czar
+    ur.is_active
   end
 
 
