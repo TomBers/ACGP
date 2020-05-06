@@ -33,8 +33,23 @@ defmodule StateManagement do
     |> Enum.empty?
   end
 
-  def update_is_active(pid, channel_id, name, is_active) do
-    Presence.update_presence(pid, channel_id, name, %{name: name, is_active: is_active})
+  def increase_score(pid, channel_id, winner, params) do
+    # Only increase score if I am the winner
+    if winner == params.my_name do
+      update_my_presence(pid, channel_id, params.my_name, true, get_my_score(params.my_name, params.users) + 1)
+    end
+  end
+
+  def get_my_score(name, users) do
+    params =
+      users
+      |> Enum.find(%{score: 0}, fn(usr) -> usr.name == name end)
+
+    params.score
+  end
+
+  def update_my_presence(pid, channel_id, name, is_active, score \\ 0 ) do
+    Presence.update_presence(pid, channel_id, name, %{name: name, is_active: is_active, score: score})
   end
 
 end

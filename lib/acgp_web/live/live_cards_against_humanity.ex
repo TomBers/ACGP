@@ -22,15 +22,10 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
-  def handle_info(%{event: "winner", payload: %{winner: user}}, socket) do
-    #    The winner has been announced - is it me?
-    if user == socket.assigns.my_name do
-      #     I was indeed the winner - so I will update my score. and set myself as the Card Czar
-      user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == user end) |> List.first
-      Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score + 1, is_active: true})
-    end
+  def handle_info(%{event: "winner", payload: %{winner: winner, question_card: question_card}}, socket) do
+    StateManagement.increase_score(self(), topic(socket.assigns.room), winner, socket.assigns)
     #    Clear the current guesses
-    {:noreply, socket |> assign(current_guesses: [])}
+    {:noreply, socket |> assign(current_guesses: [], question_card: question_card)}
   end
 
   def handle_info(%{event: "new_guesses", payload: %{new_guesses: new_guesses}}, socket) do
@@ -43,17 +38,16 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
 
 
   def handle_event("winner", %{"user" => user}, socket) do
+    pid = self()
+    channel_id = topic(socket.assigns.room)
+    my_name = socket.assigns.my_name
 #    The current card czar has choosen a winner
 #     Step 1 - declare themselves no longer the car czar
-    user_details = socket.assigns.users |> Enum.filter(fn(usr) -> usr.name == socket.assigns.my_name end) |> List.first
-    Presence.update_presence(self(), topic(socket.assigns.room), socket.assigns.my_name, %{name: socket.assigns.my_name, score: user_details.score, is_active: false})
+    StateManagement.update_my_presence(pid, channel_id, my_name, false, StateManagement.get_my_score(my_name, socket.assigns.users))
 
-#    Step 2 - Send a message to everyone announcing the winner
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "winner", %{winner: user})
-
-#    Step 3 - pick a new board card and send it to everyone
     question = CardsAgainstHumanity.get_board_card()
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "synchronize", %{question_card: question})
+#    Step 2 - Send a message to everyone announcing the winner and pick new card
+    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "winner", %{winner: user, question_card: question })
     {:noreply, assign(socket, question_card: question, current_guesses: [])}
   end
 
