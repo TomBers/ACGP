@@ -15,7 +15,7 @@ defmodule StateManagement do
       %{
         name: name,
         score: 0,
-        is_active: is_user_active(channel_id, name),
+        is_active: are_there_no_active_users(channel_id, name),
       }
     )
 
@@ -27,7 +27,7 @@ defmodule StateManagement do
     }
   end
 
-  def is_user_active(channel_id, user) do
+  defp are_there_no_active_users(channel_id, user) do
     Presence.list_presences(channel_id)
     |> Enum.filter(fn (user) -> user.is_active end)
     |> Enum.empty?
@@ -50,6 +50,12 @@ defmodule StateManagement do
 
   def update_my_presence(pid, channel_id, name, is_active, score \\ 0 ) do
     Presence.update_presence(pid, channel_id, name, %{name: name, is_active: is_active, score: score})
+  end
+
+  def is_user_active(my_name, users) do
+    ur = users
+         |> Enum.find(%{is_active: false}, fn (usr) -> usr.name == my_name end)
+    ur.is_active
   end
 
 end

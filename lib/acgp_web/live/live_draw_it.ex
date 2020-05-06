@@ -14,14 +14,14 @@ defmodule AcgpWeb.LiveDrawIt do
   end
 
   def setup_specific_params(channel_id, general_params) do
-    to_draw = if StateManagement.is_user_active(channel_id, general_params.my_name) do
+    to_draw = if StateManagement.is_user_active(general_params.my_name, general_params.users) do
       DrawIt.draw_what()
     else
       ""
     end
     general_params
-    |> Map.put(:img, "")
-    |> Map.put(:to_draw, to_draw)
+      |> Map.put(:img, "")
+      |> Map.put(:to_draw, to_draw)
   end
 
   #  Events from Page
@@ -55,10 +55,7 @@ defmodule AcgpWeb.LiveDrawIt do
   end
 
   def am_I_draw_king(my_name, users) do
-    ur = users
-         |> Enum.filter(fn (usr) -> usr.name == my_name end)
-         |> List.first
-    ur.is_active
+    StateManagement.is_user_active(my_name, users)
   end
 
 end
