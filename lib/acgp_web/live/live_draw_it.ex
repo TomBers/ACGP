@@ -9,15 +9,14 @@ defmodule AcgpWeb.LiveDrawIt do
     channel_id = topic(room)
     general_params = StateManagement.setup_initial_state(channel_id, room)
 
-    {:ok, socket |> assign(setup_specific_params(channel_id, general_params))
-    }
+    {:ok, socket |> assign(setup_specific_params(channel_id, general_params))}
   end
 
   def setup_specific_params(channel_id, general_params) do
-    to_draw = if StateManagement.is_user_active(general_params.my_name, general_params.users) do
-      DrawIt.draw_what()
-    else
-      ""
+    to_draw =
+        case StateManagement.is_user_active(general_params.my_name, general_params.users) do
+          true -> DrawIt.draw_what()
+          false -> ""
     end
     general_params
       |> Map.put(:img, "")

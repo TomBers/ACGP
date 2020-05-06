@@ -68,8 +68,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   end
 
   def am_I_czar(my_name, users) do
-    ur = users |> Enum.filter(%{is_active: false}, fn(usr) -> usr.name == my_name end)
-    ur.is_active
+    StateManagement.is_user_active(my_name, users)
   end
 
 end
