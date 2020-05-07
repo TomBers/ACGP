@@ -3,30 +3,17 @@ defmodule AcgpWeb.LiveAskHole do
 
   alias AcgpWeb.Presence
 
-  defp topic(id), do: "room:#{id}"
+  defp topic(id), do: "askhole:#{id}"
 
   def mount(_something, %{"id" => room}, socket) do
-    prefix = GameUtils.get_name()
-    uid = GameUtils.get_id()
+    channel_id = topic(room)
+    general_params = StateManagement.setup_initial_state(channel_id, room)
+    {:ok, socket |> assign(setup_specific_params(general_params))}
+  end
 
-    name = "#{prefix}_#{uid}"
-
-    Presence.track_presence(
-      self(),
-      topic(room),
-      uid,
-      %{name: name}
-    )
-
-    AcgpWeb.Endpoint.subscribe(topic(room))
-
-
-    {:ok,
-    assign(socket,
-      room: room,
-      name: name,
-      question: "",
-      users: Presence.list_presences(topic(room)) )}
+  def setup_specific_params(general_params) do
+    general_params
+    |> Map.put(:question, "")
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
