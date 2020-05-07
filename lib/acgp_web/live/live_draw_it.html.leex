@@ -1,8 +1,8 @@
-<h1 class="title">Draw it</h1>
-
-<%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+<%= for ans <- @possible_answers do %>
+<h1><%= ans %></h1>
 <% end %>
+
+
 
 <script type="text/paperscript" canvas="drawItCanvas">
 var path;
@@ -67,7 +67,9 @@ function onMouseUp(event) {
 
 
 
-
+<%= for user <- @users do %>
+<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+<% end %>
 
 
 

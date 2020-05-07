@@ -13,14 +13,14 @@ defmodule AcgpWeb.LiveDrawIt do
   end
 
   def setup_specific_params(channel_id, general_params) do
-    to_draw =
-        case StateManagement.is_user_active(general_params.my_name, general_params.users) do
-          true -> DrawIt.draw_what()
-          false -> ""
-    end
+    s = StateAgent.get_server(channel_id)
+    answers = StateAgent.get_or_generate(s, :posible_answers, DrawIt.get_n_answers(5))
+    to_draw = Enum.random(answers)
+
     general_params
       |> Map.put(:img, "")
       |> Map.put(:to_draw, to_draw)
+      |> Map.put(:possible_answers, answers)
   end
 
   #  Events from Page

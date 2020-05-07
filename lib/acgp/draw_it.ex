@@ -1,7 +1,7 @@
 defmodule DrawIt do
 
-  def get_n_answers(n) do
-    GameUtils.get_n_unique_cards(n, &draw_what/0)
+  def get_n_answers(n, correct_answer \\ nil) do
+    GameUtils.get_n_unique_cards(n, &draw_what/0, [correct_answer])
   end
 
   def draw_what do
