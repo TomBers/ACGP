@@ -1,7 +1,7 @@
 defmodule DrawIt do
 
-  def get_n_answers(n, correct_answer \\ nil) do
-    GameUtils.get_n_unique_cards(n, &draw_what/0, [correct_answer])
+  def get_n_answers(n, correct_answer \\ "") do
+    GameUtils.get_n_unique_cards(n, &draw_what/0, [correct_answer]) |> Enum.filter(fn(ans) -> ans != "" end)
   end
 
   def draw_what do

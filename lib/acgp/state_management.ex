@@ -48,6 +48,12 @@ defmodule StateManagement do
     params.score
   end
 
+  def set_no_longer_active(pid, channel_id, params) do
+    my_name = params.my_name
+    update_my_presence(pid, channel_id, my_name, false, get_my_score(my_name, params.users))
+  end
+
+
   def update_my_presence(pid, channel_id, name, is_active, score \\ 0 ) do
     Presence.update_presence(pid, channel_id, name, %{name: name, is_active: is_active, score: score})
   end

@@ -14,13 +14,26 @@ defmodule AcgpWeb.LiveDrawIt do
 
   def setup_specific_params(channel_id, general_params) do
     s = StateAgent.get_server(channel_id)
-    answers = StateAgent.get_or_generate(s, :posible_answers, DrawIt.get_n_answers(5))
-    to_draw = Enum.random(answers)
+    state = gen_state(s)
 
     general_params
       |> Map.put(:img, "")
-      |> Map.put(:to_draw, to_draw)
-      |> Map.put(:possible_answers, answers)
+      |> Map.put(:state, state)
+      |> Map.put(:server, s)
+  end
+
+  def gen_state(server, over_write? \\ false) do
+    answers = DrawIt.get_n_answers(5)
+    potential_state = %{
+      possible_answers: answers,
+      to_draw: Enum.random(answers)
+    }
+    if over_write? do
+      StateAgent.put(server, :state, potential_state)
+    else
+      StateAgent.get_or_generate(server, :state, potential_state)
+    end
+
   end
 
   #  Events from Page
@@ -30,14 +43,35 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket}
   end
 
-  def handle_event("letmedraw", %{"user" => user}, socket) do
-    channel_id = topic(socket.assigns.room)
-    name = socket.assigns.my_name
-    pid = self()
+#  def handle_event("letmedraw", %{"user" => user}, socket) do
+#    channel_id = topic(socket.assigns.room)
+#    name = socket.assigns.my_name
+#    pid = self()
+#
+#    StateManagement.update_my_presence(pid, channel_id, name, true)
+#    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "change_is_active", %{user: user})
+#    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
+#  end
 
-    StateManagement.update_my_presence(pid, channel_id, name, true)
-    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "change_is_active", %{user: user})
-    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
+  def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
+    pid = self()
+    channel_id = topic(socket.assigns.room)
+    state = StateAgent.get(socket.assigns.server, :state)
+    if state.to_draw == answer do
+      StateManagement.increase_score(pid, channel_id, user, socket.assigns)
+      AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "no-longer-drawing", %{winner: user})
+      state = gen_state(socket.assigns.server, true)
+      {:noreply, socket |> assign(state: state)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_info(%{event: "no-longer-drawing", payload: %{winner: winner}}, socket) do
+    pid = self()
+    channel_id = topic(socket.assigns.room)
+    StateManagement.set_no_longer_active(pid, channel_id, socket.assigns)
+    {:noreply, socket |> assign(:state, gen_state(socket.assigns.server))}
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do

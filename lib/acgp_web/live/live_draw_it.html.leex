@@ -1,5 +1,7 @@
-<%= for ans <- @possible_answers do %>
-<h1><%= ans %></h1>
+<%= if ! am_I_draw_king(@my_name, @users) do %>
+    <%= for ans <- @state.possible_answers do %>
+        <button class="button" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
+    <% end %>
 <% end %>
 
 
@@ -57,12 +59,11 @@ function onMouseUp(event) {
 }
 </script>
     <%= if am_I_draw_king(@my_name, @users) do %>
-        <h1 class="title">Draw - <%= @to_draw %></h1>
+        <h1 class="title">Draw - <%= @state.to_draw %></h1>
         <button class="button" onclick="window.globals.clearCanvas()">Clear</button>
     <% end %>
     <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
 
-    <button class="button <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>" phx-click="letmedraw" phx-value-user="<%= @my_name %>">Let me Draw</button>
     <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
 
 
