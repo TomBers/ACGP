@@ -23,6 +23,7 @@
                             <%= for answer <- @answer_cards do %>
                                 <button class="button" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
                             <% end %>
+                            <input name="myguess" phx-keydown="myguess" />
                         <% end %>
                     <% end %>
                 </article>
