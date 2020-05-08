@@ -1,8 +1,8 @@
 defmodule GameUtils do
 
-  def get_n_unique_cards(n, pick_card_fn) do
+  def get_n_unique_cards(n, pick_card_fn, existing_cards \\ []) do
     1..n
-    |> Enum.reduce([], fn(_x, acc) -> add_unique_card(acc, pick_card_fn) end)
+    |> Enum.reduce(existing_cards, fn(_x, acc) -> add_unique_card(acc, pick_card_fn) end)
   end
 
   def add_unique_card(deck, pick_card_fn) do
