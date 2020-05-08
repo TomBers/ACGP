@@ -43,16 +43,6 @@ defmodule AcgpWeb.LiveDrawIt do
     {:noreply, socket}
   end
 
-#  def handle_event("letmedraw", %{"user" => user}, socket) do
-#    channel_id = topic(socket.assigns.room)
-#    name = socket.assigns.my_name
-#    pid = self()
-#
-#    StateManagement.update_my_presence(pid, channel_id, name, true)
-#    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "change_is_active", %{user: user})
-#    {:noreply, socket |> assign(img: "", to_draw: DrawIt.draw_what())}
-#  end
-
   def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
     pid = self()
     channel_id = topic(socket.assigns.room)

@@ -45,7 +45,20 @@
       <p class="subtitle"><a href="#" target="_blank">ACGP.com</a></p>
       <div class="content">
         <p>One person draws, the others guess.  The closest one wins.</p>
-        <p><a href="/drawit/<%= Enum.random(1..10240) %>">Play now</p>
+        <p><a href="/drawit/<%= Enum.random(1..10240) %>">Play now</a></p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="tile is-vertical is-12">
+  <div class="tile is-parent">
+    <article class="tile is-child notification is-danger">
+      <p class="title"><a href="/aw/<%= Enum.random(1..10240) %>">AnswerWrong</a></p>
+      <p class="subtitle"><a href="#" target="_blank">ACGP.com</a></p>
+      <div class="content">
+        <p>A quiz to find the most compelling answer (3 or more players)</p>
+        <p><a href="/aw/<%= Enum.random(1..10240) %>">Play now</p>
       </div>
     </article>
   </div>
