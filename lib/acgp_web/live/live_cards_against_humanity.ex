@@ -37,6 +37,17 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
   end
 
 
+  def handle_event("myguess", %{"code" => code, "value" => value}, socket) do
+    if code == "Enter" do
+      new_guesses = [%{answer: value, user: socket.assigns.my_name} | socket.assigns.current_guesses]
+      #    I announce my answer to everyone
+      AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{new_guesses: new_guesses})
+      {:noreply, socket |> assign(current_guesses: new_guesses)}
+    else
+      {:noreply, socket}
+    end
+  end
+
   def handle_event("winner", %{"user" => user}, socket) do
     pid = self()
     channel_id = topic(socket.assigns.room)

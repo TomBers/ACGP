@@ -5,7 +5,7 @@
                 <article class="tile is-child notification is-primary">
                     <p class="title"><%= if @question == "" do %>Question<% else %><%= @question %><% end %></p>
                 </article>
-                <article class="tile is-child notification is-warning has-text-centered">
+                <article class="tile is-child notification is-danger has-text-centered">
                     <button class="button is-large" phx-click="new_card"><%= if @question == "" do %>Start Questions<% else %>Change question<% end %></button>
                 </article>
             </div>

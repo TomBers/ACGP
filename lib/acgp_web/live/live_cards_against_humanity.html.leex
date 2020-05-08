@@ -9,7 +9,7 @@
                     <% end %>
 
                 </article>
-                <article class="tile is-child notification is-warning has-text-centered">
+                <article class="tile is-child notification is-danger has-text-centered">
                     <%= if am_I_czar(@my_name, @users) do %>
                         <p class="title">Current guesses (<%= length(@current_guesses) %> / <%= length(@users) - 1 %>) </p>
                         <p class="subtitle">Pick a winner</p>
@@ -21,8 +21,10 @@
                         <p class="title">My Answers</p>
                         <%= if @question_card != "" do %>
                             <%= for answer <- @answer_cards do %>
-                                <button class="button" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
+                                <button class="button margin-bottom" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
                             <% end %>
+                            <br><br>
+                            <input class="input" type="text" phx-keydown="myguess" placeholder="Freestyle">
                         <% end %>
                     <% end %>
                 </article>
