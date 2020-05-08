@@ -1,18 +1,15 @@
-<%= if ! am_I_draw_king(@my_name, @users) do %>
-    <%= for ans <- @state.possible_answers do %>
-        <button class="button" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
-    <% end %>
-<% end %>
-
-
-
 <script type="text/paperscript" canvas="drawItCanvas">
 var path;
 var penSize = 5;
 var callCount = 0;
+var colour = 'black';
 
 globals.clearCanvas = function() {
     project.clear()
+}
+
+globals.setColour = function(col) {
+    colour = col;
 }
 
 function onMouseDown(event) {
@@ -25,9 +22,9 @@ function onMouseDown(event) {
 	path = new Path({
 		segments: [event.point],
 		strokeWidth: penSize,
-		strokeColor: "#" + Math.floor(Math.random()*16777215).toString(16),
+		strokeColor: colour,
 		// Select the path, so we can see its segment points:
-		fullySelected: true
+		fullySelected: false
 	});
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
@@ -50,21 +47,57 @@ function onMouseUp(event) {
 	path.simplify(10);
 
 	// Select the path, so we can see its segments:
-	path.fullySelected = true;
-
-	var newSegmentCount = path.segments.length;
-	var difference = segmentCount - newSegmentCount;
-	var percentage = 100 - Math.round(newSegmentCount / segmentCount * 100);
+	path.fullySelected = false;
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
     <%= if am_I_draw_king(@my_name, @users) do %>
-        <h1 class="title">Draw - <%= @state.to_draw %></h1>
-        <button class="button" onclick="window.globals.clearCanvas()">Clear</button>
-    <% end %>
-    <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-12">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child notification is-primary">
+                            <p class="title">Draw - <%= @state.to_draw %></p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-mobile">
+            <div class="column is-one-fifth">
+                <button class="button margin-bottom" onclick="window.globals.clearCanvas()">Clear</button><br>
+                <button class="button is-primary margin-bottom" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
+                <button class="button is-info margin-bottom" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
+                <button class="button is-warning margin-bottom" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
+                <button class="button is-danger margin-bottom" onclick="window.globals.setColour('#f14668')">Red</button><br>
+                <button class="button is-black margin-bottom" onclick="window.globals.setColour('black')">Black</button>
+            </div>
+            <div class="column">
+                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+            </div>
 
-    <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+        </div>
+    <% else %>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-12">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child notification is-danger">
+                            <p class="title">What has been drawn?</p>
+                            <%= for ans <- @state.possible_answers do %>
+                                <button class="button margin-bottom" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
+                            <% end %>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+        <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+    <% end %>
+
+
+
 
 
 
