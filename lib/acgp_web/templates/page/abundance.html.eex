@@ -1,0 +1,65 @@
+<h1>Abundance</h1>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.4/pixi.min.js"></script>
+<script type="text/javascript">
+//Aliases
+let Application = PIXI.Application,
+    Graphics = PIXI.Graphics
+
+
+const width = 500
+const height = 500
+
+const cellSize = 10;
+const scale = 2;
+
+const numXCells = width / cellSize;
+const numYCells = height / cellSize;
+
+const cells = []
+
+for(var i = 0; i < width * height; i++) {
+  var v = Math.random() >= 0.5 ? 1 : 0
+  cells.push(v);
+}
+
+
+
+
+//Create a Pixi Application
+let app = new Application({
+    width: width,
+    height: height,
+    antialiasing: true,
+    transparent: true,
+    resolution: 1
+  }
+);
+
+//Add the canvas that Pixi automatically created for you to the HTML document
+document.body.appendChild(app.view);
+app.renderer.resize(width * scale, height * scale);
+
+
+const drawRect = (indx) => {
+
+var y = Math.floor(indx/numXCells);
+var x = indx % numXCells;
+
+//Rectangle
+let rectangle = new Graphics();
+//rectangle.lineStyle(4, 0xFF3300, 1);
+rectangle.beginFill(0x66CCFF);
+rectangle.drawRect(0, 0, cellSize * scale, cellSize * scale);
+rectangle.endFill();
+rectangle.x = x * cellSize * scale;
+rectangle.y = y * cellSize * scale;
+app.stage.addChild(rectangle);
+}
+
+cells.forEach((cell, indx) => {
+  cell != 0 ? drawRect(indx) : null
+});
+
+
+app.renderer.view.style.border = "1px dashed black";
+</script>

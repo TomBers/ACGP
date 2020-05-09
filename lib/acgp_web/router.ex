@@ -21,6 +21,7 @@ defmodule AcgpWeb.Router do
     get "/askhole/:id", PageController, :askhole
     get "/cah/:id", PageController, :cah
     get "/drawit/:id", PageController, :drawit
+    get "/abundance", PageController, :abundance
   end
 
   # Other scopes may use custom stacks.
