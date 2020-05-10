@@ -6,11 +6,11 @@ let Application = PIXI.Application,
     Graphics = PIXI.Graphics
 
 
-const width = 500
-const height = 500
+const width = 1000
+const height = 1000
 
-const cellSize = 10;
-const scale = 2;
+const cellSize = 1;
+const scale = 1;
 
 const numXCells = width / cellSize;
 const numYCells = height / cellSize;
@@ -18,8 +18,8 @@ const numYCells = height / cellSize;
 const cells = []
 
 for(var i = 0; i < width * height; i++) {
-  var v = Math.random() >= 0.5 ? 1 : 0
-  cells.push(v);
+  //var v = Math.random() >= 0.5 ? 1 : 0
+  cells.push(1);
 }
 
 
@@ -34,6 +34,7 @@ let app = new Application({
     resolution: 1
   }
 );
+
 
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
@@ -53,7 +54,10 @@ rectangle.drawRect(0, 0, cellSize * scale, cellSize * scale);
 rectangle.endFill();
 rectangle.x = x * cellSize * scale;
 rectangle.y = y * cellSize * scale;
+
 app.stage.addChild(rectangle);
+
+
 }
 
 cells.forEach((cell, indx) => {

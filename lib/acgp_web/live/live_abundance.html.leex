@@ -1,0 +1,8 @@
+<svg width="<%= @params.width * @params.scale%>" height="<%= @params.height * @params.scale %>" phx-click="click">
+    <%= for {cell, i} <- Enum.with_index(@cells) do %>
+        <%= if cell == 1 do %>
+            <rect x="<%= calc_x_pos(i, @params) %>" y="<%= calc_y_pos(i, @params) %>" width="<%= @params.cellSize * @params.scale%>" height="<%= @params.cellSize * @params.scale %>" style="fill:blue;stroke:black;stroke-width:1;fill-opacity:0.1;stroke-opacity:0.9" />
+            <text x="<%= calc_x_pos(i, @params) + 25 %> " y="<%= calc_y_pos(i, @params) + 25 %>" class="small"><%= i %></text>
+        <%  end %>
+    <% end %>
+</svg>

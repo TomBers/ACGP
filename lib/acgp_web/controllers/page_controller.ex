@@ -19,8 +19,8 @@ defmodule AcgpWeb.PageController do
     live_render(conn, AcgpWeb.LiveDrawIt, session: %{"id" => id})
   end
 
-  def abundance(conn, _params) do
-    render(conn, "abundance.html")
+  def abundance(conn, %{"id" => id}) do
+    live_render(conn, AcgpWeb.LiveAbundance, session: %{"id" => id})
   end
 
 end
