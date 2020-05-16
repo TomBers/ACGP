@@ -43,6 +43,22 @@ for(var i = 0; i < (totalCells); i++) {
 	cells.push(cell)
 }
 
+
+
+setInterval(function(){
+    var event = new CustomEvent(
+        "newSnapshot",
+        {
+            detail: {
+                cells: paper.project.exportSVG({asString:true})
+            },
+            bubbles: true,
+            cancelable: true
+        }
+    );
+    document.getElementById('myCanvas').dispatchEvent(event)
+}, 3000);
+
 cells.forEach(function(cell, i) {
 	paths.push(cell == 1 ? drawRec(i, onCol, scale) : drawRec(i, offCol, scale));
 })
@@ -89,7 +105,6 @@ function onMouseDown(event) {
 	var cell = path.index;
 	calcNeighbours(cell);
 	cells[cell] == 1 ? turnOffCell(path, cell) : turnOnCell(path, cell)
-	window.cells = paper.project.exportSVG({asString:true})
 }
 
 function updateCells() {
