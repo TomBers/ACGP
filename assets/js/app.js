@@ -7,8 +7,6 @@ import LiveSocket from "phoenix_live_view"
 
 import paper from "paper"
 
-import two from "./two.js"
-
 import { connect, call, answerCall, receiveRemote, disconnect } from "./video.js"
 import Hooks from "./hooks.js"
 

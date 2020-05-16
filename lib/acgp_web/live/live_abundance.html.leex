@@ -1,8 +1,28 @@
 <button id="flipState">Turn on /  off</button>
-<canvas id="myCanvas" resize></canvas>
+<canvas id="myCanvas" phx-hook="SendCells" resize></canvas>
+
+<div class="tile is-parent">
+    <article class="tile is-child notification is-info">
+        <p class="title">Current players:</p>
+        <div class="content">
+            <ol type="1">
+                <%= for user <- @users do %>
+                    <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %></li>
+                <% end %>
+            </ol>
+        </div>
+    </article>
+</div>
+
+<%= for {name, snapshot} <- @snapshots do %>
+    <%= if @my_name != name do %>
+        <object type="image/svg+xml" data="<%= snapshot %>"></object>
+        <h1 class="subtitle"><%= name %></h1>
+    <% end %>
+<% end %>
+
 
 <script type="text/paperscript" canvas="myCanvas">
-console.log('RUN')
 
 var isOn = false
 var onCol = '#2A1F1D';
@@ -10,11 +30,11 @@ var offCol = '#F2EDEC';
 
 var frame = 0
 
-var width = 500
-var height = 500
+var width = <%= @params.width %>
+var height = <%= @params.height %>
 
-var cellSize = 5;
-var scale = 5;
+var cellSize = <%= @params.cellSize %>;
+var scale = <%= @params.scale %>;
 
 var numXCells = width / cellSize;
 var numYCells = height / cellSize;
@@ -37,7 +57,7 @@ for(var i = 0; i < (totalCells); i++) {
 }
 
 cells.forEach(function(cell, i) {
-	paths.push(cell == 1 ? drawRec(i, onCol) : drawRec(i, offCol));
+	paths.push(cell == 1 ? drawRec(i, onCol, scale) : drawRec(i, offCol, scale));
 })
 
 function onFrame(event) {
@@ -82,6 +102,7 @@ function onMouseDown(event) {
 	var cell = path.index;
 	calcNeighbours(cell);
 	cells[cell] == 1 ? turnOffCell(path, cell) : turnOnCell(path, cell)
+	window.cells = paper.project.exportSVG({asString:true})
 }
 
 function updateCells() {
@@ -107,10 +128,10 @@ function turnOnCell(path, cell) {
 	cells[cell] = 1
 }
 
-function drawRec(indx, col) {
+function drawRec(indx, col, cellScale) {
 	var y = Math.floor(indx / numXCells);
 	var x = indx % numXCells;
-	var size = cellSize * scale;
+	var size = cellSize * cellScale;
 	var rectangle = new Rectangle(new Point(x * size, y * size), new Size(size, size));
 	var path = new Path.Rectangle(rectangle);
 	path.fillColor = col;
