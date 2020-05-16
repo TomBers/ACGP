@@ -8,32 +8,12 @@ defmodule AcgpWeb.LiveAbundance do
 
   def mount(_something, %{"id" => room}, socket) do
     channel_id = topic(room)
-    board_params = setup_board_params()
-    general_params = StateManagement.setup_initial_state(channel_id, room)
-    {:ok, socket |> assign(Map.merge(general_params, board_params))}
-  end
+    prefix = GameUtils.get_name()
+    uid = GameUtils.get_id()
+    name = "#{prefix}_#{uid}"
 
-  def setup_board_params(general_params \\ %{}) do
-    width = 100
-    height = 100
-    cellSize = 10
-    scale = 3
-    params = %{
-      width: width,
-      height: height,
-      cellSize: cellSize,
-      scale: scale,
-      numXCells: div(width, cellSize),
-      numYCells: div(height, cellSize)
-    }
-
-    general_params
-    |> Map.put(:params, params)
-    |> Map.put(:snapshots, %{})
-  end
-
-  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+    AcgpWeb.Endpoint.subscribe(channel_id)
+    {:ok, socket |> assign(%{snapshots: %{},  my_name: name, room: room})}
   end
 
   def handle_info(%{event: "update_snapshots", payload: %{user: user, snapshot: snapshot}}, socket) do

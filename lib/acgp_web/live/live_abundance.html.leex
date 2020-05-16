@@ -1,18 +1,5 @@
 <button id="flipState">Turn on /  off</button>
-<canvas id="myCanvas" phx-hook="SendCells" resize></canvas>
-
-<div class="tile is-parent">
-    <article class="tile is-child notification is-info">
-        <p class="title">Current players:</p>
-        <div class="content">
-            <ol type="1">
-                <%= for user <- @users do %>
-                    <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %></li>
-                <% end %>
-            </ol>
-        </div>
-    </article>
-</div>
+<canvas id="myCanvas" width=400 height=400 phx-hook="SendCells"></canvas>
 
 <%= for {name, snapshot} <- @snapshots do %>
     <%= if @my_name != name do %>
@@ -30,11 +17,11 @@ var offCol = '#F2EDEC';
 
 var frame = 0
 
-var width = <%= @params.width %>
-var height = <%= @params.height %>
+var width = 100;
+var height = 100;
 
-var cellSize = <%= @params.cellSize %>;
-var scale = <%= @params.scale %>;
+var cellSize = 10;
+var scale = 3;
 
 var numXCells = width / cellSize;
 var numYCells = height / cellSize;
@@ -52,7 +39,7 @@ var hitOptions = {
 };
 
 for(var i = 0; i < (totalCells); i++) {
-	var cell = 0//Math.random() < 0.5 ? 1 : 0;
+	var cell = 0
 	cells.push(cell)
 }
 
