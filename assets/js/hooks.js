@@ -13,4 +13,13 @@ Hooks.GetSVG = {
     }
 }
 
+Hooks.SendCells = {
+    mounted() {
+        this.el.addEventListener("newSnapshot", e => {
+            const snapshot = 'data:image/svg+xml;base64,' + btoa(e.detail.cells);
+            this.pushEvent("updateCells", snapshot)
+        })
+    }
+}
+
 export default Hooks
