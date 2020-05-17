@@ -22,4 +22,11 @@ Hooks.SendCells = {
     }
 }
 
+Hooks.Cells = {
+    updated() {
+        const cells = this.el.getAttribute('data-cells')
+        window.updateBoard(JSON.parse(cells))
+    }
+}
+
 export default Hooks

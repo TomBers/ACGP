@@ -1,48 +1,25 @@
 <button id="flipState">Turn on /  off</button>
-<canvas id="myCanvas" width=400 height=400 phx-hook="SendCells"></canvas>
+<button class="button is-large" phx-click="new_cells">NewCells</button>
+<canvas id="myCanvas" width=800 height=800 phx-hook="SendCells"></canvas>
 
-<%= for {name, snapshot} <- @snapshots do %>
-    <%= if @my_name != name do %>
-        <object type="image/svg+xml" data="<%= snapshot %>"></object>
-        <h1 class="subtitle"><%= name %></h1>
-    <% end %>
-<% end %>
+<div id="cellData" phx-hook="Cells" data-cells="<%= Jason.encode!(@cells) %>"></div>
 
 
 <script type="text/paperscript" canvas="myCanvas">
-
 var isOn = false
+var frame = 0
 var onCol = '#2A1F1D';
 var offCol = '#F2EDEC';
-
-var frame = 0
-
 var width = 100;
 var height = 100;
-
 var cellSize = 10;
 var scale = 3;
-
 var numXCells = width / cellSize;
 var numYCells = height / cellSize;
+var cells = [];
 
 var totalCells = numXCells * numYCells
-
-var cells = [];
-var paths = [];
-
-var hitOptions = {
-	segments: true,
-	stroke: true,
-	fill: true,
-	tolerance: 5
-};
-
-for(var i = 0; i < (totalCells); i++) {
-	var cell = 0
-	cells.push(cell)
-}
-
+let paths = drawBoard()
 
 
 setInterval(function(){
@@ -57,11 +34,30 @@ setInterval(function(){
         }
     );
     document.getElementById('myCanvas').dispatchEvent(event)
-}, 3000);
+}, 300000);
+
+
+function updateBoard(cells) {
+    cells.map((x, cell) => x == 1 ? turnOnCell(paths[cell], cell) : turnOffCell(paths[cell], cell))
+}
+
+window.updateBoard = updateBoard
+
+function drawBoard() {
+var paths = [];
+
+for(var i = 0; i < (totalCells); i++) {
+	var cell = 0
+	cells.push(cell)
+}
+
 
 cells.forEach(function(cell, i) {
-	paths.push(cell == 1 ? drawRec(i, onCol, scale) : drawRec(i, offCol, scale));
+	paths.push(drawRec(i, offCol, numXCells, numYCells, cellSize, scale));
 })
+
+return paths
+}
 
 function onFrame(event) {
 	if (isOn && frame % 10 == 0) {
@@ -99,7 +95,12 @@ document.getElementById('flipState').onclick = function () {
 
 function onMouseDown(event) {
 	segment = path = null;
-	var hitResult = project.hitTest(event.point, hitOptions);
+	var hitResult = project.hitTest(event.point, {
+		segments: true,
+		stroke: true,
+		fill: true,
+		tolerance: 5
+	});
 	var path = hitResult.item
 
 	var cell = path.index;
@@ -130,8 +131,8 @@ function turnOnCell(path, cell) {
 	cells[cell] = 1
 }
 
-function drawRec(indx, col, cellScale) {
-	var y = Math.floor(indx / numXCells);
+function drawRec(indx, col, numXCells, numYCells, cellSize, cellScale) {
+	var y = Math.floor(indx / numYCells);
 	var x = indx % numXCells;
 	var size = cellSize * cellScale;
 	var rectangle = new Rectangle(new Point(x * size, y * size), new Size(size, size));
@@ -140,5 +141,4 @@ function drawRec(indx, col, cellScale) {
 	path.selected = false;
 	return path;
 }
-
 </script>

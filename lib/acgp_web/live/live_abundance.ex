@@ -13,7 +13,7 @@ defmodule AcgpWeb.LiveAbundance do
     name = "#{prefix}_#{uid}"
 
     AcgpWeb.Endpoint.subscribe(channel_id)
-    {:ok, socket |> assign(%{snapshots: %{},  my_name: name, room: room})}
+    {:ok, socket |> assign(%{snapshots: %{name => ""},  my_name: name, room: room, cells: gen_cells()})}
   end
 
   def handle_info(%{event: "update_snapshots", payload: %{user: user, snapshot: snapshot}}, socket) do
@@ -27,6 +27,15 @@ defmodule AcgpWeb.LiveAbundance do
 
     AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "update_snapshots", %{user: name, snapshot: snapshot})
     {:noreply, socket}
+  end
+
+  def handle_event("new_cells", _params, socket) do
+    IO.inspect('Called new cells')
+    {:noreply, assign(socket, cells: gen_cells())}
+  end
+
+  def gen_cells() do
+    1..100 |> Enum.map(fn(_x) -> Enum.random([0,1]) end)
   end
 
 end
