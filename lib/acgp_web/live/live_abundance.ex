@@ -13,11 +13,11 @@ defmodule AcgpWeb.LiveAbundance do
     name = "#{prefix}_#{uid}"
 
     AcgpWeb.Endpoint.subscribe(channel_id)
-    {:ok, socket |> assign(%{snapshots: %{name => ""},  my_name: name, room: room, cells: gen_cells()})}
+    {:ok, socket |> assign(%{my_name: name, room: room, cells: gen_cells()})}
   end
 
-  def handle_info(%{event: "update_snapshots", payload: %{user: user, snapshot: snapshot}}, socket) do
-    {:noreply, socket |> assign(snapshots: Map.put(socket.assigns.snapshots, user, snapshot))}
+  def handle_info(%{event: "update_snapshots", payload: %{cells: cells}}, socket) do
+    {:noreply, socket |> assign(cells: cells)}
   end
 
   def handle_event("updateCells", snapshot, socket) do
@@ -25,17 +25,12 @@ defmodule AcgpWeb.LiveAbundance do
     channel_id = topic(socket.assigns.room)
     name = socket.assigns.my_name
 
-    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "update_snapshots", %{user: name, snapshot: snapshot})
+    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "update_snapshots", %{cells: snapshot})
     {:noreply, socket}
   end
 
-  def handle_event("new_cells", _params, socket) do
-    IO.inspect('Called new cells')
-    {:noreply, assign(socket, cells: gen_cells())}
-  end
-
   def gen_cells() do
-    1..100 |> Enum.map(fn(_x) -> Enum.random([0,1]) end)
+    1..100 |> Enum.map(fn(_x) -> Enum.random([0]) end)
   end
 
 end

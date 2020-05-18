@@ -1,5 +1,4 @@
 <button id="flipState">Turn on /  off</button>
-<button class="button is-large" phx-click="new_cells">NewCells</button>
 <canvas id="myCanvas" width=800 height=800 phx-hook="SendCells"></canvas>
 
 <div id="cellData" phx-hook="Cells" data-cells="<%= Jason.encode!(@cells) %>"></div>
@@ -27,14 +26,14 @@ setInterval(function(){
         "newSnapshot",
         {
             detail: {
-                cells: paper.project.exportSVG({asString:true})
+                cells: cells
             },
             bubbles: true,
             cancelable: true
         }
     );
     document.getElementById('myCanvas').dispatchEvent(event)
-}, 300000);
+}, 500);
 
 
 function updateBoard(cells) {
