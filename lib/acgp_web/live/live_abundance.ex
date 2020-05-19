@@ -7,13 +7,14 @@ defmodule AcgpWeb.LiveAbundance do
   defp topic(id), do: "abundance:#{id}"
 
   def mount(_something, %{"id" => room}, socket) do
-    channel_id = topic(room)
-    prefix = GameUtils.get_name()
-    uid = GameUtils.get_id()
-    name = "#{prefix}_#{uid}"
+    general_params = StateManagement.setup_initial_state(topic(room), room)
+    num_users = length(general_params.users)
+    {:ok, socket |> assign(Map.merge(general_params, %{cells: gen_cells(), player_index: num_users}))}
+  end
 
-    AcgpWeb.Endpoint.subscribe(channel_id)
-    {:ok, socket |> assign(%{my_name: name, room: room, cells: gen_cells()})}
+
+  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
+    {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
   def handle_info(%{event: "update_snapshots", payload: %{cells: cells}}, socket) do
