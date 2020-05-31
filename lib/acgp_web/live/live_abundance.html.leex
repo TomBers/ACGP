@@ -1,48 +1,31 @@
 <button id="flipState">Turn on /  off</button>
-<canvas id="myCanvas" width=400 height=400 phx-hook="SendCells"></canvas>
+<canvas id="myCanvas" phx-hook="SendCells" width="400" height="400"></canvas>
 
-<%= for {name, snapshot} <- @snapshots do %>
-    <%= if @my_name != name do %>
-        <object type="image/svg+xml" data="<%= snapshot %>"></object>
-        <h1 class="subtitle"><%= name %></h1>
-    <% end %>
+<%= for user <- @users do %>
+<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Index: <%= @player_index %></li>
 <% end %>
+
+<div id="cellData" phx-hook="Cells" data-cells="<%= Jason.encode!(@cells) %>"></div>
 
 
 <script type="text/paperscript" canvas="myCanvas">
-
+var playerNum = <%= @player_index %>
 var isOn = false
-var onCol = '#2A1F1D';
-var offCol = '#F2EDEC';
-
 var frame = 0
+var offCol = '#F2EDEC';
+var cols = [offCol, '#FF5733', '#900C3F', '#3339FF']
+var onCol = cols[playerNum]
 
 var width = 100;
 var height = 100;
-
 var cellSize = 10;
-var scale = 3;
-
+var scale = 5;
 var numXCells = width / cellSize;
 var numYCells = height / cellSize;
+var cells = [];
 
 var totalCells = numXCells * numYCells
-
-var cells = [];
-var paths = [];
-
-var hitOptions = {
-	segments: true,
-	stroke: true,
-	fill: true,
-	tolerance: 5
-};
-
-for(var i = 0; i < (totalCells); i++) {
-	var cell = 0
-	cells.push(cell)
-}
-
+let paths = drawBoard()
 
 
 setInterval(function(){
@@ -50,18 +33,40 @@ setInterval(function(){
         "newSnapshot",
         {
             detail: {
-                cells: paper.project.exportSVG({asString:true})
+                cells: cells
             },
             bubbles: true,
             cancelable: true
         }
     );
     document.getElementById('myCanvas').dispatchEvent(event)
-}, 3000);
+}, 500);
+
+
+function updateBoard(newCells) {
+    newCells.map((x, cell) => {
+        paths[cell].fillColor = cols[x];
+        cells[cell] = x;
+    })
+}
+
+window.updateBoard = updateBoard
+
+function drawBoard() {
+var paths = [];
+
+for(var i = 0; i < (totalCells); i++) {
+	var cell = 0
+	cells.push(cell)
+}
+
 
 cells.forEach(function(cell, i) {
-	paths.push(cell == 1 ? drawRec(i, onCol, scale) : drawRec(i, offCol, scale));
+	paths.push(drawRec(i, offCol, numXCells, numYCells, cellSize, scale));
 })
+
+return paths
+}
 
 function onFrame(event) {
 	if (isOn && frame % 10 == 0) {
@@ -99,18 +104,23 @@ document.getElementById('flipState').onclick = function () {
 
 function onMouseDown(event) {
 	segment = path = null;
-	var hitResult = project.hitTest(event.point, hitOptions);
+	var hitResult = project.hitTest(event.point, {
+		segments: true,
+		stroke: true,
+		fill: true,
+		tolerance: 5
+	});
 	var path = hitResult.item
 
 	var cell = path.index;
 	calcNeighbours(cell);
-	cells[cell] == 1 ? turnOffCell(path, cell) : turnOnCell(path, cell)
+	cells[cell] != 0 ? turnOffCell(path, cell) : turnOnCell(path, cell)
 }
 
 function updateCells() {
 	cells.forEach(function(cal, cell) {
 		var neighbours = calcNeighbours(cell)
-		if(cells[cell] == 1 && (neighbours == 2 || neighbours == 3)) {
+		if(cells[cell] != 0 && (neighbours == 2 || neighbours == 3)) {
 			return
 		} else if(cells[cell] == 0 && neighbours == 3) {
 			turnOnCell(paths[cell], cell)
@@ -127,11 +137,11 @@ function turnOffCell(path, cell) {
 
 function turnOnCell(path, cell) {
 	path.fillColor = onCol
-	cells[cell] = 1
+	cells[cell] = playerNum
 }
 
-function drawRec(indx, col, cellScale) {
-	var y = Math.floor(indx / numXCells);
+function drawRec(indx, col, numXCells, numYCells, cellSize, cellScale) {
+	var y = Math.floor(indx / numYCells);
 	var x = indx % numXCells;
 	var size = cellSize * cellScale;
 	var rectangle = new Rectangle(new Point(x * size, y * size), new Size(size, size));
@@ -140,5 +150,4 @@ function drawRec(indx, col, cellScale) {
 	path.selected = false;
 	return path;
 }
-
 </script>

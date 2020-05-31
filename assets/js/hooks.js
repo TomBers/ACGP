@@ -16,9 +16,15 @@ Hooks.GetSVG = {
 Hooks.SendCells = {
     mounted() {
         this.el.addEventListener("newSnapshot", e => {
-            const snapshot = 'data:image/svg+xml;base64,' + btoa(e.detail.cells);
-            this.pushEvent("updateCells", snapshot)
+            this.pushEvent("updateCells", e.detail.cells)
         })
+    }
+}
+
+Hooks.Cells = {
+    updated() {
+        const cells = this.el.getAttribute('data-cells')
+        window.updateBoard(JSON.parse(cells))
     }
 }
 
