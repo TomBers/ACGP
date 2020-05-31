@@ -5,6 +5,16 @@
     border: 1px solid black;
 }
 
+/* Scale canvas with resize attribute to full size */
+canvas[resize] {
+    width: 100%;
+    height: 100%;
+}
+
+#abundance {
+    border: 1px solid black;
+}
+
 .drawBox {
     border: 1px solid black;
 }

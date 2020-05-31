@@ -2,21 +2,23 @@ defmodule StateManagement do
 
   alias AcgpWeb.Presence
 
-  def setup_initial_state(channel_id, room) do
+  def setup_initial_state(channel_id, room, extra_presence_params \\ %{}) do
     prefix = GameUtils.get_name()
     uid = GameUtils.get_id()
 
     name = "#{prefix}_#{uid}"
 
+    presence_params = Map.merge( %{
+      name: name,
+      score: 0,
+      is_active: are_there_no_active_users(channel_id, name),
+    }, extra_presence_params)
+
     Presence.track_presence(
       self(),
       channel_id,
       name,
-      %{
-        name: name,
-        score: 0,
-        is_active: are_there_no_active_users(channel_id, name),
-      }
+      presence_params
     )
 
     AcgpWeb.Endpoint.subscribe(channel_id)

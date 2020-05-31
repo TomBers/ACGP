@@ -13,4 +13,19 @@ Hooks.GetSVG = {
     }
 }
 
+Hooks.SendCells = {
+    mounted() {
+        this.el.addEventListener("newSnapshot", e => {
+            this.pushEvent("updateCells", e.detail.cells)
+        })
+    }
+}
+
+Hooks.Cells = {
+    updated() {
+        const cells = this.el.getAttribute('data-cells')
+        window.updateBoard(JSON.parse(cells))
+    }
+}
+
 export default Hooks
