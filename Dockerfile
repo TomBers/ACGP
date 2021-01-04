@@ -41,7 +41,7 @@ RUN apk add --update bash openssl
 RUN mkdir /app
 WORKDIR /app
 
-COPY --from=build /app/_build/prod/rel/scrupulous ./
+COPY --from=build /app/_build/prod/rel/acgp ./
 RUN chown -R nobody: /app
 USER nobody
 
