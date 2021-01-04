@@ -17,12 +17,17 @@ defmodule AcgpWeb.Router do
   scope "/", AcgpWeb do
     pipe_through :browser
 
+    live "/askhole/:id", LiveAskHole, layout: {AcgpWeb.LayoutView, :app}
+    live "/cah/:id", LiveCardsAgainstHumanity, layout: {AcgpWeb.LayoutView, :app}
+    live "/drawit/:id", LiveDrawIt, layout: {AcgpWeb.LayoutView, :app}
+    live "/aw/:id", LiveAnswerWrong, layout: {AcgpWeb.LayoutView, :app}
+
     get "/", PageController, :index
-    get "/askhole/:id", PageController, :askhole
-    get "/cah/:id", PageController, :cah
-    get "/drawit/:id", PageController, :drawit
-    get "/aw/:id", PageController, :answerwrong
-    get "/abundance/:id", PageController, :abundance
+    get "/askhole", PageController, :askhole
+    get "/cah", PageController, :cah
+    get "/drawit", PageController, :drawit
+    get "/aw", PageController, :answerwrong
+    get "/abundance", PageController, :abundance
   end
 
   # Other scopes may use custom stacks.
