@@ -1,19 +1,18 @@
 defmodule AcgpWeb.LiveAbundance do
-
   use Phoenix.LiveView
 
   alias AcgpWeb.Presence
 
   defp topic(id), do: "abundance:#{id}"
 
-  def mount(_something, %{"id" => room}, socket) do
+  def mount(%{"id" => room}, _session, socket) do
     general_params = StateManagement.setup_initial_state(topic(room), room)
     send_tick()
     {:ok, socket |> assign(setup_state_server(room, general_params))}
   end
 
   def send_tick() do
-    Process.send_after self(), :tick, 1000
+    Process.send_after(self(), :tick, 1000)
   end
 
   def setup_state_server(room, general_params) do
@@ -53,22 +52,22 @@ defmodule AcgpWeb.LiveAbundance do
     channel_id = topic(socket.assigns.room)
     server = socket.assigns.server
     old_state = StateAgent.get(server, :state)
+
     resolved_state =
       old_state
-      |> Enum.with_index
-      |> Enum.map(fn({cell, indx}) -> resolve_cell(cell, Enum.at(new_state, indx)) end)
+      |> Enum.with_index()
+      |> Enum.map(fn {cell, indx} -> resolve_cell(cell, Enum.at(new_state, indx)) end)
+
     StateAgent.put(server, :state, resolved_state)
   end
 
-#  TODO - This could be more complex - how to 'turn off' cells - what takes precedence?
+  #  TODO - This could be more complex - how to 'turn off' cells - what takes precedence?
   def resolve_cell(old_val, new_val) when old_val == 0, do: new_val
-#  TODO - not sure why this kept turning off the cells - but I am done for the day
-#  def resolve_cell(old_val, new_val) when old_val != 0 and new_val != 0, do: 0
+  #  TODO - not sure why this kept turning off the cells - but I am done for the day
+  #  def resolve_cell(old_val, new_val) when old_val != 0 and new_val != 0, do: 0
   def resolve_cell(old_val, new_val), do: old_val
 
-
   def gen_cells() do
-    1..100 |> Enum.map(fn(_x) -> Enum.random([0]) end)
+    1..100 |> Enum.map(fn _x -> Enum.random([0]) end)
   end
-
 end
