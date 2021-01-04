@@ -1,3 +1,3 @@
-<h1><%= @game %> Landing page</h1>
+<h1 class="title"><%= @game %> Landing page</h1>
 
-<a href="<%= @path %>/<%= Enum.random(1..10240) %>">Play Now</a>
+<a href="<%= @path %>/<%= Enum.random(1..10240) %>" class="button is-primary">Play Now</a>
