@@ -22,13 +22,14 @@ var cellSize = 10;
 var scale = 5;
 var numXCells = width / cellSize;
 var numYCells = height / cellSize;
-var cells = [];
+var cells = <%= Jason.encode!(@cells) %>;
 
 var totalCells = numXCells * numYCells
 let paths = drawBoard()
 
 
-setInterval(function(){
+
+function sendGridEvent() {
     var event = new CustomEvent(
         "newSnapshot",
         {
@@ -40,7 +41,7 @@ setInterval(function(){
         }
     );
     document.getElementById('myCanvas').dispatchEvent(event)
-}, 500);
+}
 
 
 function updateBoard(newCells) {
@@ -53,16 +54,11 @@ function updateBoard(newCells) {
 window.updateBoard = updateBoard
 
 function drawBoard() {
+
 var paths = [];
 
-for(var i = 0; i < (totalCells); i++) {
-	var cell = 0
-	cells.push(cell)
-}
-
-
 cells.forEach(function(cell, i) {
-	paths.push(drawRec(i, offCol, numXCells, numYCells, cellSize, scale));
+	paths.push(drawRec(i, cols[cell], numXCells, numYCells, cellSize, scale));
 })
 
 return paths
@@ -114,7 +110,10 @@ function onMouseDown(event) {
 
 	var cell = path.index;
 	calcNeighbours(cell);
-	cells[cell] != 0 ? turnOffCell(path, cell) : turnOnCell(path, cell)
+	if(cells[cell] == 0) {
+	    turnOnCell(path, cell)
+	}
+	sendGridEvent();
 }
 
 function updateCells() {
