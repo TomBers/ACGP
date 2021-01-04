@@ -5,7 +5,7 @@ defmodule AcgpWeb.LiveAnswerWrong do
 
   defp topic(id), do: "answerwrong:#{id}"
 
-  def mount(_something, %{"id" => room}, socket) do
+  def mount(%{"id" => room}, _session, socket) do
     channel_id = topic(room)
     general_params = StateManagement.setup_initial_state(channel_id, room)
 
@@ -17,23 +17,24 @@ defmodule AcgpWeb.LiveAnswerWrong do
     state = gen_state(s)
 
     general_params
-      |> Map.put(:state, state)
-      |> Map.put(:current_guesses, [])
-      |> Map.put(:server, s)
+    |> Map.put(:state, state)
+    |> Map.put(:current_guesses, [])
+    |> Map.put(:server, s)
   end
 
   def gen_state(server, over_write? \\ false) do
     aw = AnswerWrong.get_question()
+
     potential_state = %{
       question: aw.question,
-      answer: aw.answer,
+      answer: aw.answer
     }
+
     if over_write? do
       StateAgent.put(server, :state, potential_state)
     else
       StateAgent.get_or_generate(server, :state, potential_state)
     end
-
   end
 
   def handle_event("winner", %{"user" => user}, socket) do
@@ -61,7 +62,10 @@ defmodule AcgpWeb.LiveAnswerWrong do
     if code == "Enter" do
       new_guesses = [%{answer: value, user: user} | socket.assigns.current_guesses]
       #    I announce my answer to everyone
-      AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{new_guesses: new_guesses})
+      AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
+        new_guesses: new_guesses
+      })
+
       {:noreply, socket |> assign(current_guesses: new_guesses)}
     else
       {:noreply, socket}
@@ -79,5 +83,4 @@ defmodule AcgpWeb.LiveAnswerWrong do
   def am_I_draw_king(my_name, users) do
     StateManagement.is_user_active(my_name, users)
   end
-
 end

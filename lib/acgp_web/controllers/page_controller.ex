@@ -7,24 +7,23 @@ defmodule AcgpWeb.PageController do
     render(conn, "index.html")
   end
 
-  def askhole(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveAskHole, session: %{"id" => id})
+  def askhole(conn, _params) do
+    render(conn, "tmp.html", game: "Askhole", path: "askhole")
   end
 
-  def cah(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveCardsAgainstHumanity, session: %{"id" => id})
+  def cah(conn, _params) do
+    render(conn, "tmp.html", game: "Cards Against Humanity", path: "cah")
   end
 
-  def drawit(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveDrawIt, session: %{"id" => id})
+  def drawit(conn, _params) do
+    render(conn, "tmp.html", game: "Draw It", path: "drawit")
   end
 
-  def answerwrong(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveAnswerWrong, session: %{"id" => id})
+  def answerwrong(conn, _params) do
+    render(conn, "tmp.html", game: "Answer Wrong", path: "aw")
   end
 
-  def abundance(conn, %{"id" => id}) do
-    live_render(conn, AcgpWeb.LiveAbundance, session: %{"id" => id})
+  def abundance(conn, _params) do
+    render(conn, "tmp.html", game: "Abundance", path: "#")
   end
-
 end
