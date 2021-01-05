@@ -1,4 +1,4 @@
-defmodule AcgpWeb.LiveAskHole do
+defmodule AcgpWeb.AskHole do
   use Phoenix.LiveView
 
   alias AcgpWeb.Presence
@@ -14,6 +14,7 @@ defmodule AcgpWeb.LiveAskHole do
   def setup_specific_params(general_params) do
     general_params
     |> Map.put(:question, "")
+    |> Map.put(:connected, false)
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
@@ -32,5 +33,19 @@ defmodule AcgpWeb.LiveAskHole do
 
   def handle_info(%{event: "synchronize", payload: %{question: question}}, socket) do
     {:noreply, assign(socket, question: question)}
+  end
+
+  def handle_info(%{event: "connect_state", payload: %{connected: connected}}, socket) do
+    {:noreply, assign(socket, connected: connected)}
+  end
+
+  def handle_event("changeConnection", _state, socket) do
+    new_connection_state = !socket.assigns.connected
+
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "connect_state", %{
+      connected: new_connection_state
+    })
+
+    {:noreply, assign(socket, connected: new_connection_state)}
   end
 end

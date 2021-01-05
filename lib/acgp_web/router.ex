@@ -17,7 +17,7 @@ defmodule AcgpWeb.Router do
   scope "/", AcgpWeb do
     pipe_through :browser
 
-    live "/askhole/:id", LiveAskHole, layout: {AcgpWeb.LayoutView, :app}
+    live "/askhole/:id", AskHole, layout: {AcgpWeb.LayoutView, :app}
     live "/cah/:id", LiveCardsAgainstHumanity, layout: {AcgpWeb.LayoutView, :app}
     live "/drawit/:id", LiveDrawIt, layout: {AcgpWeb.LayoutView, :app}
     live "/aw/:id", LiveAnswerWrong, layout: {AcgpWeb.LayoutView, :app}
