@@ -1,4 +1,4 @@
-defmodule AcgpWeb.LiveAnswerWrong do
+defmodule AcgpWeb.AnswerWrong do
   use Phoenix.LiveView
 
   alias AcgpWeb.Presence
@@ -58,8 +58,8 @@ defmodule AcgpWeb.LiveAnswerWrong do
     {:noreply, socket |> assign(state: state, current_guesses: [])}
   end
 
-  def handle_event("myguess", %{"code" => code, "value" => value, "user" => user}, socket) do
-    if code == "Enter" do
+  def handle_event("myguess", %{"key" => key, "value" => value, "user" => user}, socket) do
+    if key == "Enter" do
       new_guesses = [%{answer: value, user: user} | socket.assigns.current_guesses]
       #    I announce my answer to everyone
       AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
@@ -78,9 +78,5 @@ defmodule AcgpWeb.LiveAnswerWrong do
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
-  end
-
-  def am_I_draw_king(my_name, users) do
-    StateManagement.is_user_active(my_name, users)
   end
 end

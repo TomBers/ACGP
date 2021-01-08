@@ -37,6 +37,3 @@
 <%= for user <- @users do %>
 <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
 <% end %>
-
-
-

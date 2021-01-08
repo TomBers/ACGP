@@ -1,0 +1,5 @@
+<%= if length(@users) < 3 do %>
+    <%= live_component @socket, AcgpWeb.WaitingRoom %>
+<% else %>
+    <%= live_component @socket, AcgpWeb.AWComp, id: "AWComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+<% end %>
