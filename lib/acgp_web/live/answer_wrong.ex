@@ -1,4 +1,4 @@
-defmodule AcgpWeb.LiveAnswerWrong do
+defmodule AcgpWeb.AnswerWrong do
   use Phoenix.LiveView
 
   alias AcgpWeb.Presence
@@ -42,8 +42,13 @@ defmodule AcgpWeb.LiveAnswerWrong do
     channel_id = topic(socket.assigns.room)
     my_name = socket.assigns.my_name
     #    The current card czar has choosen a winner
-    #     Step 1 - declare themselves no longer the car czar
-    StateManagement.set_no_longer_active(pid, channel_id, socket.assigns)
+    #     Step 1 - declare themselves no longer the car czar and maybe update score if they won
+    StateManagement.change_user_and_maybe_inc_score(
+      pid,
+      channel_id,
+      socket.assigns,
+      my_name == user
+    )
 
     state = gen_state(socket.assigns.server, true)
     #    Step 2 - Send a message to everyone announcing the winner and pick new card
@@ -58,9 +63,23 @@ defmodule AcgpWeb.LiveAnswerWrong do
     {:noreply, socket |> assign(state: state, current_guesses: [])}
   end
 
-  def handle_event("myguess", %{"code" => code, "value" => value, "user" => user}, socket) do
-    if code == "Enter" do
+  def handle_event("myguess", %{"key" => key, "value" => value, "user" => user}, socket) do
+    if key == "Enter" do
       new_guesses = [%{answer: value, user: user} | socket.assigns.current_guesses]
+
+      new_guesses =
+        if are_all_answers_in?(new_guesses, socket.assigns.users) do
+          [
+            %{
+              answer: socket.assigns.state.answer,
+              user: StateManagement.active_user(socket.assigns.users).name
+            }
+            | new_guesses
+          ]
+        else
+          new_guesses
+        end
+
       #    I announce my answer to everyone
       AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
         new_guesses: new_guesses
@@ -82,5 +101,9 @@ defmodule AcgpWeb.LiveAnswerWrong do
 
   def am_I_draw_king(my_name, users) do
     StateManagement.is_user_active(my_name, users)
+  end
+
+  def are_all_answers_in?(current_guesses, users) do
+    length(current_guesses) >= length(users) - 1
   end
 end

@@ -1,0 +1,20 @@
+<%= if length(@users) < 3 do %>
+    <%= live_component @socket, AcgpWeb.WaitingRoom %>
+<% else %>
+    <%= if am_I_draw_king(@my_name, @users) do %>
+        <%= live_component @socket, AcgpWeb.AWAnsComp, id: "AWAnsComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+    <% else %>
+        <%= live_component @socket, AcgpWeb.AWQnComp, id: "AWQnComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+    <% end %>
+<% end %>
+
+
+<%= if length(@users) >= 3 do %>
+<div class="content is-large">
+    <ol type="1">
+    <%= for user <- Enum.sort(@users, &(&1.score >= &2.score)) do %>
+        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <%= user.score %> point(s)</li>
+    <% end %>
+    </ol>
+</div>
+<% end %>
