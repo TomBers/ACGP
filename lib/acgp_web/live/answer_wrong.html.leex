@@ -8,8 +8,13 @@
     <% end %>
 <% end %>
 
-<button phx-click="fill_answers">Fill</button>
 
-<%= for user <- @users do %>
-    <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+<%= if length(@users) >= 3 do %>
+<div class="content is-large">
+    <ol type="1">
+    <%= for user <- Enum.sort(@users, &(&1.score >= &2.score)) do %>
+        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <%= user.score %> point(s)</li>
+    <% end %>
+    </ol>
+</div>
 <% end %>

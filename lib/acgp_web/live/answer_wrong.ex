@@ -99,18 +99,6 @@ defmodule AcgpWeb.AnswerWrong do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
   end
 
-  def handle_event("fill_answers", _params, socket) do
-    new_guesses =
-      socket.assigns.users
-      |> Enum.map(fn usr -> %{answer: "#{usr.name}", user: "#{usr.name}"} end)
-
-    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
-      new_guesses: new_guesses
-    })
-
-    {:noreply, socket |> assign(current_guesses: new_guesses)}
-  end
-
   def am_I_draw_king(my_name, users) do
     StateManagement.is_user_active(my_name, users)
   end
