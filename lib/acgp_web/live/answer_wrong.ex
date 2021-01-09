@@ -61,6 +61,20 @@ defmodule AcgpWeb.AnswerWrong do
   def handle_event("myguess", %{"key" => key, "value" => value, "user" => user}, socket) do
     if key == "Enter" do
       new_guesses = [%{answer: value, user: user} | socket.assigns.current_guesses]
+
+      new_guesses =
+        if are_all_answers_in?(new_guesses, socket.assigns.users) do
+          [
+            %{
+              answer: socket.assigns.state.answer,
+              user: StateManagement.active_user(socket.assigns.users).name
+            }
+            | new_guesses
+          ]
+        else
+          new_guesses
+        end
+
       #    I announce my answer to everyone
       AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
         new_guesses: new_guesses
@@ -78,5 +92,13 @@ defmodule AcgpWeb.AnswerWrong do
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+  end
+
+  def am_I_draw_king(my_name, users) do
+    StateManagement.is_user_active(my_name, users)
+  end
+
+  def are_all_answers_in?(current_guesses, users) do
+    length(current_guesses) >= length(users) - 1
   end
 end

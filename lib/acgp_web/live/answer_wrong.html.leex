@@ -1,5 +1,15 @@
 <%= if length(@users) < 3 do %>
     <%= live_component @socket, AcgpWeb.WaitingRoom %>
 <% else %>
-    <%= live_component @socket, AcgpWeb.AWComp, id: "AWComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+    <%= if am_I_draw_king(@my_name, @users) do %>
+        <%= live_component @socket, AcgpWeb.AWAnsComp, id: "AWAnsComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+    <% else %>
+        <%= live_component @socket, AcgpWeb.AWQnComp, id: "AWQnComp", state: @state, my_name: @my_name, users: @users, current_guesses: @current_guesses %>
+    <% end %>
 <% end %>
+
+
+
+    <%= for user <- @users do %>
+    <li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+    <% end %>

@@ -1,0 +1,17 @@
+<%= if i_have_answered(@current_guesses, @my_name) do %>
+    <p>Waiting for other answers</p>
+<% else %>
+    <div class="tile is-ancestor">
+        <div class="tile is-vertical is-12">
+            <div class="tile">
+                <div class="tile is-parent is-vertical">
+                    <article class="tile is-child notification is-danger">
+                        <p class="title"><%= @state.question %></p>
+                        <p class="subtitle"><%= @state.answer %></p>
+                        <input class="input" type="text" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Guess an answer">
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
