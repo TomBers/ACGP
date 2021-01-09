@@ -42,8 +42,13 @@ defmodule AcgpWeb.AnswerWrong do
     channel_id = topic(socket.assigns.room)
     my_name = socket.assigns.my_name
     #    The current card czar has choosen a winner
-    #     Step 1 - declare themselves no longer the car czar
-    StateManagement.set_no_longer_active(pid, channel_id, socket.assigns)
+    #     Step 1 - declare themselves no longer the car czar and maybe update score if they won
+    StateManagement.change_user_and_maybe_inc_score(
+      pid,
+      channel_id,
+      socket.assigns,
+      my_name == user
+    )
 
     state = gen_state(socket.assigns.server, true)
     #    Step 2 - Send a message to everyone announcing the winner and pick new card
@@ -92,6 +97,18 @@ defmodule AcgpWeb.AnswerWrong do
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
     {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+  end
+
+  def handle_event("fill_answers", _params, socket) do
+    new_guesses =
+      socket.assigns.users
+      |> Enum.map(fn usr -> %{answer: "#{usr.name}", user: "#{usr.name}"} end)
+
+    AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
+      new_guesses: new_guesses
+    })
+
+    {:noreply, socket |> assign(current_guesses: new_guesses)}
   end
 
   def am_I_draw_king(my_name, users) do

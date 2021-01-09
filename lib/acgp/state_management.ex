@@ -40,26 +40,39 @@ defmodule StateManagement do
   end
 
   def increase_score(pid, channel_id, winner, params) do
-    update_my_presence(
-      pid,
-      channel_id,
-      winner,
-      true,
-      get_my_score(winner, params.users) + 1
-    )
+    if winner == params.my_name do
+      update_my_presence(
+        pid,
+        channel_id,
+        winner,
+        true,
+        get_my_score(winner, params.users, true)
+      )
+    end
   end
 
-  def get_my_score(name, users) do
+  def get_my_score(name, users, incr) do
     params =
       users
       |> Enum.find(%{score: 0}, fn usr -> usr.name == name end)
 
-    params.score
+    if incr do
+      params.score + 1
+    else
+      params.score
+    end
   end
 
-  def set_no_longer_active(pid, channel_id, params) do
+  def change_user_and_maybe_inc_score(pid, channel_id, params, i_won) do
     my_name = params.my_name
-    update_my_presence(pid, channel_id, my_name, false, get_my_score(my_name, params.users))
+
+    update_my_presence(
+      pid,
+      channel_id,
+      my_name,
+      i_won,
+      get_my_score(my_name, params.users, i_won)
+    )
   end
 
   def update_my_presence(pid, channel_id, name, is_active, score \\ 0) do
