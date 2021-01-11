@@ -11,15 +11,16 @@ defmodule AcgpWeb.TestState do
     {:ok, socket |> assign(setup_specific_params(channel_id, general_params))}
   end
 
+  def start_state() do
+    %{title: Enum.random(1..1000)}
+  end
+
   def setup_specific_params(channel_id, general_params) do
-    general_params |> GameState.add_state()
+    general_params |> GameState.initial_state(start_state(), channel_id)
   end
 
   def sync_state(socket, new_state) do
-    pid = self()
-    channel_id = topic(socket.assigns.room)
-
-    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "sync_state", %{
+    AcgpWeb.Endpoint.broadcast_from(self(), socket.assigns.channel_id, "sync_state", %{
       state: new_state
     })
 
@@ -27,7 +28,16 @@ defmodule AcgpWeb.TestState do
   end
 
   def handle_event("clear_state", _params, socket) do
-    sync_state(socket, GameState.base_state())
+    new_state =
+      GameState.update_state(
+        Map.merge(GameState.base_state(), start_state()),
+        socket.assigns.channel_id
+      )
+
+    sync_state(
+      socket,
+      new_state
+    )
   end
 
   def handle_event("take_control", %{"user" => user}, socket) do
@@ -35,10 +45,16 @@ defmodule AcgpWeb.TestState do
   end
 
   def handle_event("guess", %{"user" => user}, socket) do
+    new_state =
+      GameState.update_state(
+        GameState.add_answered(socket.assigns.game_state, %{user: user, guess: "GUESS"})
+        |> GameState.check_winner(socket.assigns.users, &win_condition/2),
+        socket.assigns.channel_id
+      )
+
     sync_state(
       socket,
-      GameState.add_answered(socket.assigns.game_state, %{user: user, guess: "GUESS"})
-      |> GameState.check_winner(socket.assigns.users, &win_condition/2)
+      new_state
     )
   end
 
@@ -47,7 +63,7 @@ defmodule AcgpWeb.TestState do
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+    {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
   end
 
   def win_condition(state, users) do

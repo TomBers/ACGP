@@ -51,7 +51,7 @@ function onMouseUp(event) {
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
-    <%= if am_I_draw_king(@my_name, @users) do %>
+    <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
                 <div class="tile">
@@ -73,7 +73,7 @@ function onMouseUp(event) {
                 <button class="button is-black margin-bottom" onclick="window.globals.setColour('black')">Black</button>
             </div>
             <div class="column">
-                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
+                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></canvas>
             </div>
 
         </div>
@@ -82,7 +82,7 @@ function onMouseUp(event) {
             <div class="tile is-vertical is-12">
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
-                    <%= if yet_to_guess?(@my_name, @state) do %>
+                    <%= if GameUtils.has_answered(@my_name, @state) do %>
                         <article class="tile is-child notification is-danger">
                             <p class="title">What has been drawn?</p>
                             <%= for ans <- @state.possible_answers do %>
@@ -94,8 +94,8 @@ function onMouseUp(event) {
                 </div>
             </div>
         </div>
-        <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
-        <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
+        <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !!GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></canvas>
+        <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></object>
     <% end %>
 
 
@@ -104,5 +104,5 @@ function onMouseUp(event) {
 
 
 <%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
 <% end %>

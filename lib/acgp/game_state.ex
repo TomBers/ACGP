@@ -3,9 +3,30 @@ defmodule GameState do
     %{active_user: nil, scores: %{}, answered: []}
   end
 
-  def add_state(user_states) do
-    user_states
-    |> Map.put(:game_state, base_state())
+  def initial_state(user_states, game_state, channel_id) do
+    server = StateAgent.get_server(channel_id)
+
+    new_state = Map.merge(game_state, base_state())
+
+    game_state =
+      if StateAgent.get(server, :game_state) do
+        StateAgent.get(server, :game_state)
+      else
+        StateAgent.put(server, :game_state, new_state)
+        new_state
+      end
+
+    user_states |> Map.put(:game_state, game_state)
+  end
+
+  def update_state(new_state, channel_id) do
+    server = StateAgent.get_server(channel_id)
+    StateAgent.put(server, :game_state, new_state)
+  end
+
+  def get_state(channel_id) do
+    server = StateAgent.get_server(channel_id)
+    StateAgent.get(server, :game_state)
   end
 
   def add_answered(state, user) do

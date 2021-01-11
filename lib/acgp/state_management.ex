@@ -27,6 +27,7 @@ defmodule StateManagement do
     AcgpWeb.Endpoint.subscribe(channel_id)
 
     %{
+      channel_id: channel_id,
       room: room,
       my_name: name,
       users: Presence.list_presences(channel_id)

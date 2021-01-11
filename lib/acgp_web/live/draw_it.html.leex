@@ -1,0 +1,13 @@
+    <%= if true do %>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-12">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child notification is-primary">
+                            <p class="title">Draw - <%= @game_state.to_draw %></p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% end %>
