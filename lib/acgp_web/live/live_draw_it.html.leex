@@ -82,12 +82,14 @@ function onMouseUp(event) {
             <div class="tile is-vertical is-12">
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
+                    <%= if yet_to_guess?(@my_name, @state) do %>
                         <article class="tile is-child notification is-danger">
                             <p class="title">What has been drawn?</p>
                             <%= for ans <- @state.possible_answers do %>
                                 <button class="button margin-bottom" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
                             <% end %>
                         </article>
+                    <% end %>
                     </div>
                 </div>
             </div>
@@ -102,8 +104,5 @@ function onMouseUp(event) {
 
 
 <%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
 <% end %>
-
-
-

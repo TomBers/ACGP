@@ -69,7 +69,7 @@ defmodule AcgpWeb.LiveDrawIt do
           %{
             possible_answers: state.possible_answers,
             to_draw: state.to_draw,
-            current_answers: [%{user => answer} | state.current_answers]
+            current_answers: [user | state.current_answers]
           },
           overwrite_state
         )
@@ -80,7 +80,7 @@ defmodule AcgpWeb.LiveDrawIt do
       AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "no-longer-drawing", %{winner: user})
     else
       if are_all_answers_in?(state.current_answers, socket.assigns.users) do
-        AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "no-longer-drawing", %{
+        AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "we-have-a-winner", %{
           winner: StateManagement.active_user(socket.assigns.users).name
         })
       end
@@ -90,6 +90,16 @@ defmodule AcgpWeb.LiveDrawIt do
   end
 
   def handle_info(%{event: "no-longer-drawing", payload: %{winner: winner}}, socket) do
+    next_state(winner, socket)
+  end
+
+  def handle_info(%{event: "we-have-a-winner", payload: %{winner: winner}}, socket) do
+    IO.inspect("We have a winner")
+    IO.inspect(socket.assigns)
+    next_state(winner, socket, true)
+  end
+
+  def next_state(winner, socket, change_player? \\ false) do
     pid = self()
     channel_id = topic(socket.assigns.room)
     state = socket.assigns.state
@@ -106,10 +116,7 @@ defmodule AcgpWeb.LiveDrawIt do
      socket
      |> assign(
        :state,
-       gen_state(
-         socket.assigns.server,
-         are_all_answers_in?(state.current_answers, socket.assigns.users)
-       )
+       gen_state(socket.assigns.server, change_player?)
      )}
   end
 
@@ -138,5 +145,9 @@ defmodule AcgpWeb.LiveDrawIt do
 
   def are_all_answers_in?(current_guesses, users) do
     length(current_guesses) >= length(users) - 1
+  end
+
+  def yet_to_guess?(my_name, state) do
+    not Enum.member?(state.current_answers, my_name)
   end
 end
