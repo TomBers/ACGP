@@ -62,7 +62,12 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
     my_name = socket.assigns.my_name
     #    The current card czar has choosen a winner
     #     Step 1 - declare themselves no longer the car czar
-    StateManagement.set_no_longer_active(pid, channel_id, socket.assigns)
+    StateManagement.change_user_and_maybe_inc_score(
+      pid,
+      channel_id,
+      socket.assigns,
+      my_name == user
+    )
 
     question = CardsAgainstHumanity.get_board_card()
     #    Step 2 - Send a message to everyone announcing the winner and pick new card
