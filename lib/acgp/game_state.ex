@@ -49,13 +49,18 @@ defmodule GameState do
     {is_winner, winner} = win_condition.(state, users)
 
     if is_winner do
-      Map.merge(game_base_state.(), base_state())
-      |> set_field(:winner, winner)
-      |> set_field(:active_user, winner)
-      |> set_field(:answered, [])
+      reset_state(game_base_state)
+      |> put_in([:active_user], winner)
+      |> put_in([:scores], Map.update(state.scores, winner, 1, fn val -> val + 1 end))
     else
       state
     end
+  end
+
+  def who_won(state, users) do
+    Enum.find(state.answered, get_active_user(state, users), fn ans ->
+      ans.guess == state.to_draw
+    end).name
   end
 
   def get_winner(state, users) do

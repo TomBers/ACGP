@@ -27,8 +27,7 @@ defmodule AcgpWeb.DrawIt do
 
   def win_condition(state, users) do
     if length(state.answered) == length(users) - 1 do
-      winner = GameState.get_winner(state, users)
-      {true, winner.name}
+      {true, GameState.who_won(state, users)}
     else
       {false, nil}
     end
@@ -66,7 +65,7 @@ defmodule AcgpWeb.DrawIt do
 
   def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
     new_state =
-      GameState.add_answered(socket.assigns.game_state, %{user: user, guess: answer})
+      GameState.add_answered(socket.assigns.game_state, %{name: user, guess: answer})
       |> GameState.check_winner(socket.assigns.users, &win_condition/2, &gen_questions/0)
 
     sync_state(
@@ -76,6 +75,7 @@ defmodule AcgpWeb.DrawIt do
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
+    # TODO - the joining process is not quite right
     users = Presence.list_presences(socket.assigns.channel_id)
     game_state = GameState.set_controller(socket.assigns.game_state, Enum.random(users).name)
 

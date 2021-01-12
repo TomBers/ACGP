@@ -641,4 +641,8 @@ defmodule GameUtils do
   def is_active_user(usr, game_state) do
     game_state.active_user == usr
   end
+
+  def score(game_state, user) do
+    Map.get(game_state.scores, user, 0)
+  end
 end

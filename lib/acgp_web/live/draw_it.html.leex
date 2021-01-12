@@ -106,5 +106,5 @@ function onMouseUp(event) {
 
 
 <%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
+<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= GameUtils.score(@game_state, user.name) %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
 <% end %>
