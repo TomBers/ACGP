@@ -48,7 +48,7 @@ defmodule AcgpWeb.TestState do
     new_state =
       GameState.update_state(
         GameState.add_answered(socket.assigns.game_state, %{user: user, guess: "GUESS"})
-        |> GameState.check_winner(socket.assigns.users, &win_condition/2),
+        |> GameState.check_winner(socket.assigns.users, &win_condition/2, &start_state/0),
         socket.assigns.channel_id
       )
 

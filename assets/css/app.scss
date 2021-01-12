@@ -28,7 +28,7 @@ canvas[resize] {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .margin-bottom {

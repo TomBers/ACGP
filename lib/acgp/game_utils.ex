@@ -622,15 +622,23 @@ defmodule GameUtils do
     1..1000 |> Enum.random()
   end
 
-  def has_answered(usr, game_state) do
+  def has_answered(usr, game_state) when is_map(usr) do
     Enum.any?(game_state.answered, fn ans -> ans.user == usr.name end)
+  end
+
+  def has_answered(usr, game_state) do
+    Enum.any?(game_state.answered, fn ans -> ans.user == usr end)
   end
 
   def is_active_user(nil, game_state) do
     false
   end
 
-  def is_active_user(usr, game_state) do
+  def is_active_user(usr, game_state) when is_map(usr) do
     game_state.active_user == usr.name
+  end
+
+  def is_active_user(usr, game_state) do
+    game_state.active_user == usr
   end
 end

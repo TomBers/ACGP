@@ -8,14 +8,11 @@ defmodule AcgpWeb.DrawIt do
   def mount(%{"id" => room}, _session, socket) do
     channel_id = topic(room)
     general_params = StateManagement.setup_initial_state(channel_id, room)
-
-    new_state = setup_specific_params(channel_id, general_params)
-
-    {:ok, socket |> assign(new_state)}
+    {:ok, socket |> assign(setup_specific_params(channel_id, general_params))}
   end
 
   def setup_specific_params(channel_id, general_params) do
-    general_params |> GameState.inital_state(gen_questions())
+    general_params |> GameState.initial_state(gen_questions(), channel_id)
   end
 
   def gen_questions() do
@@ -26,6 +23,15 @@ defmodule AcgpWeb.DrawIt do
       possible_answers: answers,
       to_draw: Enum.random(answers)
     }
+  end
+
+  def win_condition(state, users) do
+    if length(state.answered) == length(users) - 1 do
+      winner = GameState.get_winner(state, users)
+      {true, winner.name}
+    else
+      {false, nil}
+    end
   end
 
   def sync_state(socket, new_state) do
@@ -49,13 +55,38 @@ defmodule AcgpWeb.DrawIt do
     {:noreply, socket}
   end
 
-  def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
+  def handle_event("print_state", _p, socket) do
+    IO.inspect(socket.assigns)
     {:noreply, socket}
   end
 
+  def handle_event("clear_state", _p, socket) do
+    sync_state(socket, GameState.reset_state(&gen_questions/0))
+  end
+
+  def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
+    new_state =
+      GameState.add_answered(socket.assigns.game_state, %{user: user, guess: answer})
+      |> GameState.check_winner(socket.assigns.users, &win_condition/2, &gen_questions/0)
+
+    sync_state(
+      socket,
+      new_state
+    )
+  end
+
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    sync_state(socket, socket.assigns.game_state)
-    {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+    users = Presence.list_presences(socket.assigns.channel_id)
+    game_state = GameState.set_controller(socket.assigns.game_state, Enum.random(users).name)
+
+    sync_state(
+      socket,
+      game_state
+    )
+
+    {:noreply,
+     socket
+     |> assign(users: users, game_state: game_state)}
   end
 
   def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do
@@ -63,6 +94,7 @@ defmodule AcgpWeb.DrawIt do
   end
 
   def handle_info(%{event: "update_image", payload: %{img: img}}, socket) do
-    {:noreply, socket |> assign(img: img)}
+    new_state = GameState.set_field(socket.assigns.game_state, :img, img)
+    sync_state(socket, new_state)
   end
 end
