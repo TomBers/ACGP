@@ -4,9 +4,10 @@ defmodule GameState do
   end
 
   def initial_state(user_states, game_state, channel_id) do
+    # Todo - Set active user if this is a new game
     server = StateAgent.get_server(channel_id)
 
-    new_state = Map.merge(game_state, base_state())
+    new_state = Map.merge(base_state(), game_state)
 
     game_state =
       if StateAgent.get(server, :game_state) do

@@ -627,7 +627,7 @@ defmodule GameUtils do
   end
 
   def has_answered(usr, game_state) do
-    Enum.any?(game_state.answered, fn ans -> ans.user == usr end)
+    Enum.any?(game_state.answered, fn ans -> ans.name == usr end)
   end
 
   def is_active_user(nil, game_state) do
