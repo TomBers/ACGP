@@ -19,22 +19,13 @@ defmodule DeclareWinner do
       winner: "Hammer_494"
     }
 
-    winner = gs.winner
-    scores = gs.scores
-
-    # %{^winner => score} =
-    #   Enum.find(scores, %{winner => 0}, fn {name => _score} -> name == winner end)
-
-    scores = Map.update(scores, winner, 1, fn val -> val + 1 end)
-
     new_state =
       Map.merge(GameState.base_state(), DrawIt.gen_questions())
-      |> put_in([:active_user], winner)
-      |> put_in([:scores], scores)
+      |> put_in([:active_user], gs.winner)
+      |> put_in([:scores], Map.update(gs.scores, gs.winner, 1, fn val -> val + 1 end))
   end
 
   def find_score(game_state, user) do
-    u = Map.get(game_state.scores, user, 0)
-    IO.inspect(u)
+    Map.get(game_state.scores, user, 0)
   end
 end
