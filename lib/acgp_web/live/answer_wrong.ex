@@ -6,104 +6,101 @@ defmodule AcgpWeb.AnswerWrong do
   defp topic(id), do: "answerwrong:#{id}"
 
   def mount(%{"id" => room}, _session, socket) do
-    channel_id = topic(room)
-    general_params = StateManagement.setup_initial_state(channel_id, room)
+    if connected?(socket) do
+      params =
+        StateManagement.setup_initial_state(topic(room))
+        |> add_specic_state()
 
-    {:ok, socket |> assign(setup_specific_params(channel_id, general_params))}
-  end
-
-  def setup_specific_params(channel_id, general_params) do
-    s = StateAgent.get_server(channel_id)
-    state = gen_state(s)
-
-    general_params
-    |> Map.put(:state, state)
-    |> Map.put(:current_guesses, [])
-    |> Map.put(:server, s)
-  end
-
-  def gen_state(server, over_write? \\ false) do
-    aw = AnswerWrong.get_question()
-
-    potential_state = %{
-      question: aw.question,
-      answer: aw.answer
-    }
-
-    if over_write? do
-      StateAgent.put(server, :state, potential_state)
+      {:ok, socket |> assign(params)}
     else
-      StateAgent.get_or_generate(server, :state, potential_state)
+      {:ok, socket |> assign(empty_game_state())}
     end
   end
 
-  def handle_event("winner", %{"user" => user}, socket) do
-    pid = self()
-    channel_id = topic(socket.assigns.room)
-    my_name = socket.assigns.my_name
-    #    The current card czar has choosen a winner
-    #     Step 1 - declare themselves no longer the car czar and maybe update score if they won
-    StateManagement.change_user_and_maybe_inc_score(
-      pid,
-      channel_id,
-      socket.assigns,
-      my_name == user
-    )
-
-    state = gen_state(socket.assigns.server, true)
-    #    Step 2 - Send a message to everyone announcing the winner and pick new card
-    AcgpWeb.Endpoint.broadcast_from(pid, channel_id, "winner", %{winner: user})
-    {:noreply, assign(socket, state: state, current_guesses: [])}
+  def add_specic_state(params) do
+    gs = game_state(params.my_name)
+    params |> GameState.initial_state(gs, params.channel_id)
   end
 
-  #  Events from Page
-  def handle_info(%{event: "winner", payload: %{winner: winner}}, socket) do
-    StateManagement.increase_score(self(), topic(socket.assigns.room), winner, socket.assigns)
-    state = gen_state(socket.assigns.server)
-    {:noreply, socket |> assign(state: state, current_guesses: [])}
+  def game_state(user \\ "") do
+    aw = AnswerWrong.get_question()
+
+    %{
+      active_user: user,
+      question: aw.question,
+      answer: aw.answer,
+      selected_answer: nil
+    }
+  end
+
+  def empty_game_state do
+    %{
+      game_state: %{
+        active_user: nil,
+        question: "",
+        answer: "",
+        selected_answer: nil
+      },
+      my_name: "",
+      users: []
+    }
+  end
+
+  def win_condition(state, users) do
+    {true, Enum.find(state.answered, fn ans -> ans.guess == state.selected_answer end).name}
+  end
+
+  def sync_state(socket, new_state) do
+    pid = self()
+
+    GameState.update_state(new_state, socket.assigns.channel_id)
+
+    AcgpWeb.Endpoint.broadcast_from(pid, socket.assigns.channel_id, "sync_state", %{
+      state: new_state
+    })
+
+    {:noreply, socket |> assign(game_state: new_state)}
   end
 
   def handle_event("myguess", %{"key" => key, "value" => value, "user" => user}, socket) do
     if key == "Enter" do
-      new_guesses = [%{answer: value, user: user} | socket.assigns.current_guesses]
+      new_state = GameState.add_answered(socket.assigns.game_state, %{name: user, guess: value})
 
-      new_guesses =
-        if are_all_answers_in?(new_guesses, socket.assigns.users) do
-          [
-            %{
-              answer: socket.assigns.state.answer,
-              user: StateManagement.active_user(socket.assigns.users).name
-            }
-            | new_guesses
-          ]
+      new_state =
+        if length(new_state.answered) >= length(socket.assigns.users) - 1 do
+          GameState.add_answered(new_state, %{
+            name: new_state.active_user,
+            guess: new_state.answer
+          })
         else
-          new_guesses
+          new_state
         end
 
-      #    I announce my answer to everyone
-      AcgpWeb.Endpoint.broadcast_from(self(), topic(socket.assigns.room), "new_guesses", %{
-        new_guesses: new_guesses
-      })
-
-      {:noreply, socket |> assign(current_guesses: new_guesses)}
+      sync_state(socket, new_state)
     else
       {:noreply, socket}
     end
   end
 
-  def handle_info(%{event: "new_guesses", payload: %{new_guesses: new_guesses}}, socket) do
-    {:noreply, assign(socket, current_guesses: new_guesses)}
+  def handle_event("pick_winner", %{"answer" => ans, "user" => user, "value" => _}, socket) do
+    gs = GameState.set_field(socket.assigns.game_state, :selected_answer, ans)
+
+    sync_state(
+      socket,
+      GameState.check_winner(
+        gs,
+        socket.assigns.users,
+        &win_condition/2,
+        &game_state/0
+      )
+    )
   end
 
   def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    {:noreply, socket |> assign(users: Presence.list_presences(topic(socket.assigns.room)))}
+    {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
   end
 
-  def am_I_draw_king(my_name, users) do
-    StateManagement.is_user_active(my_name, users)
-  end
-
-  def are_all_answers_in?(current_guesses, users) do
-    length(current_guesses) >= length(users) - 1
+  def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do
+    {:noreply, socket |> assign(:game_state, state)}
   end
 end

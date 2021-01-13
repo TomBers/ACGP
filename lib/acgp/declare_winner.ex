@@ -15,12 +15,12 @@ defmodule DeclareWinner do
         "Broad letter"
       ],
       scores: %{"Hammer_494" => 2, "Writing_315" => 4},
-      to_draw: "Broad letter",
+      answer: "Broad letter",
       winner: "Hammer_494"
     }
 
     new_state =
-      Map.merge(GameState.base_state(), DrawIt.gen_questions())
+      Map.merge(GameState.base_state(), DrawIt.game_state())
       |> put_in([:active_user], gs.winner)
       |> put_in([:scores], Map.update(gs.scores, gs.winner, 1, fn val -> val + 1 end))
   end

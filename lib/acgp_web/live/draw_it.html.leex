@@ -55,7 +55,7 @@ function onMouseUp(event) {
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child notification is-primary">
-                            <p class="title">Draw - <%= @game_state.to_draw %></p>
+                            <p class="title">Draw - <%= @game_state.answer %></p>
                         </article>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ function onMouseUp(event) {
 
 
 
-<%= if length(@users) >= 3 do %>
+<%= if length(@users) >= 2 do %>
 <div class="content is-large">
     <ol type="1">
         <%= for user <- @users do %>

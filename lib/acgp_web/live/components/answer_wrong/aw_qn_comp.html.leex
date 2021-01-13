@@ -1,4 +1,4 @@
-<%= if i_have_answered(@current_guesses, @my_name) do %>
+<%= if GameUtils.has_answered(@my_name, @game_state) do %>
     <p class="title">Waiting for other answers</p>
 <% else %>
     <div class="tile is-ancestor">
@@ -6,9 +6,9 @@
             <div class="tile">
                 <div class="tile is-parent is-vertical">
                     <article class="tile is-child notification is-danger">
-                        <p class="title"><%= @state.question %></p>
-                        <p class="subtitle">Answer: <%= @state.answer %></p>
-                        <input class="input" type="text" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Guess an answer">
+                        <p class="title"><%= @game_state.question %></p>
+                        <p class="subtitle">Answer: <%= @game_state.answer %></p>
+                        <input class="input" type="text" id="guess" onkeyup="event.keyCode == 13 ? this.value = '' : null" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Guess an answer">
                     </article>
                 </div>
             </div>

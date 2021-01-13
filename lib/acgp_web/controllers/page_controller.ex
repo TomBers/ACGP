@@ -11,8 +11,8 @@ defmodule AcgpWeb.PageController do
     render(conn, "tmp.html", game: "Askhole", path: "askhole")
   end
 
-  def cah(conn, _params) do
-    render(conn, "tmp.html", game: "Cards Against Humanity", path: "cah")
+  def mml(conn, _params) do
+    render(conn, "tmp.html", game: "Make me laugh", path: "mml")
   end
 
   def drawit(conn, _params) do

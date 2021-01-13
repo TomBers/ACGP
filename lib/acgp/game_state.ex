@@ -63,9 +63,10 @@ defmodule GameState do
     end
   end
 
+  # TODO this is the win condition for DrawIt - consider moving
   def who_won(state, users) do
     Enum.find(state.answered, get_active_user(state, users), fn ans ->
-      ans.guess == state.to_draw
+      ans.guess == state.answer
     end).name
   end
 
