@@ -30,6 +30,11 @@ defmodule GameState do
     StateAgent.get(server, :game_state)
   end
 
+  def clear_state(channel_id) do
+    server = StateAgent.get_server(channel_id)
+    StateAgent.put(server, :game_state, nil)
+  end
+
   def set_field(state, field, value) do
     put_in(state, [field], value)
   end

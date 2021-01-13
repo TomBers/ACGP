@@ -85,12 +85,17 @@ defmodule AcgpWeb.DrawIt do
     sync_state(socket, new_state)
   end
 
-  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    users = Presence.list_presences(socket.assigns.channel_id)
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    cid = socket.assigns.channel_id
+    users = Presence.list_presences(cid)
     gs = socket.assigns.game_state
 
     if !Enum.any?(users, fn user -> user.name == gs.active_user end) do
       sync_state(socket, GameState.set_controller(gs, List.first(users).name))
+    end
+
+    if length(users) == 0 do
+      GameState.clear_state(cid)
     end
 
     {:noreply, socket |> assign(users: users)}
