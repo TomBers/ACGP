@@ -18,14 +18,14 @@ defmodule AcgpWeb.Router do
     pipe_through :browser
 
     live "/askhole/:id", AskHole, layout: {AcgpWeb.LayoutView, :app}
-    live "/cah/:id", LiveCardsAgainstHumanity, layout: {AcgpWeb.LayoutView, :app}
+    live "/mml/:id", LiveCardsAgainstHumanity, layout: {AcgpWeb.LayoutView, :app}
     live "/drawit/:id", DrawIt, layout: {AcgpWeb.LayoutView, :app}
     live "/aw/:id", AnswerWrong, layout: {AcgpWeb.LayoutView, :app}
     live "/tst/:id", TestState, layout: {AcgpWeb.LayoutView, :app}
 
     get "/", PageController, :index
     get "/askhole", PageController, :askhole
-    get "/cah", PageController, :cah
+    get "/mml", PageController, :mml
     get "/drawit", PageController, :drawit
     get "/aw", PageController, :answerwrong
     get "/abundance", PageController, :abundance

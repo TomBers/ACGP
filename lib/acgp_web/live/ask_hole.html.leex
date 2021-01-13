@@ -3,7 +3,7 @@
         <div class="tile">
             <div class="tile is-parent is-vertical">
                 <article class="tile is-child notification is-primary">
-                    <p class="title"><%= if @question == "" do %>Question<% else %><%= @question %><% end %></p>
+                    <p class="title"><%= if @game_state.question == "" do %>Question<% else %><%= @game_state.question %><% end %></p>
                 </article>
                 <article class="tile is-child notification is-danger has-text-centered">
                     <button class="button is-large" phx-click="new_card">Change question</button>
@@ -15,7 +15,7 @@
                         <label for="local-stream">Local Video Stream</label>
                         <video id="local-stream" autoplay muted></video>
 
-                        <%= if @connected do %>
+                        <%= if @game_state.connected do %>
                             <button phx-click="changeConnection" onclick="endCall()">Disconnect</button>
                         <% else %>
                             <button phx-click="changeConnection" onclick="startVideoCall()">Connect Video</button>
@@ -76,7 +76,7 @@ function endCall() {
 
 
 document.addEventListener("DOMContentLoaded", function(){
-    channel = window.socket.channel("video:<%= @room %>", {})
+    channel = window.socket.channel("video:<%= @channel_id %>", {})
     channel.join()
      .receive("ok", resp => {
         console.log("Joined successfully", resp);

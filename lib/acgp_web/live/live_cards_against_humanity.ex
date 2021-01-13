@@ -3,7 +3,7 @@ defmodule AcgpWeb.LiveCardsAgainstHumanity do
 
   alias AcgpWeb.Presence
 
-  defp topic(id), do: "cah:#{id}"
+  defp topic(id), do: "mml:#{id}"
 
   def mount(%{"id" => room}, _session, socket) do
     channel_id = topic(room)
