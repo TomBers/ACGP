@@ -3,14 +3,10 @@
         <div class="tile">
             <div class="tile is-parent is-vertical">
                 <article class="tile is-child notification is-primary">
-                    <p class="title">Question - <%= @state.question %></p>
-                    <%= if are_all_answers_in?(@current_guesses, @users) do %>
-                        <%= for guess <- Enum.shuffle(@current_guesses) do %>
-                            <button class="button margin-bottom" phx-click="winner" phx-value-user="<%= guess.user %>" phx-value-answer="<%= guess.answer %>"><%= guess.answer %></button>
+                    <p class="title">Question - <%= @game_state.question %></p>
+                        <%= for ans <- Enum.shuffle(@game_state.answered) do %>
+                            <button class="button margin-bottom" phx-click="pick_winner" phx-value-user="<%= ans.name %>" phx-value-answer="<%= ans.guess %>"><%= ans.guess %></button>
                         <% end %>
-                    <%= else %>
-                        <p class="title">Waiting for other players</p>
-                     <% end %>
                 </article>
             </div>
         </div>

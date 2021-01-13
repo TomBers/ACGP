@@ -18,18 +18,18 @@ defmodule AcgpWeb.DrawIt do
   end
 
   def add_specic_state(params) do
-    qns = gen_questions(params.my_name)
-    params |> GameState.initial_state(qns, params.channel_id)
+    gs = game_state(params.my_name)
+    params |> GameState.initial_state(gs, params.channel_id)
   end
 
-  def gen_questions(user \\ "") do
+  def game_state(user \\ "") do
     answers = DrawIt.get_n_answers(5)
 
     %{
       active_user: user,
       img: "",
       possible_answers: answers,
-      to_draw: Enum.random(answers)
+      answer: Enum.random(answers)
     }
   end
 
@@ -41,7 +41,7 @@ defmodule AcgpWeb.DrawIt do
         img: "",
         possible_answers: [],
         scores: %{},
-        to_draw: nil,
+        answer: nil,
         winner: nil
       },
       my_name: "",
@@ -80,7 +80,7 @@ defmodule AcgpWeb.DrawIt do
   def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
     new_state =
       GameState.add_answered(socket.assigns.game_state, %{name: user, guess: answer})
-      |> GameState.check_winner(socket.assigns.users, &win_condition/2, &gen_questions/0)
+      |> GameState.check_winner(socket.assigns.users, &win_condition/2, &game_state/0)
 
     sync_state(socket, new_state)
   end

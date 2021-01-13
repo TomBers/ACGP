@@ -1,0 +1,38 @@
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-12">
+        <div class="tile">
+            <div class="tile is-parent is-vertical">
+                <article class="tile is-child notification is-primary">
+                    <p class="title"><%= @game_state.question_card %></p>
+                </article>
+                <article class="tile is-child notification is-danger has-text-centered">
+                    <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
+                        <p class="title">Current guesses (<%= length(@game_state.answered) %> / <%= length(@users) - 1 %>) </p>
+                        <p class="subtitle">Pick a winner</p>
+                        <%= for ans <- @game_state.answered do %>
+                            <button class="button" phx-click="winner" phx-value-user="<%= ans.name %>"><%= ans.guess %></button>
+                        <% end %>
+
+                    <% else %>
+                        <p class="title">My Answers</p>
+                        <%= if !GameUtils.has_answered(@my_name, @game_state) do %>
+                            <%= for answer <- @game_state.answer_cards do %>
+                                <button class="button margin-bottom" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
+                            <% end %>
+                            <br><br>
+                            <input class="input" type="text" id="guess" onkeyup="event.keyCode == 13 ? this.value = '' : null" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Freestyle">
+                            <% else %>
+                            <h1 class="title">Waiting for other players</h1>
+                        <% end %>
+                    <% end %>
+                </article>
+            </div>
+            <div class="content is-large">
+                <ol type="1">
+                    <%= for user <- @users do %>
+                        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <%= GameUtils.score(@game_state, user.name) %> point(s)</li>
+                    <% end %>
+                </ol>
+            </div>
+    </div>
+</div>
