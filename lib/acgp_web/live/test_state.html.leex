@@ -1,0 +1,11 @@
+<h1 class="title">Test <%= @game_state.title %></h1>
+
+<button  phx-click="guess" phx-value-user="<%= @my_name %>">Submit answer</button>
+
+<button  phx-click="take_control" phx-value-user="<%= @my_name %>">Take Control</button>
+
+<button  phx-click="clear_state">Clear all state</button>
+
+<%= for user <- @users do %>
+<li class="<%= if GameUtils.has_answered(user, @game_state) do %>line-through<% end %> <%= if GameUtils.is_active_user(user, @game_state) do %>bold <% end %>"><%= user.name %></li>
+<% end %>

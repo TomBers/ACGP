@@ -33,10 +33,7 @@ function onMouseDown(event) {
 // at the position of the mouse:
 function onMouseDrag(event) {
 	path.add(event.point);
-
-    //if ((++callCount % 20) == 0) {
-	    window.userSVG = paper.project.exportSVG({asString:true})
-	//}
+    window.userSVG = paper.project.exportSVG({asString:true})
 }
 
 // When the mouse is released, we simplify the path:
@@ -51,59 +48,66 @@ function onMouseUp(event) {
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
-    <%= if am_I_draw_king(@my_name, @users) do %>
+<%= if length(@users) >= 2 do %>
+    <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
                 <div class="tile">
                     <div class="tile is-parent is-vertical">
                         <article class="tile is-child notification is-primary">
-                            <p class="title">Draw - <%= @state.to_draw %></p>
+                            <p class="title">Draw - <%= @game_state.to_draw %></p>
                         </article>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="columns is-mobile">
-            <div class="column is-one-fifth">
-                <button class="button margin-bottom" onclick="window.globals.clearCanvas()">Clear</button><br>
-                <button class="button is-primary margin-bottom" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
-                <button class="button is-info margin-bottom" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
-                <button class="button is-warning margin-bottom" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
-                <button class="button is-danger margin-bottom" onclick="window.globals.setColour('#f14668')">Red</button><br>
-                <button class="button is-black margin-bottom" onclick="window.globals.setColour('black')">Black</button>
-            </div>
-            <div class="column">
-                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
-            </div>
 
-        </div>
     <% else %>
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
                 <div class="tile">
+                <object type="image/svg+xml" data="<%= @game_state.img %>" width=400 height=400 class="drawBox"></object>
                     <div class="tile is-parent is-vertical">
+                    <%= if !GameUtils.has_answered(@my_name, @game_state) do %>
                         <article class="tile is-child notification is-danger">
                             <p class="title">What has been drawn?</p>
-                            <%= for ans <- @state.possible_answers do %>
+                            <%= for ans <- @game_state.possible_answers do %>
                                 <button class="button margin-bottom" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
                             <% end %>
                         </article>
+                    <% end %>
                     </div>
                 </div>
             </div>
         </div>
-        <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></canvas>
-        <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if am_I_draw_king(@my_name, @users) do %>hidden<% end %>"></object>
     <% end %>
 
-
-
-
-
-
-<%= for user <- @users do %>
-<li><%= if @my_name == user.name do %>Me (<%= user.name %>)<% else %><%= user.name %><% end %> Score: <%= user.score %> <%= if user.is_active do %>I am the Drawing<% end %></li>
+    <div class="columns is-mobile <%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>">
+            <div class="column is-one-fifth">
+                <button class="button margin-bottom is-fullwidth" onclick="window.globals.clearCanvas()">Clear</button><br>
+                <button class="button is-primary is-fullwidth" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
+                <button class="button is-info is-fullwidth" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
+                <button class="button is-warning is-fullwidth" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
+                <button class="button is-danger is-fullwidth" onclick="window.globals.setColour('#f14668')">Red</button><br>
+                <button class="button is-black is-fullwidth" onclick="window.globals.setColour('black')">Black</button>
+            </div>
+            <div class="column">
+                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400></canvas>
+            </div>
+    </div>
+<% else %>
+    <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="hidden"></canvas>
+    <h1 class="title">Waiting for more players (need at least 2 people)</h1>
 <% end %>
 
 
 
+<%= if length(@users) >= 3 do %>
+<div class="content is-large">
+    <ol type="1">
+        <%= for user <- @users do %>
+            <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= GameUtils.score(@game_state, user.name) %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
+        <% end %>
+        </ol>
+        </div>
+<% end %>

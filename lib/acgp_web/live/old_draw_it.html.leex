@@ -1,0 +1,108 @@
+<script type="text/paperscript" canvas="drawItCanvas">
+var path;
+var penSize = 5;
+var callCount = 0;
+var colour = 'black';
+
+globals.clearCanvas = function() {
+    project.clear()
+}
+
+globals.setColour = function(col) {
+    colour = col;
+}
+
+function onMouseDown(event) {
+	// If we produced a path before, deselect it:
+	if (path) {
+		path.selected = false;
+	}
+
+	// Create a new path and set its stroke color to black:
+	path = new Path({
+		segments: [event.point],
+		strokeWidth: penSize,
+		strokeColor: colour,
+		// Select the path, so we can see its segment points:
+		fullySelected: false
+	});
+	window.userSVG = paper.project.exportSVG({asString:true})
+}
+
+// While the user drags the mouse, points are added to the path
+// at the position of the mouse:
+function onMouseDrag(event) {
+	path.add(event.point);
+
+    //if ((++callCount % 20) == 0) {
+	    window.userSVG = paper.project.exportSVG({asString:true})
+	//}
+}
+
+// When the mouse is released, we simplify the path:
+function onMouseUp(event) {
+	var segmentCount = path.segments.length;
+
+	// When the mouse is released, simplify it:
+	path.simplify(10);
+
+	// Select the path, so we can see its segments:
+	path.fullySelected = false;
+	window.userSVG = paper.project.exportSVG({asString:true})
+}
+</script>
+    <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-12">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child notification is-primary">
+                            <p class="title">Draw - <%= @state.to_draw %></p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-mobile">
+            <div class="column is-one-fifth">
+                <button class="button margin-bottom" onclick="window.globals.clearCanvas()">Clear</button><br>
+                <button class="button is-primary margin-bottom" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
+                <button class="button is-info margin-bottom" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
+                <button class="button is-warning margin-bottom" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
+                <button class="button is-danger margin-bottom" onclick="window.globals.setColour('#f14668')">Red</button><br>
+                <button class="button is-black margin-bottom" onclick="window.globals.setColour('black')">Black</button>
+            </div>
+            <div class="column">
+                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></canvas>
+            </div>
+
+        </div>
+    <% else %>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-12">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                    <%= if GameUtils.has_answered(@my_name, @state) do %>
+                        <article class="tile is-child notification is-danger">
+                            <p class="title">What has been drawn?</p>
+                            <%= for ans <- @state.possible_answers do %>
+                                <button class="button margin-bottom" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
+                            <% end %>
+                        </article>
+                    <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="<%= if !!GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></canvas>
+        <object type="image/svg+xml" data="<%= @img %>" width=400 height=400 class="drawBox <%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>"></object>
+    <% end %>
+
+
+
+
+
+
+<%= for user <- @users do %>
+<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
+<% end %>

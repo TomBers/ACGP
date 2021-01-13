@@ -1,6 +1,14 @@
 /* This file is for your main application css. */
 @import "./bulma.css";
 
+.line-through {
+  text-decoration: line-through;
+}
+
+.bold {
+  color: red;
+}
+
 #drawItCanvas {
     border: 1px solid black;
 }
@@ -16,11 +24,11 @@ canvas[resize] {
 }
 
 .drawBox {
-    border: 1px solid black;
+    border: none;
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .margin-bottom {

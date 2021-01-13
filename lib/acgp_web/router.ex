@@ -19,8 +19,9 @@ defmodule AcgpWeb.Router do
 
     live "/askhole/:id", AskHole, layout: {AcgpWeb.LayoutView, :app}
     live "/cah/:id", LiveCardsAgainstHumanity, layout: {AcgpWeb.LayoutView, :app}
-    live "/drawit/:id", LiveDrawIt, layout: {AcgpWeb.LayoutView, :app}
+    live "/drawit/:id", DrawIt, layout: {AcgpWeb.LayoutView, :app}
     live "/aw/:id", AnswerWrong, layout: {AcgpWeb.LayoutView, :app}
+    live "/tst/:id", TestState, layout: {AcgpWeb.LayoutView, :app}
 
     get "/", PageController, :index
     get "/askhole", PageController, :askhole
