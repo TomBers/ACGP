@@ -52,8 +52,6 @@ function onMouseUp(event) {
 }
 </script>
 <h1 class="title"><%= @game_state.winner %></h1>
-<button class="button margin-bottom" phx-click="print_state">Print State</button>
-<button class="button margin-bottom" phx-click="clear_state">Clear State</button>
 <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
     <div class="tile is-ancestor">
         <div class="tile is-vertical is-12">
