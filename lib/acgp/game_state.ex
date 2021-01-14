@@ -51,6 +51,14 @@ defmodule GameState do
     Map.merge(game_base_state.(), base_state())
   end
 
+  def handle_change_in_users(socket, users, sync_fn) do
+    gs = socket.assigns.game_state
+
+    if !Enum.any?(users, fn user -> user.name == gs.active_user end) do
+      sync_fn.(socket, set_controller(gs, List.first(users).name))
+    end
+  end
+
   def check_winner(state, users, win_condition, game_base_state) do
     {is_winner, winner} = win_condition.(state, users)
 

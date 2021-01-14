@@ -56,8 +56,10 @@ defmodule AcgpWeb.MakeMeLaugh do
     {true, state.winner}
   end
 
-  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    users = Presence.list_presences(socket.assigns.channel_id)
+    GameState.handle_change_in_users(socket, users, &sync_state/2)
+    {:noreply, socket |> assign(users: users)}
   end
 
   def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do

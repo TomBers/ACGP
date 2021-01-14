@@ -29,7 +29,7 @@ defmodule AcgpWeb.AnswerWrong do
       active_user: user,
       question: aw.question,
       answer: aw.answer,
-      selected_answer: nil
+      winner: nil
     }
   end
 
@@ -39,15 +39,15 @@ defmodule AcgpWeb.AnswerWrong do
         active_user: nil,
         question: "",
         answer: "",
-        selected_answer: nil
+        winner: nil
       },
       my_name: "",
       users: []
     }
   end
 
-  def win_condition(state, users) do
-    {true, Enum.find(state.answered, fn ans -> ans.guess == state.selected_answer end).name}
+  def win_condition(state, _users) do
+    {true, state.winner}
   end
 
   def sync_state(socket, new_state) do
@@ -82,8 +82,8 @@ defmodule AcgpWeb.AnswerWrong do
     end
   end
 
-  def handle_event("pick_winner", %{"answer" => ans, "user" => user, "value" => _}, socket) do
-    gs = GameState.set_field(socket.assigns.game_state, :selected_answer, ans)
+  def handle_event("pick_winner", %{"answer" => _ans, "user" => user, "value" => _}, socket) do
+    gs = GameState.set_field(socket.assigns.game_state, :winner, user)
 
     sync_state(
       socket,
@@ -96,8 +96,10 @@ defmodule AcgpWeb.AnswerWrong do
     )
   end
 
-  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
-    {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    users = Presence.list_presences(socket.assigns.channel_id)
+    GameState.handle_change_in_users(socket, users, &sync_state/2)
+    {:noreply, socket |> assign(users: users)}
   end
 
   def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do

@@ -51,17 +51,17 @@ defmodule AcgpWeb.AskHole do
     {:noreply, socket |> assign(:game_state, state)}
   end
 
-  def handle_info(%{event: "presence_diff", payload: payload}, socket) do
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
+  end
+
+  def handle_info(%{event: "connect_state", payload: %{connected: connected}}, socket) do
+    {:noreply, assign(socket, connected: connected)}
   end
 
   def handle_event("new_card", _params, socket) do
     ns = GameState.set_field(socket.assigns.game_state, :question, AskHole.get_question())
     sync_state(socket, ns)
-  end
-
-  def handle_info(%{event: "connect_state", payload: %{connected: connected}}, socket) do
-    {:noreply, assign(socket, connected: connected)}
   end
 
   def handle_event("changeConnection", _state, socket) do

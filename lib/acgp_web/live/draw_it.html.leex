@@ -48,7 +48,8 @@ function onMouseUp(event) {
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
-<%= if length(@users) >= 2 do %>
+<%=  if length(@users) >= 2 do %>
+
     <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
@@ -100,14 +101,6 @@ function onMouseUp(event) {
     <h1 class="title">Waiting for more players (need at least 2 people)</h1>
 <% end %>
 
-
-
 <%= if length(@users) >= 2 do %>
-<div class="content is-large">
-    <ol type="1">
-        <%= for user <- @users do %>
-            <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> <%= GameUtils.score(@game_state, user.name) %> <%= if GameUtils.is_active_user(user.name, @game_state) do %>I am the Drawing<% end %></li>
-        <% end %>
-        </ol>
-        </div>
+<%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
 <% end %>

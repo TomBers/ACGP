@@ -29,7 +29,8 @@ defmodule AcgpWeb.DrawIt do
       active_user: user,
       img: "",
       possible_answers: answers,
-      answer: Enum.random(answers)
+      answer: Enum.random(answers),
+      answered: []
     }
   end
 
@@ -37,12 +38,12 @@ defmodule AcgpWeb.DrawIt do
     %{
       game_state: %{
         active_user: nil,
-        answered: [],
         img: "",
         possible_answers: [],
         scores: %{},
         answer: nil,
-        winner: nil
+        winner: nil,
+        answered: []
       },
       my_name: "",
       users: []
@@ -86,18 +87,8 @@ defmodule AcgpWeb.DrawIt do
   end
 
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    cid = socket.assigns.channel_id
-    users = Presence.list_presences(cid)
-    gs = socket.assigns.game_state
-
-    if !Enum.any?(users, fn user -> user.name == gs.active_user end) do
-      sync_state(socket, GameState.set_controller(gs, List.first(users).name))
-    end
-
-    if length(users) == 0 do
-      GameState.clear_state(cid)
-    end
-
+    users = Presence.list_presences(socket.assigns.channel_id)
+    GameState.handle_change_in_users(socket, users, &sync_state/2)
     {:noreply, socket |> assign(users: users)}
   end
 
