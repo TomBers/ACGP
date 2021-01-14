@@ -51,21 +51,11 @@ defmodule GameState do
     Map.merge(game_base_state.(), base_state())
   end
 
-  def handle_leaving(socket, users, leavers, sync_func) do
-    cid = socket.assigns.channel_id
+  def handle_change_in_users(socket, users, sync_fn) do
+    gs = socket.assigns.game_state
 
-    if length(users) == 0 do
-      clear_state(cid)
-    else
-      gs = socket.assigns.game_state
-
-      if Enum.any?(leavers, fn {name, _val} -> name == gs.active_user end) do
-        IO.inspect(users)
-        IO.inspect(List.first(users).name)
-        ns = set_controller(gs, List.first(users).name)
-        IO.inspect(ns)
-        sync_func.(socket, ns)
-      end
+    if !Enum.any?(users, fn user -> user.name == gs.active_user end) do
+      sync_fn.(socket, set_controller(gs, List.first(users).name))
     end
   end
 

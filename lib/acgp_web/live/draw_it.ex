@@ -38,12 +38,12 @@ defmodule AcgpWeb.DrawIt do
     %{
       game_state: %{
         active_user: nil,
-        answered: [],
         img: "",
         possible_answers: [],
         scores: %{},
         answer: nil,
-        winner: nil
+        winner: nil,
+        answered: []
       },
       my_name: "",
       users: []
@@ -61,21 +61,16 @@ defmodule AcgpWeb.DrawIt do
   def sync_state(socket, new_state) do
     pid = self()
 
-    ns = GameState.update_state(new_state, socket.assigns.channel_id)
+    GameState.update_state(new_state, socket.assigns.channel_id)
 
     AcgpWeb.Endpoint.broadcast_from(pid, socket.assigns.channel_id, "sync_state", %{
-      state: ns
+      state: new_state
     })
 
-    {:noreply, socket |> assign(game_state: ns)}
+    {:noreply, socket |> assign(game_state: new_state)}
   end
 
   #  Events from Page
-
-  def handle_event("print_state", _params, socket) do
-    IO.inspect(socket.assigns)
-    {:noreply, socket}
-  end
 
   def handle_event("drawit", img, socket) do
     AcgpWeb.Endpoint.broadcast_from(self(), socket.assigns.channel_id, "update_image", %{img: img})
@@ -91,19 +86,9 @@ defmodule AcgpWeb.DrawIt do
     sync_state(socket, new_state)
   end
 
-  def handle_info(%{event: "presence_diff", payload: %{joins: _join, leaves: leavers}}, socket) do
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     users = Presence.list_presences(socket.assigns.channel_id)
-    cid = socket.assigns.channel_id
-    gs = socket.assigns.game_state
-
-    if !Enum.any?(users, fn user -> user.name == gs.active_user end) do
-      sync_state(socket, GameState.set_controller(gs, List.first(users).name))
-    end
-
-    if length(users) == 0 do
-      GameState.clear_state(cid)
-    end
-
+    GameState.handle_change_in_users(socket, users, &sync_state/2)
     {:noreply, socket |> assign(users: users)}
   end
 
