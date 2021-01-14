@@ -48,8 +48,9 @@ function onMouseUp(event) {
 	window.userSVG = paper.project.exportSVG({asString:true})
 }
 </script>
-<%=  if length(@users) >= 2 do %>
+<%= live_component @socket, AcgpWeb.BrokenState, id: "BrokenState", game_state: @game_state, users: @users %>
 
+<%=  if length(@users) >= 2 do %>
     <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
