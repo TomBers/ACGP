@@ -1,0 +1,7 @@
+<div class="content is-large">
+    <ol type="1">
+    <%= for user <- @users do %>
+        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <%= GameUtils.score(@game_state, user.name) %> point(s)</li>
+    <% end %>
+    </ol>
+</div>

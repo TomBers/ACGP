@@ -10,11 +10,5 @@
 
 
 <%= if length(@users) >= 3 do %>
-<div class="content is-large">
-    <ol type="1">
-    <%= for user <- @users do %>
-        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <%= GameUtils.score(@game_state, user.name) %> point(s)</li>
-    <% end %>
-    </ol>
-</div>
+    <%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
 <% end %>

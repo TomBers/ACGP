@@ -1,3 +1,8 @@
 <h1 class="title"><%= @game %> Landing page</h1>
 
+<p>Click Play Now to get started.  You will get a unique URL that you can share with anyone.</p>
+<p>Simply copy and paste the URL and send.  They will join you in the room<p>
+<br>
+<br>
+
 <a href="<%= @path %>/<%= Enum.random(1..10240) %>" class="button is-primary">Play Now</a>

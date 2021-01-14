@@ -1,4 +1,4 @@
-<section class="hero is-small is-dark is-bold">
+<section class="hero is-small is-primary is-bold">
   <div class="hero-body">
     <div class="container">
       <p class="title">
@@ -14,7 +14,7 @@
 
 <div class="tile is-vertical is-12">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-danger">
+    <article class="tile is-child notification is-light">
       <p class="title">Askhole</p>
       <p class="subtitle"><a href="/askhole">Play now</a></p>
       <div class="content">
@@ -27,7 +27,7 @@
 
 <div class="tile is-vertical is-12">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-danger">
+    <article class="tile is-child notification is-light">
       <p class="title">Make me laugh</p>
       <p class="subtitle"><a href="/mml">Play now</a></p>
       <div class="content">
@@ -39,7 +39,7 @@
 
 <div class="tile is-vertical is-12">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-danger">
+    <article class="tile is-child notification is-light">
       <p class="title">DrawIt</p>
       <p class="subtitle"><a href="/drawit">Play now</a></p>
       <div class="content">
@@ -51,7 +51,7 @@
 
 <div class="tile is-vertical is-12">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-danger">
+    <article class="tile is-child notification is-light">
       <p class="title">AnswerWrong</p>
       <p class="subtitle"><a href="/aw">Play now</a></p>
       <div class="content">

@@ -51,6 +51,24 @@ defmodule GameState do
     Map.merge(game_base_state.(), base_state())
   end
 
+  def handle_leaving(socket, users, leavers, sync_func) do
+    cid = socket.assigns.channel_id
+
+    if length(users) == 0 do
+      clear_state(cid)
+    else
+      gs = socket.assigns.game_state
+
+      if Enum.any?(leavers, fn {name, _val} -> name == gs.active_user end) do
+        IO.inspect(users)
+        IO.inspect(List.first(users).name)
+        ns = set_controller(gs, List.first(users).name)
+        IO.inspect(ns)
+        sync_func.(socket, ns)
+      end
+    end
+  end
+
   def check_winner(state, users, win_condition, game_base_state) do
     {is_winner, winner} = win_condition.(state, users)
 

@@ -1,9 +1,20 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="/">Home</a>
-    <a class="navbar-item" href="/askhole">Askhole</a>
-    <a class="navbar-item" href="/mml">Make me laugh</a>
-    <a class="navbar-item" href="/drawit">DrawIt</a>
-    <a class="navbar-item" href="/aw">AnswerWrong</a>
-  </div>
+    <div class="navbar-brand">
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
+           data-target="navbarMenuContainer" id="navBurger">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarMenuContainer" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="/">Home</a>
+            <a class="navbar-item" href="/askhole">Askhole</a>
+            <a class="navbar-item" href="/mml">Make me laugh</a>
+            <a class="navbar-item" href="/drawit">DrawIt</a>
+            <a class="navbar-item" href="/aw">AnswerWrong</a>
+        </div>
+    </div>
 </nav>
