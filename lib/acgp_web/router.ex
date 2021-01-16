@@ -21,6 +21,7 @@ defmodule AcgpWeb.Router do
     live "/mml/:id", MakeMeLaugh, layout: {AcgpWeb.LayoutView, :app}
     live "/drawit/:id", DrawIt, layout: {AcgpWeb.LayoutView, :app}
     live "/aw/:id", AnswerWrong, layout: {AcgpWeb.LayoutView, :app}
+    live "/wtn/:id", WhatTheName, layout: {AcgpWeb.LayoutView, :app}
     live "/tst/:id", TestState, layout: {AcgpWeb.LayoutView, :app}
 
     get "/", PageController, :index
