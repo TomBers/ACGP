@@ -32,7 +32,8 @@ defmodule AcgpWeb.WhatTheName do
       letter: letter,
       categories: categories,
       answer: nil,
-      answered: []
+      answered: [],
+      time: 40
     }
   end
 
@@ -43,7 +44,8 @@ defmodule AcgpWeb.WhatTheName do
         letter: nil,
         categories: [],
         answer: nil,
-        answered: []
+        answered: [],
+        time: 0
       },
       my_name: "",
       users: []

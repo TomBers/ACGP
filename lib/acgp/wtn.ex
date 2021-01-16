@@ -57,6 +57,16 @@ defmodule WTN do
 
   def categories(num) do
     1..num
-    |> Enum.map(fn _x -> Enum.random(@categories) end)
+    |> Enum.reduce([], fn _x, acc -> add_unique(acc) end)
+  end
+
+  def add_unique(acc) do
+    cat = Enum.random(@categories)
+
+    if Enum.any?(acc, &(&1 == cat)) do
+      add_unique(acc)
+    else
+      [cat | acc]
+    end
   end
 end

@@ -4,19 +4,40 @@
             <div class="tile is-parent is-vertical">
                 <article class="tile is-child notification is-primary">
                     <p class="title">Starts with : <%= @game_state.letter %></p>
+                    <p>Timer : <span id="timer"><%= @game_state.time %></span></p>
                 </article>
                 <article class="tile is-child notification is-info has-text-centered">
-
                 <%= f = form_for :game, "#", [phx_submit: :save_answers] %>
-                        <%= for category <- @game_state.categories  do%>
-                            <%= label f, category %>
-                            <%= text_input f, category, placeholder: category, class: "input is-rounded", onkeypress: "return event.keyCode!=13" %>
-                        <% end %>
-                    <input type="submit">
+                    <%= for category <- @game_state.categories  do%>
+                        <%= label f, category, class: "" %>
+                        <%= text_input f, category, placeholder: category, class: "input is-rounded", onkeypress: "return event.keyCode!=13" %>
+                    <% end %>
+                    <br>
+                    <br>
+                    <input type="submit" id="submitButton" class="button is-primary is-rounded">
                 </form>
-
                 </article>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+update();
+
+ function update() {
+     var element = document.getElementById("timer");
+     var newVal = parseInt(element.innerText) - 1;
+
+    element.innerText = newVal;
+
+    if (newVal == 0) {
+        document.getElementById("submitButton").click();
+    }
+    else {
+            setTimeout(function(){update()}, 1000);
+    }
+}
+
+</script>
