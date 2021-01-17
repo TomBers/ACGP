@@ -107,18 +107,12 @@ defmodule WTN do
     score * -1
   end
 
-  # def score_ans(answers) do
-  #   answers
-  #   |> Enum.map(fn ans -> %{name: ans.name, score: calc_score(ans.answers, answers)} end)
-  # end
+  def dupes do
+    my_answer = {"Animals", "Aardvark"}
+    other_answers = [{"Animals", "Aardvark"}, {"Movies", "Alien"}]
 
-  # TODO calc duplicates
-  # def calc_score(ans, answers) do
-  #   ans
-  #   |> Enum.map(fn v ->
-  #     Enum.count(answers, fn a -> Enum.any?(a.answers, fn b -> b == List.first(ans) end) end)
-  #   end)
-  # end
+    other_answers |> Enum.count(fn ans -> ans == my_answer end)
+  end
 
   def filter_incorrect(ans, letter) do
     Enum.filter(ans.answers, fn {k, v} -> !(v == "") and String.starts_with?(v, letter) end)
