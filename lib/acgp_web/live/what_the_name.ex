@@ -71,7 +71,12 @@ defmodule AcgpWeb.WhatTheName do
   end
 
   def handle_event("save_answers", %{"game" => answers}, socket) do
-    IO.inspect(answers)
-    {:noreply, socket}
+    {my_name, answers} = Map.get_and_update(answers, "my_name", fn _ -> :pop end)
+
+    new_state =
+      GameState.add_answered(socket.assigns.game_state, %{name: my_name, answers: answers})
+
+    IO.inspect(new_state)
+    sync_state(socket, new_state)
   end
 end
