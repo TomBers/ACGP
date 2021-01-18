@@ -75,43 +75,6 @@ defmodule WTN do
 
     inputs = [
       %{
-        answers: %{"Animals" => "Aardvark", "Movies" => "Star Wars", "Plants" => ""},
-        name: "Player_1"
-      },
-      %{
-        answers: %{"Animals" => "Aardvark", "Movies" => "Alien", "Plants" => ""},
-        name: "Player_2"
-      }
-    ]
-
-    # wrong_answers =
-    wrong_answer_scores =
-      inputs
-      |> Enum.map(fn input ->
-        %{name: input.name, score: calc_wrong_answers(input.answers, letter)}
-      end)
-
-    IO.inspect(wrong_answer_scores)
-
-    # Filter worng answers
-    f_ans =
-      inputs |> Enum.map(fn ans -> %{name: ans.name, answers: filter_incorrect(ans, letter)} end)
-
-    # Score duplications (if any dupes found -2 points)
-    # score_ans(f_ans)
-  end
-
-  def calc_wrong_answers(input, letter) do
-    score = input |> Enum.count(fn {_k, v} -> v == "" or !String.starts_with?(v, letter) end)
-
-    score * -1
-  end
-
-  def dupes do
-    letter = "A"
-
-    inputs = [
-      %{
         answers: %{"Animals" => "Aardvark", "Movies" => "Argo", "Plants" => "ACACIA"},
         name: "Player_1"
       },
@@ -125,13 +88,36 @@ defmodule WTN do
       }
     ]
 
-    inputs
-    |> Enum.map(fn input -> return_dupe_score(input, inputs, letter) end)
+    # wrong_answers =
+    wrong_answer_scores =
+      inputs
+      |> Enum.map(fn input -> calc_wrong_answers(input, letter) end)
 
-    # count_all_dupes(my_answer, other_answers)
+    dupe_scores =
+      inputs
+      |> Enum.map(fn input -> calc_dupe_score(input, inputs, letter) end)
+
+    inputs
+    |> Enum.map(fn x -> %{name: x.name, score: length(Map.keys(x.answers))} end)
+    |> Enum.map(fn x ->
+      Map.update!(x, :score, &(&1 + get_score(dupe_scores, wrong_answer_scores, x.name)))
+    end)
   end
 
-  def return_dupe_score(input, all_answers, letter) do
+  def get_score(sl1, sl2, name) do
+    s1 = Enum.find(sl1, fn score -> score.name == name end).score
+    s2 = Enum.find(sl2, fn score -> score.name == name end).score
+    s1 + s2
+  end
+
+  def calc_wrong_answers(input, letter) do
+    score =
+      input.answers |> Enum.count(fn {_k, v} -> v == "" or !String.starts_with?(v, letter) end)
+
+    %{name: input.name, score: score * -1}
+  end
+
+  def calc_dupe_score(input, all_answers, letter) do
     filtered_answers =
       all_answers
       |> Enum.filter(fn ans -> ans.name != input.name end)
@@ -139,7 +125,7 @@ defmodule WTN do
       |> List.flatten()
 
     my_ans = Map.to_list(input.answers)
-    %{name: input.name, score: count_all_dupes(my_ans, filtered_answers)}
+    %{name: input.name, score: count_all_dupes(my_ans, filtered_answers) * -2}
   end
 
   def count_all_dupes(my_answer, other_answers) do
