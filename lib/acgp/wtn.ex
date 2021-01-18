@@ -108,9 +108,38 @@ defmodule WTN do
   end
 
   def dupes do
-    my_answer = [{"Animals", "Aardvark"}, {"Movies", "Alien"}]
-    other_answers = [{"Animals", "Aardvark"}, {"Movies", "Alien"}]
-    count_all_dupes(my_answer, other_answers)
+    letter = "A"
+
+    inputs = [
+      %{
+        answers: %{"Animals" => "Aardvark", "Movies" => "Argo", "Plants" => "ACACIA"},
+        name: "Player_1"
+      },
+      %{
+        answers: %{"Animals" => "Ant", "Movies" => "Alien", "Plants" => "ABELIA"},
+        name: "Player_2"
+      },
+      %{
+        answers: %{"Animals" => "Aardvark", "Movies" => "Alien", "Plants" => "ABELIA"},
+        name: "Player_3"
+      }
+    ]
+
+    inputs
+    |> Enum.map(fn input -> return_dupe_score(input, inputs, letter) end)
+
+    # count_all_dupes(my_answer, other_answers)
+  end
+
+  def return_dupe_score(input, all_answers, letter) do
+    filtered_answers =
+      all_answers
+      |> Enum.filter(fn ans -> ans.name != input.name end)
+      |> Enum.map(fn x -> filter_incorrect(x, letter) end)
+      |> List.flatten()
+
+    my_ans = Map.to_list(input.answers)
+    %{name: input.name, score: count_all_dupes(my_ans, filtered_answers)}
   end
 
   def count_all_dupes(my_answer, other_answers) do
