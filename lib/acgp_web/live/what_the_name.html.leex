@@ -1,44 +1,25 @@
 <div class="tile is-ancestor">
     <div class="tile is-vertical is-12">
-        <div class="tile">
-            <div class="tile is-parent is-vertical">
-                <article class="tile is-child notification is-primary">
-                    <p class="title">Starts with : <%= @game_state.letter %></p>
-                    <p>Timer : <span id="timer"><%= @game_state.time %></span></p>
-                </article>
-                <article class="tile is-child notification is-info has-text-centered">
-                <%= f = form_for :game, "#", [phx_submit: :save_answers] %>
-                    <%= for category <- @game_state.categories  do%>
-                        <%= label f, category, class: "" %>
-                        <%= text_input f, category, placeholder: category, class: "input is-rounded", onkeypress: "return event.keyCode!=13" %>
-                    <% end %>
-                    <br>
-                    <br>
-                    <%= hidden_input f, "my_name", value: @my_name %>
-                    <input type="submit" id="submitButton" class="button is-primary is-rounded">
-                </form>
-                </article>
+            <div class="tile">
+                <div class="tile is-parent is-vertical">
+                    <article class="tile is-child notification is-primary">
+                        <p class="title">Starts with : <%= @game_state.letter %></p>
+                        <p>Timer : <span id="timer"><%= @game_state.time %></span></p>
+                    </article>
+                    <article class="tile is-child notification is-info has-text-centered">
+                    <%= f = form_for :game, "#", [phx_change: :update_answers, phx_submit: :save_answers] %>
+                        <%= for category <- @game_state.categories  do%>
+                            <%= label f, category, class: "" %>
+                            <%= text_input f, category, value: GameUtils.current_answer(@my_name, @game_state, category), placeholder: category, class: "input is-rounded", onkeypress: "return event.keyCode!=13" %>
+                        <% end %>
+                        <br>
+                        <br>
+                        <%= hidden_input f, "my_name", value: @my_name %>
+                        <input type="submit" id="submitButton" class="button is-primary is-rounded">
+                    </form>
+                    </article>
+                </div>
             </div>
-        </div>
+         <%= live_component @socket, AcgpWeb.PlayerList, id: "WTNPlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
     </div>
 </div>
-
-<script>
-
-update();
-
- function update() {
-     var element = document.getElementById("timer");
-     var newVal = parseInt(element.innerText) - 1;
-
-    element.innerText = newVal;
-
-    if (newVal == 0) {
-        document.getElementById("submitButton").click();
-    }
-    else {
-            setTimeout(function(){update()}, 1000);
-    }
-}
-
-</script>

@@ -3,11 +3,17 @@ defmodule AcgpWeb.WhatTheName do
   use Phoenix.HTML
 
   alias AcgpWeb.Presence
+  alias ACGP.Timer
+
+  @timer_time 10
 
   defp topic(id), do: "whatthename:#{id}"
 
   def mount(%{"id" => room}, _session, socket) do
     if connected?(socket) do
+      timer = Timer.start(self())
+      # IO.inspect(GenServer.whereis(timer))
+
       params =
         StateManagement.setup_initial_state(topic(room))
         |> add_specic_state()
@@ -31,9 +37,9 @@ defmodule AcgpWeb.WhatTheName do
       active_user: user,
       letter: letter,
       categories: categories,
-      answer: nil,
+      users_answered: [],
       answered: [],
-      time: 40
+      time: @timer_time
     }
   end
 
@@ -43,7 +49,7 @@ defmodule AcgpWeb.WhatTheName do
         active_user: nil,
         letter: nil,
         categories: [],
-        answer: nil,
+        users_answered: [],
         answered: [],
         time: 0
       },
@@ -64,19 +70,49 @@ defmodule AcgpWeb.WhatTheName do
     {:noreply, socket |> assign(game_state: new_state)}
   end
 
+  def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do
+    {:noreply, socket |> assign(:game_state, state)}
+  end
+
+  def handle_info(:tick, socket) do
+    gs = socket.assigns.game_state
+
+    new_state =
+      if gs.time <= 0 do
+        gs
+        |> put_in([:scores], WTN.calc_scores(gs))
+        |> put_in([:letter], WTN.letter())
+        |> put_in([:categories], WTN.categories(3))
+        |> put_in([:answered], [])
+        |> put_in([:time], @timer_time)
+        |> put_in([:users_answered], [])
+      else
+        gs |> put_in([:time], gs.time - 1)
+      end
+
+    sync_state(socket, new_state)
+  end
+
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     users = Presence.list_presences(socket.assigns.channel_id)
     GameState.handle_change_in_users(socket, users, &sync_state/2)
     {:noreply, socket |> assign(users: users)}
   end
 
-  def handle_event("save_answers", %{"game" => answers}, socket) do
+  def handle_event("update_answers", %{"game" => answers}, socket) do
     {my_name, answers} = Map.get_and_update(answers, "my_name", fn _ -> :pop end)
 
     new_state =
-      GameState.add_answered(socket.assigns.game_state, %{name: my_name, answers: answers})
+      socket.assigns.game_state
+      |> put_in([:answered], [%{name: my_name, answers: answers}])
 
-    IO.inspect(new_state)
+    sync_state(socket, new_state)
+  end
+
+  def handle_event("save_answers", %{"game" => answers}, socket) do
+    gs = socket.assigns.game_state
+    {my_name, _answers} = Map.get_and_update(answers, "my_name", fn _ -> :pop end)
+    new_state = gs |> put_in([:users_answered], [my_name | gs.users_answered])
     sync_state(socket, new_state)
   end
 end

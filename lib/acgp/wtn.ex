@@ -70,23 +70,30 @@ defmodule WTN do
     end
   end
 
-  def calc_scores do
-    letter = "A"
+  def tst_cals_scores do
+    state = %{
+      active_user: "Ship_922",
+      answered: [
+        # %{
+        #   answers: %{"Animals" => "", "Furniture" => "L", "Rivers" => "L"},
+        #   name: "Ship_922"
+        # }
+      ],
+      categories: ["Animals", "Rivers", "Furniture"],
+      letter: "L",
+      scores: %{"Ship_922" => 3},
+      time: 0,
+      users_answered: [],
+      winner: nil
+    }
 
-    inputs = [
-      %{
-        answers: %{"Animals" => "Aardvark", "Movies" => "Argo", "Plants" => "ACACIA"},
-        name: "Player_1"
-      },
-      %{
-        answers: %{"Animals" => "Ant", "Movies" => "Alien", "Plants" => "ABELIA"},
-        name: "Player_2"
-      },
-      %{
-        answers: %{"Animals" => "Aardvark", "Movies" => "Alien", "Plants" => "ABELIA"},
-        name: "Player_3"
-      }
-    ]
+    calc_scores(state)
+  end
+
+  def calc_scores(state) do
+    letter = state.letter
+    existing_scores = state.scores
+    inputs = state.answered
 
     # wrong_answers =
     wrong_answer_scores =
@@ -97,11 +104,17 @@ defmodule WTN do
       inputs
       |> Enum.map(fn input -> calc_dupe_score(input, inputs, letter) end)
 
-    inputs
-    |> Enum.map(fn x -> %{name: x.name, score: length(Map.keys(x.answers))} end)
-    |> Enum.map(fn x ->
-      Map.update!(x, :score, &(&1 + get_score(dupe_scores, wrong_answer_scores, x.name)))
-    end)
+    new_scores =
+      inputs
+      |> Enum.map(fn x -> %{name: x.name, score: length(Map.keys(x.answers))} end)
+      |> Enum.map(fn x ->
+        Map.update!(x, :score, &(&1 + get_score(dupe_scores, wrong_answer_scores, x.name)))
+      end)
+      |> Enum.reduce(%{}, fn %{name: name, score: score}, acc ->
+        Map.put(acc, name, score)
+      end)
+
+    Map.merge(existing_scores, new_scores, fn k, v1, v2 -> v1 + v2 end)
   end
 
   def get_score(sl1, sl2, name) do

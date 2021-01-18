@@ -630,6 +630,15 @@ defmodule GameUtils do
     Enum.any?(game_state.answered, fn ans -> ans.name == usr end)
   end
 
+  def current_answer(user, game_state, category) do
+    my_answers =
+      game_state.answered
+      |> Enum.find(%{answers: %{}}, fn ele -> ele.name == user end)
+
+    ans = Map.get(my_answers.answers, category, "")
+    ans
+  end
+
   def is_active_user(nil, game_state) do
     false
   end

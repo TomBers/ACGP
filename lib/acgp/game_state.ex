@@ -60,6 +60,7 @@ defmodule GameState do
   end
 
   def check_winner(state, users, win_condition, game_base_state) do
+    IO.inspect(state)
     {is_winner, winner} = win_condition.(state, users)
 
     if is_winner do
@@ -85,4 +86,9 @@ defmodule GameState do
   def get_active_user(state, users) do
     Enum.find(users, fn usr -> usr.name == state.active_user end)
   end
+
+  # def add_scores(state, add_func) do
+  #   state
+  #   |> put_in([:scores], add_func.(state))
+  # end
 end
