@@ -108,9 +108,17 @@ defmodule WTN do
   end
 
   def dupes do
-    my_answer = {"Animals", "Aardvark"}
+    my_answer = [{"Animals", "Aardvark"}, {"Movies", "Alien"}]
     other_answers = [{"Animals", "Aardvark"}, {"Movies", "Alien"}]
+    count_all_dupes(my_answer, other_answers)
+  end
 
+  def count_all_dupes(my_answer, other_answers) do
+    my_answer
+    |> Enum.reduce(0, fn ans, acc -> acc + count_dupes(ans, other_answers) end)
+  end
+
+  def count_dupes(my_answer, other_answers) do
     other_answers |> Enum.count(fn ans -> ans == my_answer end)
   end
 
