@@ -3,17 +3,13 @@ defmodule AcgpWeb.WhatTheName do
   use Phoenix.HTML
 
   alias AcgpWeb.Presence
-  alias ACGP.Timer
 
-  @timer_time 10
+  @timer_time 50
 
   defp topic(id), do: "whatthename:#{id}"
 
   def mount(%{"id" => room}, _session, socket) do
     if connected?(socket) do
-      timer = Timer.start(self())
-      # IO.inspect(GenServer.whereis(timer))
-
       params =
         StateManagement.setup_initial_state(topic(room))
         |> add_specic_state()
@@ -78,7 +74,7 @@ defmodule AcgpWeb.WhatTheName do
     gs = socket.assigns.game_state
 
     new_state =
-      if gs.time <= 0 do
+      if gs.time <= 0 or length(gs.users_answered) == length(socket.assigns.users) do
         gs
         |> put_in([:scores], WTN.calc_scores(gs))
         |> put_in([:letter], WTN.letter())
@@ -95,6 +91,11 @@ defmodule AcgpWeb.WhatTheName do
 
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     users = Presence.list_presences(socket.assigns.channel_id)
+
+    if length(users) == 2 do
+      :timer.send_interval(1000, self(), :tick)
+    end
+
     GameState.handle_change_in_users(socket, users, &sync_state/2)
     {:noreply, socket |> assign(users: users)}
   end
@@ -104,7 +105,7 @@ defmodule AcgpWeb.WhatTheName do
 
     new_state =
       socket.assigns.game_state
-      |> put_in([:answered], [%{name: my_name, answers: answers}])
+      |> GameState.add_answered(%{name: my_name, answered: answers})
 
     sync_state(socket, new_state)
   end

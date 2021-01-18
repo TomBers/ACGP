@@ -41,11 +41,11 @@ defmodule WTN do
     "Drinks",
     "Festivals",
     "Islands",
-    "Kings & Queens",
-    "Chemical Elements",
+    "Kings_&_Queens",
+    "Chemical_Elements",
     "Musicians",
     "Movies",
-    "First Names",
+    "First_Names",
     "Books",
     "Authors",
     "Politicians"
@@ -106,7 +106,7 @@ defmodule WTN do
 
     new_scores =
       inputs
-      |> Enum.map(fn x -> %{name: x.name, score: length(Map.keys(x.answers))} end)
+      |> Enum.map(fn x -> %{name: x.name, score: length(Map.keys(x.answered))} end)
       |> Enum.map(fn x ->
         Map.update!(x, :score, &(&1 + get_score(dupe_scores, wrong_answer_scores, x.name)))
       end)
@@ -125,7 +125,7 @@ defmodule WTN do
 
   def calc_wrong_answers(input, letter) do
     score =
-      input.answers |> Enum.count(fn {_k, v} -> v == "" or !String.starts_with?(v, letter) end)
+      input.answered |> Enum.count(fn {_k, v} -> v == "" or !String.starts_with?(v, letter) end)
 
     %{name: input.name, score: score * -1}
   end
@@ -137,7 +137,7 @@ defmodule WTN do
       |> Enum.map(fn x -> filter_incorrect(x, letter) end)
       |> List.flatten()
 
-    my_ans = Map.to_list(input.answers)
+    my_ans = Map.to_list(input.answered)
     %{name: input.name, score: count_all_dupes(my_ans, filtered_answers) * -2}
   end
 
@@ -151,6 +151,6 @@ defmodule WTN do
   end
 
   def filter_incorrect(ans, letter) do
-    Enum.filter(ans.answers, fn {k, v} -> !(v == "") and String.starts_with?(v, letter) end)
+    Enum.filter(ans.answered, fn {k, v} -> !(v == "") and String.starts_with?(v, letter) end)
   end
 end

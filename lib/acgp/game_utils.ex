@@ -633,9 +633,9 @@ defmodule GameUtils do
   def current_answer(user, game_state, category) do
     my_answers =
       game_state.answered
-      |> Enum.find(%{answers: %{}}, fn ele -> ele.name == user end)
+      |> Enum.find(%{answered: %{}}, fn ele -> ele.name == user end)
 
-    ans = Map.get(my_answers.answers, category, "")
+    ans = Map.get(my_answers.answered, category, "")
     ans
   end
 

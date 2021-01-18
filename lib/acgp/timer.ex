@@ -1,13 +1,18 @@
 defmodule ACGP.Timer do
   use GenServer
 
+  # @server_name :WTNClock
+
+  def not_started? do
+    is_nil(GenServer.whereis(:WTNClock))
+  end
+
   def start(parent_id) do
     secs = 1000
     mins = secs * 60
 
-    {:ok, pid} = GenServer.start(ACGP.Timer, parent_id)
+    {:ok, pid} = GenServer.start(ACGP.Timer, parent_id, name: :WTNClock)
     :timer.send_interval(secs, pid, :tick)
-    pid
   end
 
   def init(init_arg) do

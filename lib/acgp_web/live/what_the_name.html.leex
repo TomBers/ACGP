@@ -1,6 +1,7 @@
 <div class="tile is-ancestor">
     <div class="tile is-vertical is-12">
             <div class="tile">
+            <%= if !Enum.any?(@game_state.users_answered, &(&1 == @my_name)) do %>
                 <div class="tile is-parent is-vertical">
                     <article class="tile is-child notification is-primary">
                         <p class="title">Starts with : <%= @game_state.letter %></p>
@@ -19,6 +20,13 @@
                     </form>
                     </article>
                 </div>
+                <% else %>
+                        <div class="tile is-parent is-vertical">
+                    <article class="tile is-child notification is-primary">
+                        <p class="title">Waiting for other players</p>
+                    </article>
+                    </div>
+            <% end %>
             </div>
          <%= live_component @socket, AcgpWeb.PlayerList, id: "WTNPlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
     </div>
