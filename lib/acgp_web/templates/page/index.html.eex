@@ -2,7 +2,7 @@
   <div class="hero-body">
     <div class="container">
       <p class="title">
-        Welcome to the Abstract Co-operative Games platform
+        A Co-operative Games platform
       </p>
       <p class="subtitle">
         A place for games
@@ -56,6 +56,18 @@
       <p class="subtitle"><a href="/aw">Play now</a></p>
       <div class="content">
         <p>A quiz to find the most compelling answer (3 or more players)</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="tile is-vertical is-12">
+  <div class="tile is-parent">
+    <article class="tile is-child notification is-light">
+      <p class="title">What the name?</p>
+      <p class="subtitle"><a href="/wtn">Play now</a></p>
+      <div class="content">
+        <p>Name the categories starting with the letter. But be quick; you lose points for the same answers as your friends.</p>
       </div>
     </article>
   </div>

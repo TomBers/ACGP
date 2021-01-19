@@ -15,6 +15,7 @@
             <a class="navbar-item" href="/mml">Make me laugh</a>
             <a class="navbar-item" href="/drawit">DrawIt</a>
             <a class="navbar-item" href="/aw">AnswerWrong</a>
+            <a class="navbar-item" href="/wtn">What the name?</a>
         </div>
     </div>
 </nav>

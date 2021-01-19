@@ -21,6 +21,10 @@ defmodule AcgpWeb.PageController do
     render(conn, "tmp.html", game: "Answer Wrong", path: "aw")
   end
 
+  def whatthename(conn, _params) do
+    render(conn, "tmp.html", game: "What the name?", path: "wtn")
+  end
+
   def abundance(conn, _params) do
     render(conn, "tmp.html", game: "Abundance", path: "#")
   end

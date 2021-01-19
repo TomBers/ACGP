@@ -39,8 +39,29 @@ defmodule GameState do
     put_in(state, [field], value)
   end
 
-  def add_answered(state, user) do
-    update_in(state, [:answered], &[user | &1])
+  def add_answered(state, new_answered) do
+    update_in(state, [:answered], &insert_into(&1, new_answered))
+  end
+
+  def insert_into(existing, new) do
+    if Enum.any?(existing, fn %{name: name} -> name == new.name end) do
+      insert_existing(existing, new)
+    else
+      insert_new(existing, new)
+    end
+  end
+
+  def insert_new(existing, new) do
+    [new | existing]
+  end
+
+  def insert_existing(existing, new) do
+    indx = Enum.find_index(existing, fn ele -> ele.name == new.name end)
+
+    existing
+    |> List.update_at(indx, fn elem ->
+      Map.update(elem, :answered, elem.answered, fn existing_val -> new.answered end)
+    end)
   end
 
   def set_controller(state, user) do
@@ -85,4 +106,9 @@ defmodule GameState do
   def get_active_user(state, users) do
     Enum.find(users, fn usr -> usr.name == state.active_user end)
   end
+
+  # def add_scores(state, add_func) do
+  #   state
+  #   |> put_in([:scores], add_func.(state))
+  # end
 end
