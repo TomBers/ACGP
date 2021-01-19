@@ -29,6 +29,7 @@ defmodule AcgpWeb.Router do
     get "/mml", PageController, :mml
     get "/drawit", PageController, :drawit
     get "/aw", PageController, :answerwrong
+    get "/wtn", PageController, :whatthename
     get "/abundance", PageController, :abundance
   end
 

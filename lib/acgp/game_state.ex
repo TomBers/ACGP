@@ -44,7 +44,7 @@ defmodule GameState do
   end
 
   def insert_into(existing, new) do
-    if Enum.any?(existing, fn %{name: name, answered: _a} -> name == new.name end) do
+    if Enum.any?(existing, fn %{name: name} -> name == new.name end) do
       insert_existing(existing, new)
     else
       insert_new(existing, new)
@@ -81,7 +81,6 @@ defmodule GameState do
   end
 
   def check_winner(state, users, win_condition, game_base_state) do
-    IO.inspect(state)
     {is_winner, winner} = win_condition.(state, users)
 
     if is_winner do

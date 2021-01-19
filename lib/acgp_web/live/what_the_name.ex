@@ -4,7 +4,7 @@ defmodule AcgpWeb.WhatTheName do
 
   alias AcgpWeb.Presence
 
-  @timer_time 50
+  @timer_time 60
 
   defp topic(id), do: "whatthename:#{id}"
 

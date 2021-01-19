@@ -77,6 +77,12 @@ function onMouseUp(event) {
                                 <button class="button margin-bottom" phx-click="guess" phx-value-user="<%= @my_name %>" phx-value-answer="<%= ans %>"><%= ans %></button>
                             <% end %>
                         </article>
+                        <% else %>
+                        <div class="tile is-parent is-vertical">
+                        <article class="tile is-child notification is-primary">
+                            <p class="title">Waiting for other players</p>
+                        </article>
+                    </div>
                     <% end %>
                     </div>
                 </div>
