@@ -23,9 +23,11 @@ defmodule AcgpWeb.PictureIt do
   end
 
   def game_state(user \\ "") do
+    ideas = ["Acceptance", "Amusement", "Anger", "Angst", "Annoying", "Awe", "Boredom", "Confidence", "Contentment", "Courage", "Doubt", "Embarrassment", "Enthusiasm", "Envy", "Euphoria", "Faith", "Fear", "Frustration", "Gratitude", "Greed", "Guilt", "Happiness", "Hatred", "Hope", "Horror", "Hostility", "Humiliation", "Interest", "Jealousy", "Joy", "Kindness", "Loneliness", "Love", "Lust", "Nostalgia", "Outrage", "Panic", "Passion", "Pity", "Pleasure", "Pride", "Rage", "Regret", "Rejection", "Remorse", "Resentment", "Sadness"]
+
     %{
       active_user: user,
-      idea: "",
+      idea: Enum.random(ideas),
       images: [],
       answered: []
     }
@@ -67,11 +69,13 @@ defmodule AcgpWeb.PictureIt do
 
   #  Events from Page
 
-  # def handle_event("drawit", img, socket) do
-  #   AcgpWeb.Endpoint.broadcast_from(self(), socket.assigns.channel_id, "update_image", %{img: img})
+  def handle_event("selectImage", %{"url" => url}, socket) do
+    name = socket.assigns.my_name
+    new_state =
+          GameState.add_answered(socket.assigns.game_state, %{name: name, url: url})
 
-  #   {:noreply, socket}
-  # end
+    sync_state(socket, new_state)
+  end
 
   # def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
   #   new_state =
