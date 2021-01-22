@@ -27,6 +27,12 @@ canvas[resize] {
     border: none;
 }
 
+.dropzone {
+  width: 400px;
+  height: 400px;
+  border: 3px dashed black;
+}
+
 .hidden {
     display: none !important;
 }
