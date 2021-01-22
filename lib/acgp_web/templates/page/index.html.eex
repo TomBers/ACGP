@@ -2,10 +2,10 @@
   <div class="hero-body">
     <div class="container">
       <p class="title">
-        A Co-operative Games platform
+        Hello Eden<strong>!</strong>
       </p>
       <p class="subtitle">
-        A place for games
+        Gaming Paradise
       </p>
     </div>
   </div>
@@ -25,9 +25,9 @@
   </div>
 </div>
 
-<div class="tile is-vertical is-12">
+<div class="tile is-vertical is-12" >
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child notification is-light" style="height: 700px; background-image: url(<%= Routes.static_path(@conn, "/images/mouth1.jpg") %>)">
       <p class="title">Make me laugh</p>
       <p class="subtitle"><a href="/mml">Play now</a></p>
       <div class="content">
