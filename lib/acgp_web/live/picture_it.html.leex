@@ -1,15 +1,11 @@
 
 <%= live_component @socket, AcgpWeb.BrokenState, id: "BrokenState", game_state: @game_state, users: @users %>
 
-<%= if length(@users) < 3 do %>
-    <%= live_component @socket, AcgpWeb.WaitingRoom %>
-<% else %>
     <%= if GameUtils.is_active_user(@my_name, @game_state) do %>
         <%= live_component @socket, AcgpWeb.PickPics, id: "PickPicsComp", game_state: @game_state, my_name: @my_name, users: @users %>
     <% else %>
         <%= live_component @socket, AcgpWeb.FindPics, id: "FindPicsComp", game_state: @game_state, my_name: @my_name, users: @users %>
     <% end %>
-<% end %>
 
 
 <%= if length(@users) >= 2 do %>
