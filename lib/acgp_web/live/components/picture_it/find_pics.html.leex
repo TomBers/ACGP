@@ -1,20 +1,17 @@
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v1.9.8/dist/alpine.js" defer ></script>
-
-<div class="tile is-ancestor">
-      <div class="tile is-vertical is-12">
-          <div class="tile">
-              <div class="tile is-parent is-vertical">
-                  <article class="tile is-child notification is-primary">
-                      <p class="title">Picture It : <%= @game_state.idea %></p>
-                    </article>
-              </div>
-          </div>
-      </div>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@2.8.0/dist/alpine.js" defer ></script>
+<div x-data="images()">
+  <div class="tile is-ancestor">
+        <div class="tile is-vertical is-12">
+            <div class="tile">
+                <div class="tile is-parent is-vertical">
+                    <article class="tile is-child notification is-primary">
+                        <p class="title">Picture It : <%= @game_state.idea %></p>
+                      </article>
+                </div>
+            </div>
+        </div>
   </div>
 
-<div x-data="images()">
-
-<div>
   <section class="hero">
     <div class="container">
       <div class="d-flex flex-column align-items-center">
@@ -29,7 +26,6 @@
           />
         </div>
       </div>
-    </div>
   </section>
 
   <section id="photos" class="my-5">
@@ -38,10 +34,7 @@
     </template>
   </section>
 </div>
-
-
-
-
+</div>
 
 <script>
   function images() {
