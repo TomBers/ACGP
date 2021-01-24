@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="tile is-ancestor">
+      <div class="tile is-vertical is-12">
+          <div class="tile">
+              <div class="tile is-parent is-vertical">
+                  <article class="tile is-child notification is-primary">
+                      <p class="title">Picture It : <%= @game_state.idea %></p>
+                    </article>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+
+<section id="photos" class="my-5">
+
+<%= for img <- @game_state.answered do %>
+  <img src="<%= img.url %>" class="selectImg keep-in-line" phx-click="chooseWinningImage" phx-value-user="<%= img.name %>">
+<% end %>
+</section>
+
+</div>

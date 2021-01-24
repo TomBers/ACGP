@@ -29,7 +29,8 @@ defmodule AcgpWeb.PictureIt do
       active_user: user,
       idea: Enum.random(ideas),
       images: [],
-      answered: []
+      answered: [],
+      winner: nil
     }
   end
 
@@ -40,19 +41,16 @@ defmodule AcgpWeb.PictureIt do
         idea: "",
         images: [],
         answered: [],
-        score: nil
+        score: nil,
+        winner: nil
       },
       my_name: "",
       users: []
     }
   end
 
-  def win_condition(state, users) do
-    if length(state.answered) == length(users) - 1 do
-      {true, GameState.who_won(state, users)}
-    else
-      {false, nil}
-    end
+  def win_condition(state, _users) do
+    {true, state.winner}
   end
 
   def sync_state(socket, new_state) do
@@ -74,16 +72,23 @@ defmodule AcgpWeb.PictureIt do
     new_state =
           GameState.add_answered(socket.assigns.game_state, %{name: name, url: url})
 
+    IO.inspect(new_state)
     sync_state(socket, new_state)
   end
 
-  # def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
-  #   new_state =
-  #     GameState.add_answered(socket.assigns.game_state, %{name: user, guess: answer})
-  #     |> GameState.check_winner(socket.assigns.users, &win_condition/2, &game_state/0)
+  def handle_event("chooseWinningImage", %{"user" => user}, socket) do
+    gs = GameState.set_field(socket.assigns.game_state, :winner, user)
 
-  #   sync_state(socket, new_state)
-  # end
+    sync_state(
+      socket,
+      GameState.check_winner(
+        gs,
+        socket.assigns.users,
+        &win_condition/2,
+        &game_state/0
+      )
+    )
+  end
 
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
     users = Presence.list_presences(socket.assigns.channel_id)

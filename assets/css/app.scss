@@ -51,6 +51,10 @@ canvas[resize] {
   opacity: 1;
 }
 
+.keep-in-line {
+  display: flex;
+}
+
 .hidden {
     display: none !important;
 }
