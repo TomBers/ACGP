@@ -1,6 +1,8 @@
-<%= if !is_active_user_correct?(@game_state, @users) do %>
-    <p class="subtitle">It seems the game is ended.  Click below to start again</p>
-    <button class="button is-primary" onclick="location.reload();">Reset Game</button>
-    <br>
-    <br>
-<% end %>
+<div>
+    <%= if !is_active_user_correct?(@game_state, @users) do %>
+        <p class="subtitle">It seems the game is ended.  Click below to start again</p>
+        <button class="button is-primary" onclick="location.reload();">Reset Game</button>
+        <br>
+        <br>
+    <% end %>
+</div>
