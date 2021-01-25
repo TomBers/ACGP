@@ -18,12 +18,12 @@
 <section class="games">
 
 <div class="row">
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
-                <a href="./askhole-instructions.html">
+                <a href="/askhole">
                     <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
                 </a>
                 <p class="game-title">Askhole</p>
@@ -37,9 +37,9 @@
   </div>
 </div>
 
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
                 <a href="/mml">
@@ -56,9 +56,9 @@
   </div>
 </div>
 
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
                 <a href="/drawit">
@@ -74,9 +74,9 @@
     </article>
   </div>
 </div>
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
                 <a href="/aw">
@@ -94,9 +94,9 @@
   </div>
 </div>
 
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
                 <a href="/wtn">
@@ -113,18 +113,20 @@
   </div>
 </div>
 
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
+    <article class="tile is-child">
         <div class="game-card">
             <div class="container-top">
+              <a href="/picit">
                 <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
-                <p class="game-title">Coming Soon</p>
+                </a>
+                <p class="game-title">Picture it</p>
             </div>
             <div class="container-bottom">
-                <p class="game-description">Watch this space.</p>
+                <p class="game-description">A game to visualise concepts. Everyobe is given an emotion and you have to find an image that best represents it.  The player who is judging chooses the winner.</p>
             </div>
-            <p class="game-subtitle cta1"><a href="#">Play now</a></p>
+            <p class="game-subtitle cta1"><a href="/picit">Play now</a></p>
         </div>
     </article>
   </div>

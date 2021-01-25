@@ -1,10 +1,40 @@
-<div class="tile is-parent is-vertical">
-    <article class="tile is-child notification is-primary">
-        <h1 class="title"><%= @game %></h1>
-        <p>Click Play Now to get started.  You will get a unique URL that you can share with anyone.</p>
-        <br>
-        <p>Simply copy and paste the URL and send.  They will join you in the room<p>
-        <br>
-        <a href="<%= @path %>/<%= Enum.random(1..10240) %>" class="button is-primary is-inverted is-large is-pulled-right">Play Now</a>
+<section class="hero is-small is-bold">
+<div class="hero-body">
+<div class="container">
+  <p class="title">
+    <%= @game %>
+  </p>
+  <p class="subtitle">
+    Players: <%= @players %>+
+  </p>
+</div>
+</div>
+</section>
+
+<section class="games">
+
+    <div class="tile is-vertical is-12 column">
+  <div class="tile is-parent">
+    <article class="tile is-child">
+        <div class="instructions-card">
+            <div class="container-left">
+                <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
+            </div>
+            <div class="container-right">
+                <div class="subtitle">Instructions</div>
+                <p class="instructions-description"><%= @instructions %></p>
+            </div>
+            <p class="instructions-subtitle cta2"><a href="<%= @path %>/<%= Enum.random(1..10240) %>">Play now</a></p>
+        </div>
+    </article>
+  </div>
+</div>
+
+<div class="row">
+<div class="tile is-vertical is-12 column">
+  <article>
+
     </article>
 </div>
+</div>
+    </section>

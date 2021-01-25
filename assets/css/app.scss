@@ -3,27 +3,24 @@
 
 body {
   background-image: url(/images/gamehompagebackground.jpg);
+  background-repeat: no-repeat;
   margin: 0;
   padding: 0;
 }
 
 .navbar-menu {
-  display: block;
   background-color: #7fd6cd;
-  padding: 20px 20px 15px;
-  text-align: right;
-  margin-top: 30px;
 }
+
 .navbar-item {
   font-family: 'Yanone Kaffeesatz', sans-serif;
   text-decoration: none;
-  font-size: 35px;
-  padding: 0 20px;
   color: #333;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 2px 2px #fff;
 }
+
 .random {
   background-color: #444;
   padding: 12px 15px 7px;
@@ -153,14 +150,7 @@ width: 100% ;
 }
 /*SMALLER DESKTOP*/
 @media screen and (max-width: 1240px) {
-  .navbar-item {
-  font-size: 25px;
-  padding: 0 20px;
-  color: #333;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px #fff;
-  }
+
   .random {
   background-color: #444;
   padding: 12px 15px 7px;
@@ -174,9 +164,6 @@ width: 100% ;
 @media screen and (max-width: 600px) {
   .main {
       margin:0;
-  }
-  .navbar-item {
-      display:none;
   }
   .column {
   flex-direction: row;
