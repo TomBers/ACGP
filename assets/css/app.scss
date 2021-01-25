@@ -1,6 +1,271 @@
 /* This file is for your main application css. */
 @import "./bulma.css";
 
+body {
+  background-image: url(/images/gamehompagebackground.jpg);
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu {
+  display: block;
+  background-color: #7fd6cd;
+  padding: 20px 20px 15px;
+  text-align: right;
+  margin-top: 30px;
+}
+.navbar-item {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  text-decoration: none;
+  font-size: 35px;
+  padding: 0 20px;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px #fff;
+}
+.random {
+  background-color: #444;
+  padding: 12px 15px 7px;
+  color: #fff;
+  border-radius: 4px;
+  line-height: 1.4;
+  text-shadow: none;
+}
+.title {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  text-decoration: none;
+  font-size: 80px;
+  padding: 0 20px;
+  color: #000; 
+  margin: 0 auto;
+}
+.subtitle {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  text-decoration: none;
+  font-size: 40px;
+  padding: 0 20px;
+  color: #000;
+}
+p {
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+.games {
+  margin: 50px;
+  z-index: -1; 
+  float: none
+}
+.row {
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+width: 100%;
+margin: 60px 0; 
+
+}
+.column {
+display: flex;
+flex-direction: column;
+flex-basis: 100%;
+flex: 1;
+width: 100%;
+margin: 0 auto;
+text-align: center !important;
+position:relative;
+padding: 80px 20px;
+}
+.game-card {
+  margin: 0 auto;
+  max-width:400px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 40px;
+  height: 820px;
+  background-color: #fff;
+}
+.container-top {
+  max-height: 540px;
+}
+.container-bottom {
+  height: 170px !important;
+}
+.game-pic {
+  max-width: 400px;
+  border-radius: 40px 40px 0px 0px; 
+  text-align: center;
+}
+.game-title {
+  text-align:left;
+  position: relative;
+  bottom: 540px;
+  font-size: 50px;
+  color: #fff;
+  text-shadow: 3px 2px #333;
+  width: 85%;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+.game-description {
+  text-align: left;
+  font-size: 20px;
+  color: #000;
+  width: 85%;
+  line-height: 1.5;
+  display: inline-block;
+  font-weight: 300;
+  margin:20px 0 0
+} 
+.game-players {
+  text-align: left;
+  font-size: 20px;
+  color: #000;
+  width: 85%;
+  line-height: 1.5;
+  display: inline-block;
+  font-weight: 400;
+  margin:0;
+}
+.game-subtitle a{
+  text-align: left;
+  font-size: 25px;
+  color: #fff !important;
+  text-shadow: 2px 2px #333;
+  padding: 10px 20px 7px;
+  line-height: 1.4;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  display: inline-block;
+  letter-spacing: 1px;
+}
+.cta1 {
+  background-color: #d69eff;
+}
+
+.cta2 {
+  background-color: #9ec8ff;
+}
+.cta3 {
+  background-color: #02eea6;
+}
+.comingsoon { 
+width: 100% ;
+  background: #000;
+  opacity: .15;
+}
+/*SMALLER DESKTOP*/
+@media screen and (max-width: 1240px) {
+  .navbar-item {
+  font-size: 25px;
+  padding: 0 20px;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px #fff;
+  }
+  .random {
+  background-color: #444;
+  padding: 12px 15px 7px;
+  color: #fff;
+  border-radius: 4px;
+  line-height: 1.4;
+  text-shadow: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .main {
+      margin:0;
+  }
+  .navbar-item {
+      display:none;
+  }
+  .column {
+  flex-direction: row;
+  padding: 0 0 80px;
+  }
+  .title {
+     font-size:40px;
+      padding:0;
+  }
+  .subtitle {
+     font-size:20px; 
+     padding:0;
+  }
+  .container-top {
+  max-height: 470px;
+  }
+  .container-bottom {
+  height: 200px !important;
+  }
+  .games {
+      margin: 0;
+  }
+  .game-pic {
+      width: 350px;
+  }
+  .game-card {
+      width: 350px;
+      height:780px;
+  }
+  .game-title {
+      font-size: 40px;
+      bottom: 470px;
+  }
+ 
+}
+@media screen and (max-width: 480px) {
+  .column {
+  flex-direction: row;
+  padding: 0 0 60px;
+  }
+  .container-top {
+  max-height: 400px;
+  }
+  .container-bottom {
+  height: 150px !important;
+  }
+  .game-pic {
+      width: 300px;
+  }
+  .game-card {
+      width: 300px;
+      height:660px;
+  }
+  .game-title {
+      font-size: 30px;
+      bottom: 400px;
+  }
+  .game-description {
+      font-size:16px
+  }
+}
+@media screen and (max-width: 380px) {
+  .column {
+  flex-direction: row;
+  padding: 0 0 40px;
+  }
+  .container-top {
+  max-height: 330px;
+  }
+  .container-bottom {
+  height: 170px !important;
+  }
+  .game-pic {
+      width: 250px;
+  }
+  .game-card {
+      width: 250px;
+      height:620px;
+  }
+  .game-title {
+      font-size: 30px;
+      bottom: 340px;
+  }
+  .game-description {
+      font-size:16px
+  }
+}
+// END OF EDEN
+
 .line-through {
   text-decoration: line-through;
 }
