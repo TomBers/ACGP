@@ -1,74 +1,134 @@
-<section class="hero is-small is-primary is-bold">
-  <div class="hero-body">
-    <div class="container">
-      <p class="title">
-        A Co-operative Games platform
-      </p>
-      <p class="subtitle">
-        A place for games
-      </p>
-    </div>
-  </div>
+<main role="main" class="container">
+  <p class="alert alert-info" role="alert"></p>
+  <p class="alert alert-danger" role="alert"></p>
+
+<section class="hero is-small is-bold">
+<div class="hero-body">
+<div class="container">
+  <p class="title">
+    Hello Eden!
+  </p>
+  <p class="subtitle">
+    A place for games
+  </p>
+</div>
+</div>
 </section>
 
+<section class="games">
 
-<div class="tile is-vertical is-12">
+<div class="row">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
-      <p class="title">Askhole</p>
-      <p class="subtitle"><a href="/askhole">Play now</a></p>
-      <div class="content">
-        <p>The First game on the the platform. Filled with inappropriate, deeply controversial, philosophical, and vulnerable inquiries, this deck of unusual questions will keep your night full of nervous laughter and your relationships somewhat distressing.</p>
-        <p><a href="https://www.askhole.io/" target="_blank">Askhole.io</a></p>
-      </div>
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/askhole">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
+                </a>
+                <p class="game-title">Askhole</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">Filled with inappropriate, deeply controversial, philosophical, and vulnerable inquiries, this deck of unusual questions will keep your night full of nervous laughter and your relationships somewhat distressing.</p>
+            </div>
+            <p class="game-subtitle cta1"><a href="/askhole">Play now</a></p>
+        </div>
     </article>
   </div>
 </div>
 
-<div class="tile is-vertical is-12">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
-      <p class="title">Make me laugh</p>
-      <p class="subtitle"><a href="/mml">Play now</a></p>
-      <div class="content">
-        <p>Make me laugh is a game to amuse or traumatise your friends.  The funniest answer wins.</p>
-      </div>
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/mml">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth2.jpg") %>">
+                </a>
+                <p class="game-title">Make me laugh</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">Make me laugh is a game to amuse or traumatise your friends.  The funniest answer wins.</p>
+            </div>
+            <p class="game-subtitle cta3"><a href="/mml">Play now</a></p>
+        </div>
     </article>
   </div>
 </div>
 
-<div class="tile is-vertical is-12">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
-      <p class="title">DrawIt</p>
-      <p class="subtitle"><a href="/drawit">Play now</a></p>
-      <div class="content">
-        <p>One person draws, the others guess.  The closest one wins.</p>
-      </div>
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/drawit">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth.jpg") %>">
+                </a>
+                <p class="game-title">DrawIt</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">One person draws, the others guess.  The closest one wins.</p>
+            </div>
+            <p class="game-subtitle cta2"><a href="/drawit">Play now</a></p>
+        </div>
+    </article>
+  </div>
+</div>
+<div class="tile is-vertical column">
+  <div class="tile is-parent">
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/aw">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth2.jpg") %>">
+                </a>
+                <p class="game-title">AnswerWrong</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">A quiz to find the most compelling answer </p>
+                <p class="game-players">3 or more players</p>
+            </div>
+            <p class="game-subtitle cta3"><a href="/aw">Play now</a></p>
+        </div>
     </article>
   </div>
 </div>
 
-<div class="tile is-vertical is-12">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
-      <p class="title">AnswerWrong</p>
-      <p class="subtitle"><a href="/aw">Play now</a></p>
-      <div class="content">
-        <p>A quiz to find the most compelling answer (3 or more players)</p>
-      </div>
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/wtn">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth.jpg") %>">
+                </a>
+                <p class="game-title">What the name?</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">Name the categories starting with the letter. But be quick; you lose points for the same answers as your friends.</p>
+            </div>
+            <p class="game-subtitle cta2"><a href="/wtn">Play now</a></p>
+        </div>
     </article>
   </div>
 </div>
 
-<div class="tile is-vertical is-12">
+<div class="tile is-vertical column">
   <div class="tile is-parent">
-    <article class="tile is-child notification is-light">
-      <p class="title">What the name?</p>
-      <p class="subtitle"><a href="/wtn">Play now</a></p>
-      <div class="content">
-        <p>Name the categories starting with the letter. But be quick; you lose points for the same answers as your friends.</p>
-      </div>
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+              <a href="/picit">
+                <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
+                </a>
+                <p class="game-title">Picture it</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">A game to visualise concepts. Everyobe is given an emotion and you have to find an image that best represents it.  The player who is judging chooses the winner.</p>
+            </div>
+            <p class="game-subtitle cta1"><a href="/picit">Play now</a></p>
+        </div>
     </article>
   </div>
+</div>
 </div>

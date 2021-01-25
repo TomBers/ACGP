@@ -16,6 +16,8 @@
             <a class="navbar-item" href="/drawit">DrawIt</a>
             <a class="navbar-item" href="/aw">AnswerWrong</a>
             <a class="navbar-item" href="/wtn">What the name?</a>
+            <a class="navbar-item" href="/picit">Picture It</a>
+            <a class="navbar-item" href="/<%= Enum.random(["askhole", "mml", "drawit", "aw", "wtn", "picit"])%>">Random</a>
         </div>
     </div>
 </nav>
