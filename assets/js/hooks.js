@@ -28,4 +28,12 @@ Hooks.Cells = {
     }
 }
 
+Hooks.ChangeScore = {
+    // updated() {        
+    //     var ele = this.el;
+    //     ele.classList.add("makeBig");
+    //     window.setTimeout(function(){ ele.classList.remove("makeBig"); }, 500);
+    // }
+}
+
 export default Hooks

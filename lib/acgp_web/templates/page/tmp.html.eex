@@ -13,7 +13,7 @@
 
 <section class="games">
 
-    <div class="tile is-vertical is-12 column">
+    <div class="tile is-vertical is-12 edencolumn">
   <div class="tile is-parent">
     <article class="tile is-child">
         <div class="instructions-card">
@@ -24,14 +24,14 @@
                 <div class="subtitle">Instructions</div>
                 <p class="instructions-description"><%= @instructions %></p>
             </div>
-            <p class="instructions-subtitle cta2"><a href="<%= @path %>/<%= Enum.random(1..10240) %>">Play now</a></p>
+            <p class="game-subtitle cta2"><a href="<%= @path %>/<%= Enum.random(1..10240) %>">Play now</a></p>
         </div>
     </article>
   </div>
 </div>
 
 <div class="row">
-<div class="tile is-vertical is-12 column">
+<div class="tile is-vertical is-12 edencolumn">
   <article>
 
     </article>
