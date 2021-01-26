@@ -68,7 +68,7 @@ function onMouseUp(event) {
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-12">
                 <div class="tile">
-                <object type="image/svg+xml" data="<%= @game_state.img %>" width=400 height=400 class="drawBox"></object>
+                <object type="image/svg+xml" data="<%= @game_state.img %>" width=500 height=500 class="drawBox"></object>
                     <div class="tile is-parent is-vertical">
                     <%= if !GameUtils.has_answered(@my_name, @game_state) do %>
                         <article class="tile is-child notification is-danger">
@@ -90,21 +90,21 @@ function onMouseUp(event) {
         </div>
     <% end %>
 
-    <div class="columns is-mobile <%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>">
-            <div class="column is-one-fifth">
-                <button class="button margin-bottom is-fullwidth" onclick="window.globals.clearCanvas()">Clear</button><br>
-                <button class="button is-primary is-fullwidth" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
-                <button class="button is-info is-fullwidth" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
-                <button class="button is-warning is-fullwidth" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
-                <button class="button is-danger is-fullwidth" onclick="window.globals.setColour('#f14668')">Red</button><br>
-                <button class="button is-black is-fullwidth" onclick="window.globals.setColour('black')">Black</button>
+    <div class="columns <%= if !GameUtils.is_active_user(@my_name, @game_state) do %>hidden<% end %>">
+            <div class="column is-3">
+                <button class="button margin-bottom is-fullwidth is-large" onclick="window.globals.clearCanvas()">Clear</button><br>
+                <button class="button is-primary is-fullwidth is-large" onclick="window.globals.setColour('#00d1b2')">Green</button><br>
+                <button class="button is-info is-fullwidth is-large" onclick="window.globals.setColour('#3298dc')">Blue</button><br>
+                <button class="button is-warning is-fullwidth is-large" onclick="window.globals.setColour('#ffdd57')">Yellow</button><br>
+                <button class="button is-danger is-fullwidth is-large" onclick="window.globals.setColour('#f14668')">Red</button><br>
+                <button class="button is-black is-fullwidth is-large" onclick="window.globals.setColour('black')">Black</button>
             </div>
             <div class="column">
-                <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400></canvas>
+                <canvas id="drawItCanvas" phx-hook="GetSVG" width=500 height=500></canvas>
             </div>
     </div>
 <% else %>
-    <canvas id="drawItCanvas" phx-hook="GetSVG" width=400 height=400 class="hidden"></canvas>
+    <canvas id="drawItCanvas" phx-hook="GetSVG" width=500 height=500 class="hidden"></canvas>
     <h1 class="title">Waiting for more players (need at least 2 people)</h1>
 <% end %>
 
