@@ -19,7 +19,7 @@
                         <p class="title">My Answers</p>
                         <%= if !GameUtils.has_answered(@my_name, @game_state) do %>
                             <%= for answer <- @game_state.answer_cards do %>
-                                <button class="button margin-bottom" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
+                                <button class="button margin-bottom is-large" phx-click="answer" phx-value-user="<%= @my_name %>" phx-value-answer="<%= answer %>"><%= answer %></button>
                             <% end %>
                             <br><br>
                             <input class="input" type="text" id="guess" onkeyup="event.keyCode == 13 ? this.value = '' : null" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Freestyle">
