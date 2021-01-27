@@ -1,7 +1,7 @@
 <div class="content is-large">
     <ol type="1">
     <%= for user <- @users do %>
-        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span phx-hook="ChangeScore" id="<%= user.name %>_score"><%= GameUtils.score(@game_state, user.name) %> point(s)</span></li>
+        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span phx-hook="ChangeScore" id="<%= user.name %>_score" class=""><%= GameUtils.score(@game_state, user.name) %></span> point(s)</li>
     <% end %>
     </ol>
 </div>

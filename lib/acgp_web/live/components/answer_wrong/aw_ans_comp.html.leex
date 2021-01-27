@@ -5,7 +5,7 @@
                 <article class="tile is-child notification is-primary">
                     <p class="title">Question - <%= @game_state.question %></p>
                         <%= for ans <- Enum.shuffle(@game_state.answered) do %>
-                            <button class="button margin-bottom" phx-click="pick_winner" phx-value-user="<%= ans.name %>" phx-value-answer="<%= ans.guess %>"><%= ans.guess %></button>
+                            <button class="button margin-bottom is-large" phx-click="pick_winner" phx-value-user="<%= ans.name %>" phx-value-answer="<%= ans.guess %>"><%= ans.guess %></button>
                         <% end %>
                 </article>
             </div>
