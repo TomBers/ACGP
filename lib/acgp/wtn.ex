@@ -51,6 +51,33 @@ defmodule WTN do
     "Politicians"
   ]
 
+  @timer_time 60
+
+
+  def game_state(user \\ "") do
+    letter = letter()
+    categories = categories(3)
+
+    %{
+      active_user: user,
+      letter: letter,
+      categories: categories,
+      users_answered: [],
+      answered: [],
+      time: @timer_time
+    }
+  end
+
+  def update_scores(gs) do
+    gs
+        |> put_in([:scores], calc_scores(gs))
+        |> put_in([:letter], letter())
+        |> put_in([:categories], categories(3))
+        |> put_in([:answered], [])
+        |> put_in([:time], @timer_time)
+        |> put_in([:users_answered], [])
+  end
+
   def letter do
     Enum.random(@letters)
   end
