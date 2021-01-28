@@ -12,7 +12,7 @@
                         <p class="title">Current guesses (<%= length(@game_state.answered) %> / <%= length(@users) - 1 %>) </p>
                         <p class="subtitle">Pick a winner</p>
                         <%= for ans <- @game_state.answered do %>
-                            <button class="button" phx-click="winner" phx-value-user="<%= ans.name %>"><%= ans.guess %></button>
+                            <button class="button is-large" phx-click="winner" phx-value-user="<%= ans.name %>"><%= ans.guess %></button>
                         <% end %>
 
                     <% else %>
