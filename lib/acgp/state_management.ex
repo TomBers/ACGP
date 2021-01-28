@@ -30,4 +30,25 @@ defmodule StateManagement do
       users: Presence.list_presences(channel_id)
     }
   end
+
+  def setup(channel_id, game_state, connected) do
+    if connected do
+      setup_initial_state(channel_id) |> add_specic_state(game_state)
+    else
+      empty_game_state(game_state)
+    end
+  end
+
+  defp add_specic_state(params, game_state) do
+    gs = game_state.(params.my_name)
+    params |> GameState.initial_state(gs, params.channel_id)
+  end
+
+  defp empty_game_state(game_state) do
+    %{
+      game_state: game_state.(nil),
+      my_name: "",
+      users: []
+    }
+  end
 end

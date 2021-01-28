@@ -1,6 +1,17 @@
 defmodule AnswerWrong do
   @moduledoc false
 
+  def game_state(user \\ "") do
+    aw = get_question()
+
+    %{
+      active_user: user,
+      question: aw.question,
+      answer: aw.answer,
+      winner: nil
+    }
+  end
+
   def get_questions(n) do
     GameUtils.get_n_unique_cards(n, &get_question/0)
   end
@@ -341,7 +352,6 @@ defmodule AnswerWrong do
       %{question: "Words: Phobias: Fear of heights", answer: "altophobia"},
       %{question: "Words: Phobias: Fear of hell", answer: "hadephobia"},
       %{question: "Words: Phobias: Fear of heredity", answer: "patroiophobia"},
-      %{question: "Words: Phobias: Fear of home surroundings", answer: "ones house", answer: "oikophobia"},
       %{question: "Words: Phobias: Fear of home surroundings", answer: "eicophobia"},
       %{question: "Words: Phobias: Fear of home", answer: "ecophobia"},
       %{question: "Words: Phobias: Fear of horses", answer: "equinophobia"},

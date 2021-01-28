@@ -1,4 +1,19 @@
 defmodule MakeMeLaughCards do
+
+  def game_state(user \\ "") do
+    cards = get_answer_cards(10)
+
+    %{
+      active_user: user,
+      answer_cards: cards,
+      question_card: get_board_cards(1),
+      answer: "",
+      selected_answer: nil,
+      winner: nil,
+      answered: []
+    }
+  end
+
   def get_answer_cards(n) do
     GameUtils.get_n_unique_cards(n, &get_answer_card/0)
   end

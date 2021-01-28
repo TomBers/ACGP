@@ -4,7 +4,6 @@ defmodule GameState do
   end
 
   def initial_state(user_states, game_state, channel_id) do
-    # Todo - Set active user if this is a new game
     server = StateAgent.get_server(channel_id)
 
     new_state = Map.merge(base_state(), game_state)
@@ -25,16 +24,6 @@ defmodule GameState do
     StateAgent.put(server, :game_state, new_state)
   end
 
-  def get_state(channel_id) do
-    server = StateAgent.get_server(channel_id)
-    StateAgent.get(server, :game_state)
-  end
-
-  def clear_state(channel_id) do
-    server = StateAgent.get_server(channel_id)
-    StateAgent.put(server, :game_state, nil)
-  end
-
   def set_field(state, field, value) do
     put_in(state, [field], value)
   end
@@ -51,25 +40,25 @@ defmodule GameState do
     end
   end
 
-  def insert_new(existing, new) do
+  defp insert_new(existing, new) do
     [new | existing]
   end
 
-  def insert_existing(existing, new) do
+  defp insert_existing(existing, new) do
     indx = Enum.find_index(existing, fn ele -> ele.name == new.name end)
 
     existing
     |> List.update_at(indx, fn elem ->
-      Map.update(elem, :answered, elem.answered, fn existing_val -> new.answered end)
+      Map.update(elem, :answered, elem.answered, fn _existing_val -> new.answered end)
     end)
   end
 
-  def set_controller(state, user) do
+  defp set_controller(state, user) do
     set_field(state, :active_user, user)
   end
 
   def reset_state(game_base_state) do
-    Map.merge(game_base_state.(), base_state())
+    Map.merge(game_base_state.(nil), base_state())
   end
 
   def handle_change_in_users(socket, users, sync_fn) do
@@ -92,23 +81,9 @@ defmodule GameState do
     end
   end
 
-  # TODO this is the win condition for DrawIt - consider moving
-  def who_won(state, users) do
-    Enum.find(state.answered, get_active_user(state, users), fn ans ->
-      ans.guess == state.answer
-    end).name
-  end
-
-  def get_winner(state, users) do
-    Enum.find(users, get_active_user(state, users), fn usr -> usr.name == state.winner end)
-  end
 
   def get_active_user(state, users) do
     Enum.find(users, fn usr -> usr.name == state.active_user end)
   end
 
-  # def add_scores(state, add_func) do
-  #   state
-  #   |> put_in([:scores], add_func.(state))
-  # end
 end
