@@ -1,5 +1,17 @@
 defmodule DrawIt do
 
+  def game_state(user \\ "") do
+    answers = get_n_answers(5)
+
+    %{
+      active_user: user,
+      img: "",
+      possible_answers: answers,
+      answer: Enum.random(answers),
+      answered: []
+    }
+  end
+
   def get_n_answers(n, correct_answer \\ "") do
     GameUtils.get_n_unique_cards(n, &draw_what/0, [correct_answer]) |> Enum.filter(fn(ans) -> ans != "" end)
   end
