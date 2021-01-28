@@ -58,7 +58,7 @@ defmodule GameState do
   end
 
   def reset_state(game_base_state) do
-    Map.merge(game_base_state.(), base_state())
+    Map.merge(game_base_state.(nil), base_state())
   end
 
   def handle_change_in_users(socket, users, sync_fn) do

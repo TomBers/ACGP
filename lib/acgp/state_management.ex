@@ -51,6 +51,4 @@ defmodule StateManagement do
       users: []
     }
   end
-
-
 end

@@ -6,53 +6,11 @@ defmodule AcgpWeb.MakeMeLaugh do
   defp topic(id), do: "mml:#{id}"
 
   def mount(%{"id" => room}, _session, socket) do
-    if connected?(socket) do
-      params =
-        StateManagement.setup_initial_state(topic(room))
-        |> add_specic_state()
-
-      {:ok, socket |> assign(params)}
-    else
-      {:ok, socket |> assign(empty_game_state())}
-    end
+    params = StateManagement.setup(topic(room), &MakeMeLaughCards.game_state/1, connected?(socket))
+    {:ok, socket |> assign(params)}
   end
 
-  def add_specic_state(params) do
-    gs = game_state(params.my_name)
-    params |> GameState.initial_state(gs, params.channel_id)
-  end
-
-  def game_state(user \\ "") do
-    cards = MakeMeLaughCards.get_answer_cards(10)
-
-    %{
-      active_user: user,
-      answer_cards: cards,
-      question_card: MakeMeLaughCards.get_board_cards(1),
-      answer: "",
-      selected_answer: nil,
-      winner: nil,
-      answered: []
-    }
-  end
-
-  def empty_game_state do
-    %{
-      game_state: %{
-        active_user: nil,
-        answer_cards: [],
-        question_card: "",
-        answer: "",
-        selected_answer: nil,
-        winner: nil,
-        answered: []
-      },
-      my_name: "",
-      users: []
-    }
-  end
-
-  def win_condition(state, users) do
+  def win_condition(state, _users) do
     {true, state.winner}
   end
 
@@ -68,13 +26,8 @@ defmodule AcgpWeb.MakeMeLaugh do
 
   def sync_state(socket, new_state) do
     pid = self()
-
     GameState.update_state(new_state, socket.assigns.channel_id)
-
-    AcgpWeb.Endpoint.broadcast_from(pid, socket.assigns.channel_id, "sync_state", %{
-      state: new_state
-    })
-
+    AcgpWeb.Endpoint.broadcast_from(pid, socket.assigns.channel_id, "sync_state", %{state: new_state})
     {:noreply, socket |> assign(game_state: new_state)}
   end
 
@@ -87,7 +40,7 @@ defmodule AcgpWeb.MakeMeLaugh do
         gs,
         socket.assigns.users,
         &win_condition/2,
-        &game_state/0
+        &MakeMeLaughCards.game_state/1
       )
     )
   end
