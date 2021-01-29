@@ -6,4 +6,4 @@
     </ol>
 </div>
 
-<iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=f5b31791-f5c2-4baa-b291-9c39001a2057&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe>
+<iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<%= System.get_env("VONAGE_API_KEY") %>&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe>
