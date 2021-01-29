@@ -7,7 +7,6 @@ import LiveSocket from "phoenix_live_view"
 
 import paper from "paper"
 
-import { connect, call, answerCall, receiveRemote, disconnect } from "./video.js"
 import Hooks from "./hooks.js"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
@@ -20,11 +19,6 @@ socket.connect()
 
 // Attach functions to window
 window.socket = socket
-window.videoConnect = connect
-window.videoCall = call
-window.answerCall = answerCall
-window.receiveRemote = receiveRemote
-window.videoDisconnect = disconnect
 
 window.globals = {};
 
