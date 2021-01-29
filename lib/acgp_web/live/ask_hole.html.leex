@@ -14,15 +14,4 @@
     </div>
 </div>
 
-<section>
-    <p class="title">Instructions:</p>
-    <div class="content">
-    <ol type="1">
-        <li>Click <strong>connect video</strong> to start a webchat</li>
-        <li>When the chat has started, click <strong>start questions</strong></li>
-        <li>Take turns answering the question on screen</li>
-    </ol>
-    </div>
-</section>
-
 <%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users, channel_id: @channel_id %>

@@ -28,19 +28,7 @@ defmodule AcgpWeb.AskHole do
     {:noreply, socket |> assign(users: Presence.list_presences(socket.assigns.channel_id))}
   end
 
-  def handle_info(%{event: "connect_state", payload: %{connected: connected}}, socket) do
-    {:noreply, assign(socket, connected: connected)}
-  end
-
   def handle_event("new_card", _params, socket) do
     socket |> sync_state(GameState.set_field(socket.assigns.game_state, :question, AskHole.get_question()))
-  end
-
-  def handle_event("changeConnection", _state, socket) do
-    gs = socket.assigns.game_state
-    new_connection_state = !gs.connected
-
-    ns = GameState.set_field(gs, :connected, new_connection_state)
-    sync_state(socket, ns)
   end
 end
