@@ -109,5 +109,5 @@ function onMouseUp(event) {
 <% end %>
 
 <%= if length(@users) >= 2 do %>
-<%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
+<%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users, channel_id: @channel_id %>
 <% end %>

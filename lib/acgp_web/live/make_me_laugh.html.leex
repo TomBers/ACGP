@@ -30,5 +30,5 @@
                 </article>
             </div>
     </div>
-    <%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users %>
+    <%= live_component @socket, AcgpWeb.PlayerList, id: "PlayerList", game_state: @game_state, my_name: @my_name, users: @users, channel_id: @channel_id %>
 </div>
