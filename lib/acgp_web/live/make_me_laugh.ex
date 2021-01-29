@@ -39,6 +39,7 @@ defmodule AcgpWeb.MakeMeLaugh do
       GameState.check_winner(
         gs,
         socket.assigns.users,
+        socket.assigns.channel_id,
         &win_condition/2,
         &MakeMeLaughCards.game_state/1
       )

@@ -48,6 +48,7 @@ defmodule AcgpWeb.AnswerWrong do
       socket,
       GameState.check_winner(
         gs,
+        socket.assigns.channel_id,
         socket.assigns.users,
         &win_condition/2,
         &AnswerWrong.game_state/1

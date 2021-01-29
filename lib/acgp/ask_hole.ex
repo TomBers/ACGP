@@ -1,5 +1,8 @@
 defmodule AskHole do
 
+  def game_state(_p) do
+    %{question: "", connected: false}
+  end
   def get_question do
     questions
     |> Enum.random

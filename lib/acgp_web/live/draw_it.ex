@@ -41,7 +41,7 @@ defmodule AcgpWeb.DrawIt do
   def handle_event("guess", %{"user" => user, "answer" => answer}, socket) do
     new_state =
       GameState.add_answered(socket.assigns.game_state, %{name: user, guess: answer})
-      |> GameState.check_winner(socket.assigns.users, &win_condition/2, &DrawIt.game_state/1)
+      |> GameState.check_winner(socket.assigns.users, socket.assigns.channel_id, &win_condition/2, &DrawIt.game_state/1)
 
     sync_state(socket, new_state)
   end
