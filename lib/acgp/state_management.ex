@@ -48,7 +48,8 @@ defmodule StateManagement do
     %{
       game_state: game_state.(nil),
       my_name: "",
-      users: []
+      users: [],
+      channel_id: nil
     }
   end
 end

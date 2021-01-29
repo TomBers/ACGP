@@ -1,12 +1,12 @@
 defmodule GameState do
-  def base_state do
-    %{active_user: nil, scores: %{}, answered: [], winner: nil}
+  def base_state(channel) do
+    %{active_user: nil, scores: %{}, answered: [], winner: nil, channel_id: channel}
   end
 
   def initial_state(user_states, game_state, channel_id) do
     server = StateAgent.get_server(channel_id)
 
-    new_state = Map.merge(base_state(), game_state)
+    new_state = Map.merge(base_state(channel_id), game_state)
 
     game_state =
       if StateAgent.get(server, :game_state) do
@@ -57,8 +57,8 @@ defmodule GameState do
     set_field(state, :active_user, user)
   end
 
-  def reset_state(game_base_state) do
-    Map.merge(game_base_state.(nil), base_state())
+  def reset_state(game_base_state, channel) do
+    Map.merge(game_base_state.(nil), base_state(channel))
   end
 
   def handle_change_in_users(socket, users, sync_fn) do
@@ -69,11 +69,11 @@ defmodule GameState do
     end
   end
 
-  def check_winner(state, users, win_condition, game_base_state) do
+  def check_winner(state, users, channel, win_condition, game_base_state) do
     {is_winner, winner} = win_condition.(state, users)
 
     if is_winner do
-      reset_state(game_base_state)
+      reset_state(game_base_state, channel)
       |> put_in([:active_user], winner)
       |> put_in([:scores], Map.update(state.scores, winner, 1, fn val -> val + 1 end))
     else
