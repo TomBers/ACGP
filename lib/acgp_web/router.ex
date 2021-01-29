@@ -23,6 +23,7 @@ defmodule AcgpWeb.Router do
     live "/aw/:id", AnswerWrong, layout: {AcgpWeb.LayoutView, :app}
     live "/wtn/:id", WhatTheName, layout: {AcgpWeb.LayoutView, :app}
     live "/picit/:id", PictureIt, layout: {AcgpWeb.LayoutView, :app}
+    live "/abundance/:id", Abundance, layout: {AcgpWeb.LayoutView, :app}
 
     get "/", PageController, :index
     get "/askhole", PageController, :askhole

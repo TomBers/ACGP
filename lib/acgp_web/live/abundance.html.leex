@@ -1,0 +1,46 @@
+<br>
+<br>
+<canvas id="myCanvas" phx-hook="SendCells" width="1000" height="1000"></canvas>
+
+
+
+
+<script type="text/paperscript" canvas="myCanvas">
+var paths = [];
+var cells = <%= Jason.encode!(@game_state.cells) %>;
+
+drawPaths(Abundance.calcBoard(cells));
+
+
+
+function onMouseDown(event) {
+	segment = path = null;
+	var hitResult = project.hitTest(event.point, {
+		segments: true,
+		stroke: true,
+		fill: true,
+		tolerance: 5
+	});
+	drawPaths(Abundance.updateBoard(cells, hitResult.item.index));
+}
+
+// Draw func needs to be in the paperscript block
+function drawPaths(paths) {
+	project.clear()
+	paths.map((path) => {
+		var rectangle = new Rectangle(new Point(path.x, path.y), new Size(path.size, path.size));
+		var cell = new Path.Rectangle(rectangle);
+		cell.fillColor = path.col;
+		cell.selected = false;
+
+		if(false) {
+			var pointTextLocation = new paper.Point(path.x, path.y + 10);
+			var myText = new paper.PointText(pointTextLocation);
+			myText.fillColor = 'black';
+			myText.content = path.indx;
+		}
+
+	})
+}
+
+</script>
