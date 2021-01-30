@@ -27,12 +27,12 @@ defmodule AcgpWeb.Abundance do
     {:noreply, socket |> assign(:game_state, state)}
   end
 
-  def handle_event("updateCells", snapshot, socket) do
+  def handle_event("updateCells", cells, socket) do
     name = socket.assigns.my_name
-    score = Enum.sum(snapshot)
+    score = Enum.sum(cells)
 
     new_state =
-          GameState.add_answered(socket.assigns.game_state, %{name: name, answered: score})
+          GameState.add_answered(socket.assigns.game_state, %{name: name, cells: cells, score: score})
 
     sync_state(socket, new_state)
   end

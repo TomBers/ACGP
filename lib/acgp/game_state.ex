@@ -46,11 +46,8 @@ defmodule GameState do
 
   defp insert_existing(existing, new) do
     indx = Enum.find_index(existing, fn ele -> ele.name == new.name end)
+    existing |> List.update_at(indx, fn _elem -> new end)
 
-    existing
-    |> List.update_at(indx, fn elem ->
-      Map.update(elem, :answered, elem.answered, fn _existing_val -> new.answered end)
-    end)
   end
 
   defp set_controller(state, user) do
