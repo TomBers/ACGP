@@ -10,10 +10,6 @@ defmodule AcgpWeb.Abundance do
     {:ok, socket |> assign(params)}
   end
 
-  # def send_tick() do
-  #   Process.send_after(self(), :tick, 1000)
-  # end
-
   def sync_state(socket, new_state) do
     pid = self()
     GameState.update_state(new_state, socket.assigns.channel_id)
@@ -27,15 +23,18 @@ defmodule AcgpWeb.Abundance do
     {:noreply, socket |> assign(users: users)}
   end
 
-
-  def handle_info(%{event: "update_snapshots", payload: %{cells: cells}}, socket) do
-    IO.inspect(cells)
-    {:noreply, socket}
+  def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do
+    {:noreply, socket |> assign(:game_state, state)}
   end
 
   def handle_event("updateCells", snapshot, socket) do
-    IO.inspect(snapshot)
-    {:noreply, socket}
+    name = socket.assigns.my_name
+    score = Enum.sum(snapshot)
+
+    new_state =
+          GameState.add_answered(socket.assigns.game_state, %{name: name, answered: score})
+
+    sync_state(socket, new_state)
   end
 
 

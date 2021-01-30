@@ -1,15 +1,28 @@
+<button class="button is-primary" id="stepForward">Step forward<button>
 <br>
 <br>
-<canvas id="myCanvas" phx-hook="SendCells" width="1000" height="1000"></canvas>
+<canvas id="myCanvas" phx-hook="SendCells" width="400" height="400"></canvas>
 
+
+<br>
+<br>
 
 
 
 <script type="text/paperscript" canvas="myCanvas">
 var paths = [];
-var cells = <%= Jason.encode!(@game_state.cells) %>;
+var cells = Abundance.cells;
+var board = document.getElementById('myCanvas');
 
 drawPaths(Abundance.calcBoard(cells));
+
+
+document.getElementById("stepForward").addEventListener("click", () => {
+	// Step the game forward
+	cells = Abundance.stepForward(cells);
+	Abundance.sendGridEvent(board, cells);
+	drawPaths(Abundance.calcBoard(cells));
+});
 
 
 

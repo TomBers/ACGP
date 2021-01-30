@@ -1,10 +1,18 @@
 let Abundance = {}
 
+const width = 10;
+const height = 10;
+const size = 1;
+const scale = 50;
+
+
+Abundance.cells = new Array(width * height).fill(0);
+
 Abundance.calcBoard = (cells) => {
     var paths = [];
 
     cells.forEach(function(cell, i) {
-        paths.push(drawRec(i, cell, 10, 10, 1, 50));
+        paths.push(drawRec(i, cell, width, height, size, scale));
     })
     
     return paths
@@ -29,16 +37,37 @@ Abundance.updateBoard = (cells, cell) => {
 	return Abundance.calcBoard(cells);
 }
 
-	//
-	//console.log(hitResult)
-	//var cell = path.index;
-	// Abundance.calcNeighbours(cell);
-	// if(cells[cell] == 0) {
-	   // Abundance.turnOnCell(path, cell, cells)
-	// }
-	//sendGridEvent();
+Abundance.stepForward = (cells) => {
+	cells.forEach(function(cell, indx) {
+		var neighbours = Abundance.calcNeighbours(indx, cells)
+		if(cells[indx] != 0 && (neighbours == 2 || neighbours == 3)) {
+			return
+		} else if(cells[indx] == 0 && neighbours == 3) {
+			cells[indx] = 1;
+		} else {
+			cells[indx] = 0;
+		}
+	})
+	return cells
+}
 
-Abundance.calcNeighbours = (indx) => {
+Abundance.sendGridEvent = (ele, cells) => {
+    var event = new CustomEvent(
+        "newSnapshot",
+        {
+            detail: {
+                cells: cells
+            },
+            bubbles: true,
+            cancelable: true
+        }
+    );
+    ele.dispatchEvent(event)
+}
+
+Abundance.calcNeighbours = (indx, cells) => {
+	var numYCells = height;
+	var numXCells = width; 
 	var y = Math.floor(indx / numYCells);
 	var x = indx % numXCells;
 
@@ -49,43 +78,20 @@ Abundance.calcNeighbours = (indx) => {
 	var canDown = y < numYCells - 1
 
 
-	upln = canLeft && canUp ? cells[indx - (numXCells - 1)] : 0
-	upn = canUp ? cells[indx - numXCells] : 0
-	uprn = canRight && canUp ? cells[indx - (numXCells + 1)] : 0
-	ln = canLeft ? cells[indx - 1] : 0
-	rn = canRight ? cells[indx + 1] : 0
-	downln = canDown && canLeft ? cells[indx + (numXCells - 1)] : 0
-	downn = canDown ? cells[indx + numXCells] : 0
-	downrn = canDown && canRight ? cells[indx + (numXCells + 1)] : 0
+	var upln = canLeft && canUp ? cells[indx - (numXCells - 1)] : 0
+	var upn = canUp ? cells[indx - numXCells] : 0
+	var uprn = canRight && canUp ? cells[indx - (numXCells + 1)] : 0
+	var ln = canLeft ? cells[indx - 1] : 0
+	var rn = canRight ? cells[indx + 1] : 0
+	var downln = canDown && canLeft ? cells[indx + (numXCells - 1)] : 0
+	var downn = canDown ? cells[indx + numXCells] : 0
+	var downrn = canDown && canRight ? cells[indx + (numXCells + 1)] : 0
 
 	return upn + ln + rn + downn + upln + uprn + downln + downrn
 }
 
-Abundance.turnOffCell = (path, cell, cells) => {
-	path.fillColor = 'white'
-	cells[cell] = 0
-}
-
-Abundance.turnOnCell = (path, cell, cells) => {
-	path.fillColor = 'black'
-	cells[cell] = playerNum
-}
 
 export default Abundance
-
-// function sendGridEvent() {
-//     var event = new CustomEvent(
-//         "newSnapshot",
-//         {
-//             detail: {
-//                 cells: cells
-//             },
-//             bubbles: true,
-//             cancelable: true
-//         }
-//     );
-//     document.getElementById('myCanvas').dispatchEvent(event)
-// }
 
 
 

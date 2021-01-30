@@ -2,7 +2,9 @@ defmodule Abundance do
 
   def game_state(_p) do
     %{
-      cells: gen_cells()
+      active_user: nil,
+      answered: [],
+      winner: nil
     }
   end
 
