@@ -25,11 +25,15 @@ drawPaths(Abundance.calcBoard(cells));
 
 
 document.getElementById("stepForward").addEventListener("click", () => {
+	nextCellState()
+});
+
+function nextCellState () {
 	// Step the game forward
 	cells = Abundance.stepForward(cells);
 	Abundance.sendGridEvent(board, cells);
 	drawPaths(Abundance.calcBoard(cells));
-});
+}
 
 
 
