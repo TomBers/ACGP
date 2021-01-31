@@ -33,8 +33,15 @@ defmodule AcgpWeb.Abundance do
 
     new_state =
           GameState.add_answered(socket.assigns.game_state, %{name: name, cells: cells, score: score})
-
     sync_state(socket, new_state)
+  end
+
+  def get_coverage(game_state, user) do
+    Enum.find(game_state.answered, %{score: 0} ,fn(ans) -> ans.name == user.name end).score
+  end
+
+  def get_cells(game_state, user) do
+    Enum.find(game_state.answered, %{cells: []} ,fn(ans) -> ans.name == user.name end).cells
   end
 
 

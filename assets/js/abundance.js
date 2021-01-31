@@ -34,7 +34,7 @@ function drawRec(indx, val, numXCells, numYCells, cellSize, cellScale) {
 
 Abundance.updateBoard = (cells, cell) => {
 	cells[cell] = cells[cell] == 0 ? 1 : 0;
-	return Abundance.calcBoard(cells);
+	return cells;
 }
 
 Abundance.stepForward = (cells) => {
