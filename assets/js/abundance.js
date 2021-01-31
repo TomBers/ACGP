@@ -38,17 +38,18 @@ Abundance.updateBoard = (cells, cell) => {
 }
 
 Abundance.stepForward = (cells) => {
+	var new_cells = []
 	cells.forEach(function(cell, indx) {
 		var neighbours = Abundance.calcNeighbours(indx, cells)
 		if(cells[indx] != 0 && (neighbours == 2 || neighbours == 3)) {
-			return
+			new_cells[indx] = cells[indx];
 		} else if(cells[indx] == 0 && neighbours == 3) {
-			cells[indx] = 1;
+			new_cells[indx] = 1;
 		} else {
-			cells[indx] = 0;
+			new_cells[indx] = 0;
 		}
 	})
-	return cells
+	return new_cells
 }
 
 Abundance.sendGridEvent = (ele, cells) => {
