@@ -1,9 +1,9 @@
 let Abundance = {}
 
-const width = 10;
-const height = 10;
+const width = 20;
+const height = 20;
 const size = 1;
-const scale = 50;
+const scale = 25;
 
 
 Abundance.cells = new Array(width * height).fill(0);

@@ -8,7 +8,7 @@
 	<div class="column is-one-quarter">
 	    <ol type="1">
     <%= for user <- @users do %>
-        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span><progress class="progress is-primary" max="100", value="<%= get_coverage(@game_state, user) %>"></progress></span></li>
+        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span><progress class="progress is-primary" max="400", value="<%= get_coverage(@game_state, user) %>"></progress></span></li>
     <% end %>
     </ol>
 	</div>
