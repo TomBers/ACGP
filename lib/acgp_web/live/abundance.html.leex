@@ -1,26 +1,41 @@
 <div class="columns">
 	<div class="column is-two-thirds">
 		<div id="canvas-container">
-			<canvas id="myCanvas" phx-hook="SendCells" width="500" height="500"></canvas>
+			<canvas id="GOLCanvas" phx-hook="SendCells" width="500" height="500"></canvas>
 			<button class="button is-large" id="stepForward">Step forward</button>
 		</div>
 	</div>
 	<div class="column is-one-quarter">
-	    <ol type="1">
-    <%= for user <- @users do %>
-        <li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span><progress class="progress is-primary" max="400", value="<%= get_coverage(@game_state, user) %>"></progress></span></li>
-    <% end %>
-    </ol>
+		<ol type="1">
+			<%= for user <- @users do %>
+				<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span><progress class="progress is-primary" max="400", value="<%= get_coverage(@game_state, user) %>"></progress></span></li>
+			<% end %>
+		</ol>
 	</div>
-
 </div>
 
+<section class="hero is-link">
+	<div class="hero-body">
+		<p class="title">Instructions</p>
+		<p>Based on Conway's Game of Life (<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Link</a>) Each 'cell' follows 3 simple rules:</p>
 
-<script type="text/paperscript" canvas="myCanvas">
+		<ol type="1">
+			<li>Any live cell with two or three live neighbours survives.</li>
+			<li>Any dead cell with three live neighbours becomes a live cell.</li>
+			<li>All other live cells die in the next generation. Similarly, all other dead cells stay dead.</li>
+		</ol>
+		<p>Add cells and when you want to evolve the board click 'Step forward' to see what happens<p>
+		<p>Challenge your friends to get the most abundant life</p>
+	</div>
+</section>
+
+
+<script type="text/paperscript" canvas="GOLCanvas">
 var paths = [];
 var cells = Abundance.cells;
-var board = document.getElementById('myCanvas');
-
+var board = document.getElementById('GOLCanvas');
+var STEPS_BEFORE_MOVE = 50;
+var cnt = 0;
 drawPaths(Abundance.calcBoard(cells));
 
 
@@ -46,8 +61,13 @@ function onMouseDown(event) {
 		tolerance: 5
 	});
 	cells = Abundance.updateBoard(cells, hitResult.item.index);
-	Abundance.sendGridEvent(board, cells);
-	drawPaths(Abundance.calcBoard(cells));
+	//if(cnt % STEPS_BEFORE_MOVE == 0) {
+	//	nextCellState()
+	// } else {
+		Abundance.sendGridEvent(board, cells);
+		drawPaths(Abundance.calcBoard(cells));
+	// }
+	// cnt++;
 }
 
 // Draw func needs to be in the paperscript block
@@ -56,6 +76,8 @@ function drawPaths(paths) {
 	paths.map((path) => {
 		var rectangle = new Rectangle(new Point(path.x, path.y), new Size(path.size, path.size));
 		var cell = new Path.Rectangle(rectangle);
+		cell.strokeWidth = 0.1;
+		cell.strokeColor = 'black';
 		cell.fillColor = path.col;
 		cell.selected = false;
 
