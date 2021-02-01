@@ -1,3 +1,5 @@
+<br>
+<br>
 <div class="columns">
 	<div class="column is-two-thirds">
 		<div id="canvas-container">
@@ -11,23 +13,27 @@
 				<li><%= if @my_name == user.name do %>Me<% else %><%= user.name %><% end %> | <span><progress class="progress is-primary" max="400", value="<%= get_coverage(@game_state, user) %>"></progress></span></li>
 			<% end %>
 		</ol>
+		<br><br>
+		<section class="hero is-link">
+		<div class="hero-body">
+			<p>Based on Conway's Game of Life (<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Link</a>) Each 'cell' follows 3 simple rules:</p>
+			<br>
+			<ol type="1">
+				<li>Any live cell with two or three live neighbours survives.</li>
+				<li>Any dead cell with three live neighbours becomes a live cell.</li>
+				<li>All other live cells die in the next generation. Similarly, all other dead cells stay dead.</li>
+			</ol>
+			<br>
+			<p>Add cells and when you want to evolve the board click 'Step forward' to see what happens<p>
+			<p>Challenge your friends to get the most abundant life</p>
+		</div>
+	</section>
 	</div>
 </div>
 
-<section class="hero is-link">
-	<div class="hero-body">
-		<p class="title">Instructions</p>
-		<p>Based on Conway's Game of Life (<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Link</a>) Each 'cell' follows 3 simple rules:</p>
 
-		<ol type="1">
-			<li>Any live cell with two or three live neighbours survives.</li>
-			<li>Any dead cell with three live neighbours becomes a live cell.</li>
-			<li>All other live cells die in the next generation. Similarly, all other dead cells stay dead.</li>
-		</ol>
-		<p>Add cells and when you want to evolve the board click 'Step forward' to see what happens<p>
-		<p>Challenge your friends to get the most abundant life</p>
-	</div>
-</section>
+
+<iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<%= System.get_env("VONAGE_API_KEY") %>&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe>
 
 
 <script type="text/paperscript" canvas="GOLCanvas">

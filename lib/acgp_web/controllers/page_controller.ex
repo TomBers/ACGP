@@ -31,11 +31,12 @@ defmodule AcgpWeb.PageController do
   end
 
   def picit(conn, _params) do
-    instructions = "A game to visualise concepts. Everyobe is given an emotion and you have to find an image that best represents it.  The player who is judging chooses the winner."
+    instructions = "A game to visualise concepts. You are given an emotion and have to find an image that best represents it.  The player who is judging chooses the winner."
     render(conn, "tmp.html", game: "Picture It", path: "picit", instructions: instructions, players: 3)
   end
 
   def abundance(conn, _params) do
-    render(conn, "tmp.html", game: "Abundance", path: "#")
+    instructions = "Challenge your friends to make the most abundant life"
+    render(conn, "tmp.html", game: "Abundance", path: "abundance", instructions: instructions, players: 1 )
   end
 end
