@@ -31,7 +31,7 @@ defmodule WTN do
   @categories [
     "Countries",
     "Celebrities",
-    "Cites",
+    "Cities",
     "Criminals",
     "Rivers",
     "Animals",
@@ -141,7 +141,7 @@ defmodule WTN do
         Map.put(acc, name, score)
       end)
 
-    Map.merge(existing_scores, new_scores, fn k, v1, v2 -> v1 + v2 end)
+    Map.merge(existing_scores, new_scores, fn _k, v1, v2 -> v1 + v2 end)
   end
 
   def get_score(sl1, sl2, name) do
@@ -178,6 +178,6 @@ defmodule WTN do
   end
 
   def filter_incorrect(ans, letter) do
-    Enum.filter(ans.answered, fn {k, v} -> !(v == "") and String.starts_with?(v, letter) end)
+    Enum.filter(ans.answered, fn {_k, v} -> !(v == "") and String.starts_with?(v, letter) end)
   end
 end

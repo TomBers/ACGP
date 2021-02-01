@@ -74,6 +74,7 @@
     </article>
   </div>
 </div>
+
 <div class="tile is-vertical edencolumn">
   <div class="tile is-parent">
     <article class="tile is-child">
@@ -124,11 +125,47 @@
                 <p class="game-title">Picture it</p>
             </div>
             <div class="container-bottom">
-                <p class="game-description">A game to visualise concepts. Everyobe is given an emotion and you have to find an image that best represents it.  The player who is judging chooses the winner.</p>
+                <p class="game-description">A game to visualise concepts. You are given an emotion and have to find an image that best represents it.  The player who is judging chooses the winner.</p>
             </div>
             <p class="game-subtitle cta1"><a href="/picit">Play now</a></p>
         </div>
     </article>
   </div>
 </div>
+
+<div class="tile is-vertical edencolumn">
+  <div class="tile is-parent">
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                <a href="/mml">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth2.jpg") %>">
+                </a>
+                <p class="game-title">Abundance</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">Challenge your friends to make the most abundant life.</p>
+            </div>
+            <p class="game-subtitle cta3"><a href="/abundance">Play now</a></p>
+        </div>
+    </article>
+  </div>
+</div>
+
+<div class="tile is-vertical edencolumn">
+  <div class="tile is-parent">
+    <article class="tile is-child">
+        <div class="game-card">
+            <div class="container-top">
+                    <img class="game-pic" src="<%= Routes.static_path(@conn, "/images/gamemouth.jpg") %>">
+                <p class="game-title">Coming Soon</p>
+            </div>
+            <div class="container-bottom">
+                <p class="game-description">Coming Soon</p>
+            </div>
+        </div>
+    </article>
+  </div>
+</div>
+
 </div>
