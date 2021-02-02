@@ -33,7 +33,7 @@
 
 
 
-<iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<%= System.get_env("VONAGE_API_KEY") %>&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe>
+<iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<%= System.get_env("VONAGE_API_KEY") %>&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe> %>
 
 
 <script type="text/paperscript" canvas="GOLCanvas">
@@ -95,7 +95,6 @@ function drawPaths(paths) {
 		}
 
 	})
-	window.userCells = paper.project.exportSVG({asString:true})
 }
 
 </script>
