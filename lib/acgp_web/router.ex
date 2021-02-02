@@ -33,6 +33,9 @@ defmodule AcgpWeb.Router do
     get "/wtn", PageController, :whatthename
     get "/picit", PageController, :picit
     get "/abundance", PageController, :abundance
+
+    get "/aframe", PageController, :aframe
+
   end
 
   # Other scopes may use custom stacks.

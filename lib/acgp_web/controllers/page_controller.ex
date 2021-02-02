@@ -39,4 +39,9 @@ defmodule AcgpWeb.PageController do
     instructions = "Challenge your friends to make the most abundant life"
     render(conn, "tmp.html", game: "Abundance", path: "abundance", instructions: instructions, players: 1 )
   end
+
+  def aframe(conn, _params) do
+    render conn, "aframe.html"
+  end
+
 end

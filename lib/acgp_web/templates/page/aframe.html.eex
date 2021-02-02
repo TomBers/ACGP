@@ -1,0 +1,12 @@
+  <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+
+<div class="container">
+    <a-scene>
+        <a-box position="-1 3 -3" rotation="0 45 0" color="#4CC3D9" dynamic-body></a-box>
+        <a-sphere position="0 8 -5" radius="1.25" color="#EF2D5E" dynamic-body></a-sphere>
+        <a-cylinder position="1 5 -3" radius="0.5" height="1.5" color="#FFC65D" dynamic-body></a-cylinder>
+        <a-box position="0 0 -5" rotation="-90 0 0" width="10" height="10" depth="1" color="#7BC8A4" static-body></a-box>
+
+    </a-scene>
+</div>
