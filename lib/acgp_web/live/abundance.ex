@@ -27,17 +27,21 @@ defmodule AcgpWeb.Abundance do
     {:noreply, socket |> assign(:game_state, state)}
   end
 
-  def handle_event("updateCells", cells, socket) do
+  def handle_event("updateCells", %{"cells" => cells, "img" => img}, socket) do
     name = socket.assigns.my_name
     score = Enum.sum(cells)
 
     new_state =
-          GameState.add_answered(socket.assigns.game_state, %{name: name, cells: cells, score: score})
+          GameState.add_answered(socket.assigns.game_state, %{name: name, cells: cells, score: score, img: img})
     sync_state(socket, new_state)
   end
 
   def get_coverage(game_state, user) do
     Enum.find(game_state.answered, %{score: 0} ,fn(ans) -> ans.name == user.name end).score
+  end
+
+  def get_img(game_state, user) do
+    Enum.find(game_state.answered, %{img: nil} ,fn(ans) -> ans.name == user.name end).img
   end
 
   def get_cells(game_state, user) do
