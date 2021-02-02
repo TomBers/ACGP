@@ -21,13 +21,6 @@ Hooks.SendCells = {
     }
 }
 
-// Hooks.Cells = {
-//     updated() {
-//         const cells = this.el.getAttribute('data-cells')
-//         window.updateBoard(JSON.parse(cells))
-//     }
-// }
-
 Hooks.ChangeScore = {
     updated() {  
         var ele = this.el;
