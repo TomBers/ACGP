@@ -61,7 +61,8 @@ config :acgp, AcgpWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/acgp_web/(live|views)/.*(ex)$",
-      ~r"lib/acgp_web/templates/.*(eex)$"
+      ~r"lib/acgp_web/templates/.*(eex)$",
+      ~r"lib/acgp_web/controllers/page_controller.ex"
     ]
   ]
 
