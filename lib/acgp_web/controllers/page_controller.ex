@@ -41,7 +41,7 @@ defmodule AcgpWeb.PageController do
   end
 
   def aframe(conn, _params) do
-    render conn, "aframe.html", boxes: gen_boxes(50), layout: {AcgpWeb.LayoutView, "aframe.html"}
+    render conn, "aframe.html", boxes: gen_boxes(50), layout: {AcgpWeb.LayoutView, "graphics.html"}
   end
 
 
