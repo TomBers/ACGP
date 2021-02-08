@@ -1,5 +1,5 @@
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
+<script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+<script src="https://unpkg.com/aframe-physics-system@1.4.0/dist/aframe-physics-system.min.js"></script>
 <script>
     AFRAME.registerComponent('log', {
   schema: {type: 'string'},
@@ -9,6 +9,7 @@
     console.log(stringToLog);
   }
 });
+
 </script>
 <div class="container">
     <a-scene inspector="url: http://localhost:3333/dist/aframe-inspector.js">
@@ -19,7 +20,8 @@
         </a-assets>
 
         <%= for box <- @boxes do %>
-        <a-box id="<%= box.id %>" src="#<%= box.img %>" position="<%= box.pos %>" rotation="0 0 45" scale="1 1 1"></a-box>
+        <a-box id="<%= box.id %>" src="#<%= box.img %>" position="<%= box.pos %>" rotation="0 0 45"
+               scale="1 1 1"></a-box>
         <% end %>
 
         <a-sky id="sky" material="color: #693d9e" color="#222"></a-sky>
@@ -28,10 +30,11 @@
     </a-scene>
 </div>
 
-  <script>
+<script>
     var box;
 //       <a-box id="box1" src="#boxTexture" position="-4 2 -5" rotation="0 0 45" scale="1 1 1" animation="property: object3D.rotation.x; to: 360; dir: alternate; dur: 4000; loop: true"></a-box>
   //      <a-box id="box2" geometry="primitive: cylinder" src="#boxTexture2" position="0 2 -5" rotation="0 45 45" scale="1 1 1" animation="property: object3D.rotation.y; to: 360; dir: alternate; dur: 4000; loop: true"></a-box>
     //    <a-box id="box3" geometry="primitive: sphere" src="#boxTexture3" position="4 2 -5" rotation="0 -123.00000000000001 85.21179560079727" scale="1 1 1" animation="property: object3D.rotation.z; to: 360; dir: alternate; dur: 4000; loop: true; round: true"></a-box>
 
-  </script>
+
+</script>

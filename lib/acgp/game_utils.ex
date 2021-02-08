@@ -619,7 +619,8 @@ defmodule GameUtils do
   end
 
   def get_id do
-    1..1000 |> Enum.random()
+    1..1000
+    |> Enum.random()
   end
 
   def has_answered(usr, game_state) when is_map(usr) do
