@@ -31,21 +31,21 @@
 	</div>
 </div>
 
-
-
 <iframe src="https://tokbox.com/embed/embed/ot-embed.js?embedId=<%= System.get_env("VONAGE_API_KEY") %>&room=<%= @channel_id %>&iframe=true" width=800 height=640 scrolling="auto" allow="microphone; camera" ></iframe>
-
 
 <script type="text/paperscript" canvas="GOLCanvas">
 var paths = [];
 var cells = Abundance.cells;
-var board = document.getElementById('GOLCanvas');
+const board = document.getElementById('GOLCanvas');
+const btn = document.getElementById("stepForward");
 var STEPS_BEFORE_MOVE = 50;
 var cnt = 0;
-drawPaths(Abundance.calcBoard(cells));
 
 
-document.getElementById("stepForward").addEventListener("click", () => {
+window.setTimeout(function(){ drawPaths(Abundance.calcBoard(cells)); }, 1000);
+
+
+btn.addEventListener("click", () => {
 	nextCellState()
 });
 
@@ -79,6 +79,7 @@ function onMouseDown(event) {
 // Draw func needs to be in the paperscript block
 function drawPaths(paths) {
 	project.clear()
+
 	paths.map((path) => {
 		var rectangle = new Rectangle(new Point(path.x, path.y), new Size(path.size, path.size));
 		var cell = new Path.Rectangle(rectangle);
@@ -93,7 +94,6 @@ function drawPaths(paths) {
 			myText.fillColor = 'black';
 			myText.content = path.indx;
 		}
-
 	})
 }
 
