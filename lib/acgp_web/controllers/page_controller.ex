@@ -41,21 +41,7 @@ defmodule AcgpWeb.PageController do
   end
 
   def aframe(conn, _params) do
-    render conn, "aframe.html", boxes: gen_boxes(50), layout: {AcgpWeb.LayoutView, "graphics.html"}
-  end
-
-
-
-  def gen_boxes(n) do
-  1..n |> Enum.map(fn(b) -> %{id: "b#{b}", pos: "#{rand_in_range} #{rand_in_range} -5", img: get_img()} end)
-  end
-
-  def rand_in_range do
-    Enum.random([-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8])
-  end
-
-  def get_img do
-    Enum.random(["boxTexture", "boxTexture2", "boxTexture3"])
+    render conn, "aframe.html", layout: {AcgpWeb.LayoutView, "graphics.html"}
   end
 
 end

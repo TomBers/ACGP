@@ -17,24 +17,22 @@
             <img id="boxTexture" src="<%= Routes.static_path(@conn, "/images/gamemouth.jpg") %>">
             <img id="boxTexture2" src="<%= Routes.static_path(@conn, "/images/gamemouth2.jpg") %>">
             <img id="boxTexture3" src="<%= Routes.static_path(@conn, "/images/gamemouth3.jpg") %>">
+            <img id="sky" material="color: #ffffff; shader: flat; flatShading: false; side: back; backgroundColor: #ffffff" src="<%= Routes.static_path(@conn, "/images/sky.jpg") %>">
         </a-assets>
 
-        <%= for box <- @boxes do %>
-        <a-box id="<%= box.id %>" src="#<%= box.img %>" position="<%= box.pos %>" rotation="0 0 45"
-               scale="1 1 1"></a-box>
-        <% end %>
 
-        <a-sky id="sky" material="color: #693d9e" color="#222"></a-sky>
+        <a-box id="box" quaternion="0.09582654412262637 0.07552873086117202 0.007293864234794858 0.9925016291173226" src="#boxTexture" position="-1 3 -3" rotation="10.901095010159043 8.864803006264099 1.6896525378407974" color="#4CC3D9" dynamic-body></a-box>
+        <a-sphere position="0 1.25 -8" radius="1.25" color="#EF2D5E">
+            <a-ring position="-1 1 0" color="#B96FD3"></a-ring>
+            <a-ring position="1 1 0" color="#B96FD3"></a-ring>
+        </a-sphere>
+        <a-cylinder id="cylinder" rotation="0 0 -58.49498017829113" position="-0.99298 0.39372 -7.69233" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+        <a-plane id="ground" scale="1.95173 2.58051 1" static-body="sphereRadius: NaN" position="0 0 -4"  src="#boxTexture2" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+        <a-dodecahedron color="#B96FD3" src="#boxTexture3" position="4 1 -4" rotation="" scale="" visible="" material="" geometry=""></a-dodecahedron>
+        <a-text value="Hello, A-Frame!"  color="#111" position="0 2.5 -2" align="center" rotation="" scale="" visible="" text=""></a-text>
+        <a-torus-knot color="#B96FD3" position="-4 1 -4" radius-tubular="0.05" p="7" rotation="" scale="" visible="" material="" geometry=""></a-torus-knot>
+        <a-sky id="sky" src="#sky" color="#ECECEC"></a-sky>
         <a-light type="ambient" color="#445451"></a-light>
         <a-light type="point" intensity="1" position="2 4 4"></a-light>
     </a-scene>
 </div>
-
-<script>
-    var box;
-//       <a-box id="box1" src="#boxTexture" position="-4 2 -5" rotation="0 0 45" scale="1 1 1" animation="property: object3D.rotation.x; to: 360; dir: alternate; dur: 4000; loop: true"></a-box>
-  //      <a-box id="box2" geometry="primitive: cylinder" src="#boxTexture2" position="0 2 -5" rotation="0 45 45" scale="1 1 1" animation="property: object3D.rotation.y; to: 360; dir: alternate; dur: 4000; loop: true"></a-box>
-    //    <a-box id="box3" geometry="primitive: sphere" src="#boxTexture3" position="4 2 -5" rotation="0 -123.00000000000001 85.21179560079727" scale="1 1 1" animation="property: object3D.rotation.z; to: 360; dir: alternate; dur: 4000; loop: true; round: true"></a-box>
-
-
-</script>
