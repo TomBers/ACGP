@@ -1,17 +1,22 @@
-<%= if GameUtils.has_answered(@my_name, @game_state) do %>
-    <p class="title">Waiting for other answers</p>
-<% else %>
-    <div class="tile is-ancestor">
-        <div class="tile is-vertical is-12">
-            <div class="tile">
-                <div class="tile is-parent is-vertical">
-                    <article class="tile is-child notification is-danger">
-                        <p class="title"><%= @game_state.question %></p>
-                        <p class="subtitle">Answer: <%= @game_state.answer %></p>
-                        <input class="input" type="text" id="guess" onkeyup="event.keyCode == 13 ? this.value = '' : null" phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Guess an answer">
-                    </article>
-                </div>
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-12">
+        <div class="tile">
+            <div class="tile is-parent is-vertical">
+                <%= if GameUtils.has_answered(@my_name, @game_state) do %>
+                    <p class="title">Waiting for other answers</p>
+                    <h2 class="subtitle">Other answers: </h2>
+                    <%= for ans <- @game_state.answered do %>
+                        <h2 class="subtitle"><%= ans.guess %></h2>
+                    <% end %>
+                <% else %>
+                <article class="tile is-child notification is-danger">
+                    <p class="title"><%= @game_state.question %></p>
+                    <p class="subtitle">Answer: <%= @game_state.answer %></p>
+                    <input class="input" type="text" id="guess" onkeyup="event.keyCode == 13 ? this.value = '' : null"
+                           phx-keydown="myguess" phx-value-user="<%= @my_name %>" placeholder="Guess an answer">
+                </article>
+                <% end %>
             </div>
         </div>
     </div>
-<% end %>
+</div>

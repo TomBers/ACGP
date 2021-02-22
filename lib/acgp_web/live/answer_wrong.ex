@@ -22,7 +22,8 @@ defmodule AcgpWeb.AnswerWrong do
   end
 
   def handle_event("myguess", %{"key" => key, "value" => value, "user" => user}, socket) do
-    if key == "Enter" do
+    is_not_exact_answer = String.downcase(value) != String.downcase(socket.assigns.game_state.answer)
+    if key == "Enter" and is_not_exact_answer do
       new_state = GameState.add_answered(socket.assigns.game_state, %{name: user, guess: value})
 
       new_state =

@@ -30,7 +30,7 @@
 
   <section id="photos" class="my-5">
     <template x-for="image in images" :key="image.id">
-      <img x-bind:src="image.webformatURL" class="selectImg" alt="image.tags[0]" phx-click="selectImage" x-bind:phx-value-url="image.webformatURL" />
+      <img x-bind:src="image.webformatURL" class="selectImg" alt="image.tags[0]" phx-click="selectImage" x-bind:phx-value-url="image.webformatURL" x-on:click='clearImages()' />
     </template>
   </section>
 </div>
@@ -41,6 +41,9 @@
     return {
       images: [],
       q: "",
+      clearImages: function() {
+        this.images = [];
+      },
       getImages: async function() {
         const response = await fetch(
           `https://pixabay.com/api/?key=15819227-ef2d84d1681b9442aaa9755b8&q=${
