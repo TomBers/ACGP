@@ -1,7 +1,7 @@
 defmodule MakeMeLaughCards do
 
   def game_state(user \\ "") do
-    cards = get_answer_cards(10)
+    cards = get_answer_cards(5)
 
     %{
       active_user: user,

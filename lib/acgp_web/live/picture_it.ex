@@ -55,4 +55,5 @@ defmodule AcgpWeb.PictureIt do
   def handle_info(%{event: "sync_state", payload: %{state: state}}, socket) do
     {:noreply, socket |> assign(:game_state, state)}
   end
+
 end
